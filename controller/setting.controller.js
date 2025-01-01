@@ -78,7 +78,9 @@ const spinWheel = async (req, res) => {
 
         // Randomly select a winning amount from the weighted pool
         const winningAmount = weightedAmounts[Math.floor(Math.random() * weightedAmounts.length)];
-
+        const user = await Model.User.findById(userId);
+        user.balance += winningAmount;
+        await user.save();
         // Update last spins (limit to last 100)
         lastSpins.push(winningAmount);
         if (lastSpins.length > 100) {
@@ -89,6 +91,7 @@ const spinWheel = async (req, res) => {
             userId,
             type: 'spin',
             amount: winningAmount,
+            currentbalance: user.balance, 
             details: {
                 spins: spins, // Include spin configuration IDs for reference
                 description: 'Spin Wheel Win'
@@ -97,9 +100,7 @@ const spinWheel = async (req, res) => {
 
         await transaction.save();
 
-        const user = await Model.User.findById(userId);
-        user.balance += winningAmount;
-        await user.save();
+
 
         // Respond with the winning amount
         res.status(200).json({ message: 'Spin successful!', winningAmount });
