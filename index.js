@@ -1,11 +1,20 @@
-let express = require("express");
+let express = require("express")
+const path = require('path');
+const fs = require('fs');
+
 let app = express();
-app.get("/",(req,res)=>{
-    res.send("hello dear")
-})
-app.get("/about",(req,res)=>{
-    res.send("about you self")
-})
-app.listen(4001,()=>{
-    console.log("server is started localhost:4001")
+let config = require("./config")
+let port = config.port
+// let http = require("http")
+// let server = http.createServer()
+let router = require("./router/router")
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+app.use(express.json())
+app.use("/api",router.userRouter)
+app.use("/",router.setting)
+app.listen(port,()=>{
+console.log("server started in port:",port)
 })
