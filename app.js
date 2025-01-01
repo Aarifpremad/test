@@ -16,6 +16,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json())
 app.use("/api",router.userRouter)
 app.use("/",router.setting)
-app.listen(port,()=>{
-console.log("server started in port:",port)
+app.listen(4001,()=>{
+console.log("server started in port:",4001)
 })
