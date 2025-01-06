@@ -12,7 +12,7 @@ if (!fs.existsSync(uploadDir)) {
 
 const signUp = async (req, res) => {
     try {
-        const { username, mobileno , refercode } = req.body;
+        const { username, mobileno , refercode , otp} = req.body;
 
 
         if(!username || !mobileno ){
@@ -20,6 +20,21 @@ const signUp = async (req, res) => {
         }
         const existingUser = await Model.User.findOne({ mobileno , isDeleted :false });
         if (existingUser) return res.status(400).json({ message: 'Mobile number registered' });
+
+        const otpRecord = await Model.OTP.findOne({ mobileno, otp });
+
+        if (!otpRecord) {
+            return res.status(400).json({ message: 'Invalid OTP' });
+        }
+
+        if (otpRecord.expireTime < new Date()) {
+            return res.status(400).json({ message: 'OTP has expired' });
+        }
+        console.log("otp check ")
+
+        await Model.OTP.updateOne({ _id: otpRecord._id }, { $set: { hitCount: 0 } });
+        await Model.OTP.deleteOne({ _id: otpRecord._id });
+
 
         const lastUser = await Model.User.findOne().sort({ numericid: -1 });
         const numericid = lastUser ? lastUser.numericid + 1 : 100000;
