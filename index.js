@@ -9,20 +9,16 @@ let port = config.port
 // let server = http.createServer()
 let router = require("./router/router")
 
-app.use((req, res, next) => {
-    console.log("=== Incoming Request ===");
-    console.log("Method:", req.method);
-    console.log("URL:", req.url);
-    console.log("Headers:", req.headers);
-    console.log("Query Params:", req.query);
-    if (req.body && Object.keys(req.body).length > 0) {
-        console.log("Body:", req.body);
-    } else {
-        console.log("Body: None");
-    }
-    console.log("========================");
-    next();
-});
+morgan.token('query', (req) => JSON.stringify(req.query));
+morgan.token('body', (req) => JSON.stringify(req.body));
+morgan.token('headers', (req) => JSON.stringify(req.headers));
+
+// Morgan format string to include method, URL, query, headers, and body
+app.use(
+    morgan(
+        ':method :url :status :response-time ms - Query: :query - Body: :body - Headers: :headers'
+    )
+);
 
 console.log("yes this code is update it ")
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
