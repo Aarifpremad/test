@@ -8,7 +8,7 @@ let port = config.port
 // let http = require("http")
 // let server = http.createServer()
 let router = require("./router/router")
-
+let morgan = require("morgan")
 morgan.token('query', (req) => JSON.stringify(req.query));
 morgan.token('body', (req) => JSON.stringify(req.body));
 morgan.token('headers', (req) => JSON.stringify(req.headers));
