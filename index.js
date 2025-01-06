@@ -9,6 +9,22 @@ let port = config.port
 // let server = http.createServer()
 let router = require("./router/router")
 
+app.use((req, res, next) => {
+    console.log("=== Incoming Request ===");
+    console.log("Method:", req.method);
+    console.log("URL:", req.url);
+    console.log("Headers:", req.headers);
+    console.log("Query Params:", req.query);
+    if (req.body && Object.keys(req.body).length > 0) {
+        console.log("Body:", req.body);
+    } else {
+        console.log("Body: None");
+    }
+    console.log("========================");
+    next();
+});
+
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
