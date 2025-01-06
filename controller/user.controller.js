@@ -100,6 +100,7 @@ const signIn = async (req, res) => {
 // Send OTP API
 const sendOtp = async (req, res) => {
     try {
+        console.log("yes this api call ")
         const { mobileno } = req.body;
 
         if (!mobileno) {
