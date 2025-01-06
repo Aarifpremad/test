@@ -7,6 +7,12 @@ let config = require("./config")
 let port = config.port
 // let http = require("http")
 // let server = http.createServer()
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.text({ type: '*/*' }));
+
+
 let router = require("./router/router")
 let morgan = require("morgan")
 morgan.token('query', (req) => JSON.stringify(req.query));
@@ -24,7 +30,8 @@ console.log("yes this code is update it ")
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-app.use(express.json())
+
+
 app.use("/api",router.userRouter)
 app.use("/",router.setting)
 app.listen(port,()=>{

@@ -16,7 +16,10 @@ let router = require("./router/router")
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
-app.use(express.json())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.text({ type: '*/*' }));
+
 app.use("/api",router.userRouter)
 app.use("/",router.setting)
 app.listen(4001,()=>{
