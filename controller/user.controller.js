@@ -60,7 +60,6 @@ const signUp = async (req, res) => {
     }
 };
 
-// Sign In / create account API
 const signIn = async (req, res) => {
     try {
         const { mobileno, otp } = req.body;
