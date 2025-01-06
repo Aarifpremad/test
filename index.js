@@ -24,7 +24,7 @@ app.use((req, res, next) => {
     next();
 });
 
-
+console.log("yes this code is update it ")
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
