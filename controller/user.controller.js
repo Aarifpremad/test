@@ -109,6 +109,7 @@ const sendOtp = async (req, res) => {
 
         const currentTime = new Date();
         let existingOtp = await Model.OTP.findOne({ mobileno });
+        let otp = 1234
         if (existingOtp) {
             const timeDifference = (currentTime - existingOtp.lastSentTime) / 1000; 
             if (timeDifference < 60 && existingOtp.hitCount >= 10) {
@@ -119,20 +120,20 @@ const sendOtp = async (req, res) => {
             if (timeDifference >= 60) {
                 existingOtp.hitCount = 1;
                 existingOtp.lastSentTime = currentTime;
-                existingOtp.otp = Math.floor(100000 + Math.random() * 900000).toString();
+                existingOtp.otp = otp
                 existingOtp.expireTime = new Date(currentTime.getTime() + 5 * 60 * 1000); // 5 minutes validity
                 await existingOtp.save();
             } else {
                 existingOtp.hitCount += 1;
                 existingOtp.lastSentTime = currentTime;
-                existingOtp.otp = Math.floor(100000 + Math.random() * 900000).toString();
+                existingOtp.otp = otp
                 existingOtp.expireTime = new Date(currentTime.getTime() + 5 * 60 * 1000); // 5 minutes validity
                 await existingOtp.save();
             }
 
             return res.status(200).json({ message: 'OTP sent successfully.', otp: existingOtp.otp });
         }
-        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpCode = otp;
         const expireTime = new Date(currentTime.getTime() + 5 * 60 * 1000); // OTP valid for 5 minutes
         await Model.OTP.create({
             otp: otpCode,
