@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const Model = require('../models/model'); // Adjust the path based on your folder structure
 
 const authenticateToken = async (req, res, next) => {
-    const token = req.header('token')?.split(' ')[1]; // Extract the token from the 'Authorization' header
+    const token = req.header('token'); // Extract the token from the 'Authorization' header
     if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
 
     try {

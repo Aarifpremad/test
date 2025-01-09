@@ -26,7 +26,6 @@ app.use(
     )
 );
 
-console.log("yes this code is update it ")
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
