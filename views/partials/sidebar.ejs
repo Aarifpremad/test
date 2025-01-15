@@ -1,0 +1,102 @@
+<aside class="sidebar">
+    <ul>
+        <li><a href="/admin" class="<%= page === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
+        <li><a href="/userlist" class="<%= page === 'users' ? 'active' : '' %>">User Management</a></li>
+        <li><a href="/paymenthistory" class="<%= page === 'paymenthistory' ? 'active' : '' %>">Payment History</a></li>
+        <li><a  href="/betting-orders" class="<%= page === 'orderHistory' ? 'active' : '' %>">Betting Orders</a></li>
+        <li><a  href="/rooms-history" class="<%= page === 'roomsHistory' ? 'active' : '' %>">Rooms/games History</a></li>
+        <li>
+            <a href="#" class="Tournament-toggle">Tournament</a>
+            <ul class="Tournament-dropdown" style="display: none;" >
+                <li><a href="/tournament" class="<%= page === 'tournament-create' ? 'active' : '' %>">Tournament create </a></li>
+                <li><a href="#" >Tournament list</a></li>
+            </ul> 
+        </li>
+        <li>
+            <a href="#" class="pool-toggle">Pools</a>
+            <ul class="pool-dropdown" style="display: none;" >
+                <li><a href="/pool" >Pools create </a></li>
+                <li><a href="#" >Pools list</a></li>
+            </ul>
+        </li>         
+        <li>
+            <a href="#" class="boot-toggle">Bot Management</a>
+            <ul class="boot-dropdown" style="display: none;" >
+                <li><a href="/boot"  class="<%= page === 'bots-create' ? 'active' : '' %>">Bots create </a></li>
+                <li><a href="/botlist" class="<%= page === 'botslist' ? 'active' : '' %>">Bots list</a></li>
+            </ul>
+        </li>
+        <li><a href="/admin/support" class="<%= page == 'support' ? 'active' : '' %>">Enquiry Mangment</a></li>
+        <li>
+            <a href="#" class="settings-toggle">Settings</a>
+            <ul class="settings-dropdown" style="display: none;" >
+                <li><a href="/speenwheel" class="<%= page === 'spin' ? 'active' : '' %>">Spin Wheel</a></li>
+                <li><a href="/management" class="<%= page === 'management' ? 'active' : '' %>">Management</a></li>
+                <li><a href="/content-notification" class="<%= page == 'content-notification' ? 'active' : '' %>">Content</a></li>
+                <li><a href="/notification" class="<%= page == 'notification' ? 'active' : '' %>">Notification</a></li>
+            </ul>
+        </li>
+    </ul>
+</aside>
+
+<script>
+    // Add toggle functionality for settings dropdown
+    document.addEventListener('DOMContentLoaded', () => {
+        const settingsToggle = document.querySelector('.settings-toggle');
+        const settingsDropdown = document.querySelector('.settings-dropdown');
+
+        if (settingsToggle && settingsDropdown) {
+            settingsToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isVisible = settingsDropdown.style.display === 'block';
+                settingsDropdown.style.display = isVisible ? 'none' : 'block';
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const settingsToggle = document.querySelector('.boot-toggle');
+        const settingsDropdown = document.querySelector('.boot-dropdown');
+
+        if (settingsToggle && settingsDropdown) {
+            settingsToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isVisible = settingsDropdown.style.display === 'block';
+                settingsDropdown.style.display = isVisible ? 'none' : 'block';
+            });
+        }
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const settingsToggle = document.querySelector('.Tournament-toggle');
+        const settingsDropdown = document.querySelector('.Tournament-dropdown');
+
+        if (settingsToggle && settingsDropdown) {
+            settingsToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isVisible = settingsDropdown.style.display === 'block';
+                settingsDropdown.style.display = isVisible ? 'none' : 'block';
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const settingsToggle = document.querySelector('.pool-toggle');
+        const settingsDropdown = document.querySelector('.pool-dropdown');
+
+        if (settingsToggle && settingsDropdown) {
+            settingsToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isVisible = settingsDropdown.style.display === 'block';
+                settingsDropdown.style.display = isVisible ? 'none' : 'block';
+            });
+        }
+    });
+</script>

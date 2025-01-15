@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <style>
+        /* Sidebar and Main Layout Styling */
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            background-color: #f4f7fc;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-left: 20px;
+        }
+
+        /* Table Styling */
+        .dataTables_wrapper .dataTables_length, 
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 10px;
+        }
+
+        .dt-buttons {
+            margin-bottom: 10px;
+        }
+
+        .dataTables_paginate {
+            margin-top: 20px;
+        }
+
+        table.dataTable thead {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        .view-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-button:hover {
+            background-color: #218838;
+        }
+
+        /* Responsive Adjustment */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .dataTables_wrapper {
+                margin-top: 20px;
+            }
+        }
+
+        /* UI Improvement for Filters */
+        .filter-container {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-container label {
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .filter-container select, .filter-container input {
+            padding: 6px 10px;
+            margin-right: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+
+    <div class="main-container">
+        <!-- Include Sidebar -->
+        <%- include('partials/sidebar', { page: 'paymenthistory' }) %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h3>Transaction History</h3>
+
+            <!-- Filter Section -->
+            <div class="filter-container">
+                <label for="typeFilter">Filter by Type: </label>
+                <select id="typeFilter">
+                    <option value="">All</option>
+                    <option value="game">Game</option>
+                    <option value="spin">Spin</option>
+                    <option value="deposit">Deposit</option>
+                    <option value="withdraw">withdraw</option>
+                    <option value="referral">Referral</option>
+                </select>
+                <label for="userIdFilter">Filter by User ID: </label>
+                <input type="text" id="userIdFilter" placeholder="Enter User ID" />
+            </div>
+
+            <!-- Data Table Section -->
+            <div class="table-container">
+                <table id="transactionTable" class="display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>User ID</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Current Balance</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#transactionTable').DataTable({
+                serverSide: true,
+                processing: true,
+                pageLength: 10,  // Default to 10 records per page
+                dom: 'lBfrtip',  // 'l' - Show entries, 'B' - Buttons, 'f' - Filter, 'r' - Processing, 't' - Table, 'i' - Info, 'p' - Pagination
+                buttons: [
+                    'excelHtml5', 'pdfHtml5'  // Export buttons for Excel and PDF
+                ],
+                ajax: function(data, callback, settings) {
+                    const searchText = settings.search ? settings.search.value : '';
+                    const typeFilter = $('#typeFilter').val();
+                    const userIdFilter = $('#userIdFilter').val();
+                    const limit = data.length || 10;  
+                    const page = Math.floor(data.start / limit) + 1;  
+                    const orderColumn = (settings.order && settings.order[0]) ? settings.columns[settings.order[0].column].data : 'createdAt';
+                    const orderDir = (settings.order && settings.order[0]) ? settings.order[0].dir : 'desc';
+    
+                    $.ajax({
+                        url: '/api/transactions',
+                        method: 'GET',
+                        data: {
+                            search: searchText,
+                            type: typeFilter,
+                            userId: userIdFilter,
+                            limit: limit,
+                            page: page,
+                            orderColumn: orderColumn,
+                            orderDir: orderDir,
+                        },
+                        success: function(response) {
+                            if (response && response.transactions && Array.isArray(response.transactions)) {
+                                callback({
+                                    draw: settings.draw,
+                                    recordsTotal: response.totalRecords,
+                                    recordsFiltered: response.filteredRecords,
+                                    data: response.transactions.map(function(transaction) {
+                                        return [
+                                            transaction._id,
+                                            transaction.userId,
+                                            transaction.type,
+                                            `$${transaction.amount}`,
+                                            `$${transaction.currentbalance}`,
+                                            transaction.status,
+                                            new Date(transaction.createdAt).toLocaleString(),
+                                        ];
+                                    })
+                                });
+                            } else {
+                                callback({
+                                    draw: settings.draw,
+                                    recordsTotal: 0,
+                                    recordsFiltered: 0,
+                                    data: []
+                                });
+                            }
+                        },
+                        error: function(xhr, error, code) {
+                            callback({
+                                draw: settings.draw,
+                                recordsTotal: 0,
+                                recordsFiltered: 0,
+                                data: []
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Event listener to reload table on filter change
+            $('#typeFilter, #userIdFilter').change(function() {
+                table.ajax.reload();
+            });
+        });
+    </script>    
+</body>
+</html>

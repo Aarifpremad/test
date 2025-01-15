@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const Model = require('../models/model'); // Adjust the path based on your folder structure
 
+// main file to io import
+
 const authenticateToken = async (req, res, next) => {
     const token = req.header('token'); // Extract the token from the 'Authorization' header
     if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
@@ -19,4 +21,20 @@ const authenticateToken = async (req, res, next) => {
     }
 };
 
-module.exports = authenticateToken;
+let socketauth = (socket, next) => {
+    const token = socket.handshake.query.token;
+    if (!token) {
+      return next(new Error('Authentication error'));
+    }
+    
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        console.log(err);
+        socket.emit('unauthorized', { message: 'Invalid token' });
+        return;
+      }
+      socket.user = decoded;
+      next();
+    });
+};
+module.exports = {authenticateToken, socketauth};

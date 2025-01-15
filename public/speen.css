@@ -1,0 +1,83 @@
+.settings-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.settings-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: left;
+    color: #343a40;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.prize-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.prize-item input[type="text"],
+.prize-item input[type="number"] {
+    width: 40%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.prize-item button {
+    padding: 8px 12px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.prize-item button:hover {
+    background-color: #c82333;
+}
+
+/* Buttons Container Styling */
+.buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.add-prize-button,
+.save-prize-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+/* Add Button Styling */
+.add-prize-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.add-prize-button:hover {
+    background-color: #218838;
+}
+
+/* Save Button Styling */
+.save-prize-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.save-prize-button:hover {
+    background-color: #0056b3;
+}

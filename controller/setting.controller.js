@@ -101,6 +101,8 @@ const spinWheel = async (req, res) => {
             }
         });
 
+        const lastTransaction = await Model.Transaction.findOne().sort('-transactionId');
+        transaction.transactionId = lastTransaction ? lastTransaction.transactionId + 1 : 1;
         await transaction.save();
 
 

@@ -100,7 +100,6 @@ const signIn = async (req, res) => {
 // Send OTP API
 const sendOtp = async (req, res) => {
     try {
-        console.log("yes this api call ")
         const { mobileno } = req.body;
 
         if (!mobileno) {
@@ -374,7 +373,64 @@ const deleteEnquiry = async (req, res) => {
 
 
 
+const userlist = async (req, res) => {
+    try {
+        const { search, limit, page, orderColumn, orderDir } = req.query;
+
+        // Parse pagination parameters
+        const limitValue = parseInt(limit) || 10;
+        const pageValue = parseInt(page) || 1;
+        const skip = (pageValue - 1) * limitValue;
+
+        // Build search filter
+        const searchFilter = search
+            ? {
+                  $or: [
+                      { username: { $regex: search, $options: 'i' } },
+                      { email: { $regex: search, $options: 'i' } },
+                      { refercode: { $regex: search, $options: 'i' } },
+                  ],
+              }
+            : {};
+
+        // Build sorting options
+        const columns = ['username', 'refercode', 'email', 'balance'];
+        const sortOptions = {};
+        if (orderColumn && columns[orderColumn]) {
+            sortOptions[columns[orderColumn]] = orderDir === 'asc' ? 1 : -1;
+        } else {
+            sortOptions['createdAt'] = -1;
+        }
+
+        // Query database
+        const users = await Model.User.find(searchFilter)
+            .sort(sortOptions)
+            .skip(skip)
+            .limit(limitValue);
+
+        const totalCount = await Model.User.countDocuments();
+        const filteredCount = await Model.User.countDocuments(searchFilter);
+
+        const formattedData = users.map(user => ({
+            id: user._id,
+            username: user.username,
+            refercode: user.refercode,
+            image: user.image,
+            email: user.email,
+            balance: user.balance,
+        }));
+
+        res.status(200).json({
+            data: formattedData,
+            totalRecords: totalCount,
+            filteredRecords: filteredCount,
+        });
+    } catch (err) {
+        console.error('Error fetching user data:', err);
+        res.status(500).json({ message: 'Failed to fetch user data' });
+    }
+}
 
 
 
-module.exports = { signUp, signIn, sendOtp ,verifyOtp ,getProfile ,deleteAccount , uploadProfileImage,updateProfile ,createEnquiry, getEnquiries, deleteEnquiry};
+module.exports = { signUp, signIn, sendOtp ,verifyOtp ,getProfile ,deleteAccount , uploadProfileImage,updateProfile ,createEnquiry, getEnquiries, deleteEnquiry , userlist};

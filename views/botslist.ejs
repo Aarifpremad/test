@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #saveBtn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        #saveBtn:hover {
+            background-color: #218838;
+        }
+
+        #cancelBtn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        #cancelBtn:hover {
+            background-color: #5a6268;
+        }
+
+        #closeModal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #closeModal:hover {
+            color: red;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+
+        .view-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .view-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+
+    <div class="main-container">
+        <!-- Include Sidebar -->
+        <%- include('partials/sidebar', { page: 'botslist' }) %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h3>Bots List</h3>
+            <div class="table-container">
+                <table id="botsTable" class="display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Bot ID</th>
+                            <th>Bot Name</th>
+                            <th>Nickname</th>
+                            <th>Balance</th>
+                            <th>Profile Picture</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Bot Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Edit Bot</h4>
+                <button id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 15px;">
+                    <label for="botName" style="display: block; font-weight: bold; margin-bottom: 5px;">Bot Name</label>
+                    <input type="text" id="botName" placeholder="Enter Bot Name" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="avatar" style="display: block; font-weight: bold; margin-bottom: 5px;">Profile Picture</label>
+                    <input type="file" id="avatar" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="status" style="display: block; font-weight: bold; margin-bottom: 5px;">Status</label>
+                    <select id="status" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align: right;">
+                <button id="saveBtn">Save</button>
+                <button class="cancel" id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#botsTable').DataTable({
+    serverSide: true,
+    processing: true,
+    dom: 'lBfrtip',
+    buttons: ['excelHtml5', 'pdfHtml5'],
+    pageLength: 10,
+    ajax: function (data, callback) {
+        const limit = data.length;
+        const page = Math.floor(data.start / limit) + 1;
+        const searchValue = data.search.value; // Get the search value from DataTable
+
+        $.ajax({
+            url: '/api/bots',
+            method: 'GET',
+            data: {
+                search: searchValue, // Send the search value to the backend
+                limit,
+                page,
+                orderColumn: data.columns[data.order[0].column].data, // Send the ordered column name
+                orderDir: data.order[0].dir, // Send the order direction
+            },
+            success: function (response) {
+                callback({
+                    draw: data.draw,
+                    recordsTotal: response.totalRecords,
+                    recordsFiltered: response.filteredRecords,
+                    data: response.bots.map(bot => [
+                        bot.numericid,
+                        bot.username,
+                        bot.nickname || 'N/A',
+                        bot.balance,
+                        bot.profilePic ? `<img src="${bot.profilePic}" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A',
+                        bot.status ? 'Active' : 'Inactive',
+                        new Date(bot.createdAt).toLocaleString(),
+                        `<button class="view-button edit-btn" data-id="${bot.numericid}">Edit</button>
+                         <button class="delete-button delete-btn" data-id="${bot.numericid}">Delete</button>`
+                    ])
+                });
+            }
+        });
+    }
+});
+
+            // Handle Edit button click
+            $(document).on('click', '.edit-btn', function () {
+                const botId = $(this).data('id');
+                $.ajax({
+                    url: `/api/bots/${botId}`,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response && response.bot) {
+                            $('#botName').val(response.bot.username);
+                            $('#status').val(response.bot.status ? 'active' : 'inactive');
+                            $('#editModal').data('botId', botId).show();
+                        }
+                    }
+                });
+            });
+
+            // Handle Save Button Click
+            $('#saveBtn').on('click', function () {
+                const botId = $('#editModal').data('botId');
+                const botName = $('#botName').val();
+                const status = $('#status').val();
+
+                var formData = new FormData();
+                formData.append('username', botName);
+                formData.append('status', status === 'active');
+
+                const avatar = $('#avatar')[0].files[0];
+                if (avatar) formData.append('avatar', avatar);
+
+                $.ajax({
+                    url: `/api/bots/${botId}`,
+                    method: 'PUT',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function () {
+                        alert('Bot updated successfully!');
+                        $('#editModal').hide();
+                        table.ajax.reload();
+                    },
+                    error: function () {
+                        alert('Failed to update the bot!');
+                    }
+                });
+            });
+
+            // Handle Delete Button Click
+            $(document).on('click', '.delete-btn', function () {
+                const botId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this bot?')) {
+                    $.ajax({
+                        url: `/api/bots/${botId}`,
+                        method: 'DELETE',
+                        success: function (response) {
+                            alert(response.message || 'Bot deleted successfully!');
+                            table.ajax.reload();
+                        },
+                        error: function () {
+                            alert('Failed to delete the bot!');
+                        }
+                    });
+                }
+            });
+
+            // Close Modal
+            $('#closeModal, #cancelBtn').on('click', function () {
+                $('#editModal').hide();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -4,9 +4,9 @@ let Router = express.Router();
 // Import controllers
 // const { signUp, signIn, sendOtp, verifyOtp ,uploadProfileImage ,deleteAccount , getProfile ,updateProfile } = require("../controller/user.controller");
 const UserController= require("../controller/user.controller");
-let authenticate = require("../service/auth")
+let authenticate = require("../service/auth").authenticateToken;
 const transaction = require("../controller/usertranscation.controller")
-// User routes
+// User adminroutes
 Router.post("/signup", UserController.signUp);
 Router.post("/signin", UserController.signIn);
 Router.post("/send-otp", UserController.sendOtp);
@@ -24,7 +24,7 @@ Router.post('/enquiries/:id', authenticate, UserController.deleteEnquiry); // De
 
 
 Router.get("/user/transaction",authenticate,  transaction.userTransactions);
-Router.post("/user/transaction/credit",authenticate,  transaction.credit);
+Router.post("/user/transaction/withdraw",authenticate,  transaction.withdraw);
 Router.post("/user/transaction/deposit",authenticate,  transaction.deposit);
 
 module.exports = Router;

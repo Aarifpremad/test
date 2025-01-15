@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <header>
+        <h1>Score Bnavo</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="/dashboard" class="<%= activeTab === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
+                <li><a href="/userlist" class="<%= activeTab === 'users' ? 'active' : '' %>">Users</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Analytics</a></li>
+                <li><a href="#">Support</a></li>
+            </ul>
+        </aside>
+
+        <div class="main-content">
+            <%- body %>
+        </div>
+    </div>
+</body>
+</html>

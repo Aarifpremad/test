@@ -1,6 +1,6 @@
 let express = require("express");
 let Router = express.Router();
-let authenticate = require("../service/auth")
+let authenticate = require("../service/auth").authenticateToken;
 
 let settingcontroler = require("../controller/setting.controller")
 

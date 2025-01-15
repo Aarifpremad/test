@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for graph -->
+</head>
+<body>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+
+    <div class="main-container">
+        <!-- Include Sidebar -->
+        <%- include('partials/sidebar', { page: 'dashboard' }) %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <h3>Total Users</h3>
+                    <a href="/userlist"><p id="total-users">--</p></a>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Online Users</h3>
+                    <p id="total-users">--</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Today New Users</h3>
+                    <p id="new-users">--</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Total Revenue</h3>
+                    <p id="total-revenue">--</p>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Total Commissions</h3>
+                    <p id="total-commissions">--</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Total Deposit</h3>
+                    <p id="total-commissions">--</p>
+                </div>      
+                <div class="dashboard-card">
+                    <h3>Total widrawal</h3>
+                    <p id="total-commissions">--</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Total Referral amount</h3>
+                    <p id="total-commissions">--</p>
+                </div>  
+                <div class="dashboard-card">
+                    <h3>Active Tournament</h3>
+                    <p id="total-commissions">--</p>
+                </div>  
+            </div>
+
+            <!-- Graph and Top Users Section -->
+            <div class="graph-users-container">
+                <!-- Graph Section -->
+                <div class="graph-container">
+                    <h3>User Statistics</h3>
+                    <canvas id="user-stats-chart"></canvas>
+                </div>
+
+                <!-- Top Users Section -->
+                <div class="top-users-container">
+                    <h3>Recent Users</h3>
+                    <div id="top-users">
+                        <!-- User details dynamically populated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Integration Example
+        async function fetchDashboardData() {
+            try {
+                const response = await fetch('/api/dashboard-data'); // Update this endpoint as per your backend API
+                const data = await response.json();
+
+                // Update dashboard cards
+                document.getElementById('total-users').textContent = data.totalUsers;
+                document.getElementById('total-revenue').textContent = `${data.totalRevenue}`;
+                document.getElementById('new-users').textContent = data.newUsers;
+                document.getElementById('total-commissions').textContent = data.totalCommissions;
+
+                // Update graph
+                updateGraph(data.monthlyUserStats);
+
+                // Update top users
+                updateTopUsers(data.topUsers);
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+            }
+        }
+
+        // Update Graph
+        function updateGraph(monthlyUserStats) {
+            const ctx = document.getElementById('user-stats-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlyUserStats.labels,
+                    datasets: [{
+                        label: 'Users (Monthly)',
+                        data: monthlyUserStats.data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                    },
+                },
+            });
+        }
+
+        // Update Top Users
+        function updateTopUsers(topUsers) {
+            const topUsersContainer = document.getElementById('top-users');
+            topUsersContainer.innerHTML = ''; // Clear existing users
+            topUsers.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.classList.add('user-card');
+                userCard.innerHTML = `
+                    <img src="${user.image}" alt="image" class="user-image">
+                    <p><strong>${user.username}</strong></p>
+                    <p>Balance: ${user.balance}</p>
+                `;
+                topUsersContainer.appendChild(userCard);
+            });
+        }
+
+        fetchDashboardData();
+    </script>
+</body>
+</html>

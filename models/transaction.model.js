@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
+    transactionId: { 
+        type: Number, 
+        required: true, 
+        unique: true 
+    }, // New field for numeric ID
     userId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User', 
@@ -8,7 +13,7 @@ const transactionSchema = new mongoose.Schema({
     }, 
     type: { 
         type: String, 
-        enum: ['game', 'spin', 'deposit', 'credit', 'referral'], 
+        enum: ['game', 'spin', 'withdraw', 'deposit', 'referral'], 
         required: true 
     }, 
     amount: { 
@@ -31,11 +36,24 @@ const transactionSchema = new mongoose.Schema({
     createdAt: { 
         type: Date, 
         default: Date.now 
-    } ,
+    },
     note:{
-        type:String,
-        default :""
+        type: String,
+        default: ""
     }
+});
+
+transactionSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        console.log("yaya")
+        try {
+            const lastTransaction = await this.constructor.findOne().sort('-transactionId');
+            this.transactionId = lastTransaction ? lastTransaction.transactionId + 1 : 1;
+        } catch (err) {
+            return next(err);
+        }
+    }
+    next();
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);

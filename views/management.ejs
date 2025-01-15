@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management</title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .management-container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .management-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .management-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-group button {
+            grid-column: span 2;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <%- include('partials/header') %>
+
+    <div class="main-container">
+        <!-- Include Sidebar -->
+        <%- include('partials/sidebar', { page: 'management' }) %>
+
+        <!-- Main Content -->
+        <div class="management-container">
+            <div class="management-header">
+                <h1>Management Settings</h1>
+                <p>Update the commission, referral amounts, bonus, and rewards points.</p>
+            </div>
+            <form class="management-form" id="managementForm">
+                <!-- Commission -->
+                <div class="form-group">
+                    <label for="commission">Commission (%)</label>
+                    <input type="number" id="commission" name="commission" value="<%= settings.commission %>" placeholder="Enter commission percentage" required>
+                </div>
+                <!-- Referral -->
+                <div class="form-group">
+                    <label for="referral">Referral Amount ($)</label>
+                    <input type="number" id="referral" name="referral" value="<%= settings.referral %>" placeholder="Enter referral amount" required>
+                </div>
+                <!-- Bonus -->
+                <div class="form-group">
+                    <label for="bonus">Bonus Amount ($)</label>
+                    <input type="number" id="bonus" name="bonus" value="<%= settings.bonus %>" placeholder="Enter bonus amount" required>
+                </div>
+                <!-- Rewards -->
+                <div class="form-group">
+                    <label for="rewards">loyalty  Rewards</label>
+                    <input type="number" id="rewards" name="rewards" value="<%= settings.rewards %>" placeholder="Enter rewards points" required>
+                </div>
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit">Save Settings</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Handle Form Submission
+        document.getElementById('managementForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const settings = {
+                commission: document.getElementById('commission').value,
+                referral: document.getElementById('referral').value,
+                bonus: document.getElementById('bonus').value,
+                rewards: document.getElementById('rewards').value,
+            };
+
+            fetch('/api/management', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(settings),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Settings updated successfully!');
+                        location.reload(); // Refresh page to show updated values
+                    } else {
+                        alert('Failed to update settings.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

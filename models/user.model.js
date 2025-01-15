@@ -19,14 +19,19 @@ const userSchema = new mongoose.Schema({
     avatar: { type: Number, min: 1, max: 20, default: 1 },
     refuser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     isDeleted: { type: Boolean, default: false },
+
     deletedAt: { type: Date },
     token: { type: String },
-    notification : {type : Boolean ,default :true}
+    notification : {type : Boolean ,default :true},
+    image:{type: String, default: '' },
+    status : { type: String, default: "Active" },
+    walletFrozen : { type: Boolean, default: false },
 }, { timestamps: true });
 
 userSchema.methods.generateAuthToken = function () {
-    const payload = { id: this._id, mobileno: this.mobileno };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '9h' });
+    const payload = { id: this._id, mobileno: this.mobileno , numericid: this.numericid};
+    console.log("payload",payload)
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
     return token;
 };
 

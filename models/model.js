@@ -10,4 +10,17 @@ let Spin = require("./spin.model")
 
 let Transaction = require("./transaction.model")
 
-module.exports = { User, OTP ,Enquiry ,Spin, Transaction};
+let Management = require("./management.model")
+
+let Content = require("./content.model")
+
+let Notification = require("./notification.model")
+
+let Order = require("./order.model");
+
+let Room = require("./room.model");
+
+let Bot = require("./bot.model");
+
+
+module.exports = { User, OTP ,Enquiry ,Spin, Transaction  ,Management , Content ,Notification , Order , Room,Bot};

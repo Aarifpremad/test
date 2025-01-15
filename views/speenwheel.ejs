@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin Wheel Settings</title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="/speen.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="main-container">
+        <%- include('partials/sidebar', { page: 'spin' }) %>
+        <div class="main-content">
+            <div class="settings-container">
+                <h2>Spin Wheel Settings</h2>
+
+                <div id="prize-list">
+                    <!-- Prize items will be dynamically added here -->
+                </div>
+                    <div class="buttons-container">
+                        <button class="save-prize-button" onclick="savePrizes()">Save</button>
+                        <button class="add-prize-button" onclick="addPrize()">Add Prize</button>
+                    </div>
+         </div>
+
+    <script>
+        const prizeList = document.getElementById('prize-list');
+
+        // Fetch existing prizes from the server
+        async function fetchPrizes() {
+            const response = await fetch('/api/prizes');
+            const prizes = await response.json();
+            prizes.forEach(prize => {
+                const prizeItem = document.createElement('div');
+                prizeItem.classList.add('prize-item');
+                prizeItem.innerHTML = `
+                    <input type="number" value="${prize.amount}" placeholder="Prize Name">
+                    <input type="number" value="${prize.percentage}" placeholder="Percentage">
+                    <button onclick="removePrize(this)">Delete</button>
+                `;
+                prizeList.appendChild(prizeItem);
+            });
+        }
+
+        // Add a new prize item
+        function addPrize() {
+            const prizeItem = document.createElement('div');
+            prizeItem.classList.add('prize-item');
+            prizeItem.innerHTML = `
+                <input type="number" placeholder="Prize Name">
+                <input type="number" placeholder="Percentage">
+                <button onclick="removePrize(this)">Delete</button>
+            `;
+            prizeList.appendChild(prizeItem);
+        }
+
+        // Remove a prize item
+        function removePrize(button) {
+            const prizeItem = button.parentElement;
+            prizeList.removeChild(prizeItem);
+        }
+
+        // Save prizes to the server
+        async function savePrizes() {
+            const prizes = Array.from(prizeList.children).map(item => {
+                return {
+                    amount: item.querySelector('input[type="number"]').value,
+                    percentage: parseFloat(item.querySelector('input[type="number"]').value),
+                };
+            });
+
+            await fetch('/api/prizes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(prizes),
+            });
+
+            alert('Prizes saved successfully!');
+        }
+
+        // Load prizes on page load
+        fetchPrizes();
+    </script>
+</body>
+</html>

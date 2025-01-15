@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Tournament</title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="/speen.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section h2 {
+            color: #444;
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .form-group button {
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .dynamic-fields {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .prize-distribution-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .prize-distribution-table th,
+        .prize-distribution-table td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .prize-distribution-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .prize-distribution-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .add-button,
+        .remove-button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .add-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+
+        .add-button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .remove-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .remove-button:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .tooltip {
+            font-size: 12px;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="main-container">
+        <%- include('partials/sidebar', { page: 'tournament-create' }) %>
+        <div class="main-content">
+            <h1>Create Ludo Tournament</h1>
+            <form id="tournamentForm" action="/create-tournament" method="POST">
+                <!-- Tournament Details -->
+                <div class="form-section">
+                    <h2>Tournament Details</h2>
+                    <div class="form-group">
+                        <label for="tournamentName">Tournament Name:</label>
+                        <input type="text" id="tournamentName" name="tournamentName" placeholder="Enter tournament name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="tournamentDescription">Description:</label>
+                        <textarea id="tournamentDescription" name="tournamentDescription" placeholder="Enter tournament description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Start Date:</label>
+                        <input type="datetime-local" id="startDate" name="startDate" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date:</label>
+                        <input type="datetime-local" id="endDate" name="endDate" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="gameMode">Game Mode:</label>
+                        <select id="gameMode" name="gameMode" required>
+                            <option value="single">2 Player</option>
+                            <option value="multiplayer">4 Player</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Game Details -->
+                <div class="form-section">
+                    <h2>Game Details</h2>
+                    <div class="form-group">
+                        <label for="entryFee">Entry Fee (per user):</label>
+                        <input type="number" id="entryFee" name="entryFee" placeholder="Enter entry fee" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="maxUsers">Maximum Users:</label>
+                        <input type="number" id="maxUsers" name="maxUsers" placeholder="Enter maximum users" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="roomSize">Room Size:</label>
+                        <input type="number" id="roomSize" name="roomSize" placeholder="Enter players per room" required />
+                    </div>
+                </div>
+
+                <!-- Prize Distribution -->
+                <div class="form-section">
+                    <h2>Prize Distribution</h2>
+                    <table class="prize-distribution-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Prize Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prizeDistribution">
+                            <tr>
+                                <td>1</td>
+                                <td><input type="number" name="rank1" placeholder="Enter amount" required /></td>
+                                <td><button type="button" class="remove-button" onclick="removeRow(this)">Remove</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="add-button" onclick="addRow()">Add Rank</button>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                    <button type="submit" class="add-button" >Create Tournament</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function addRow() {
+            const table = document.getElementById('prizeDistribution');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${table.children.length + 1}</td>
+                <td><input type="number" name="rank${table.children.length + 1}" placeholder="Enter amount" required /></td>
+                <td><button type="button" class="remove-button" onclick="removeRow(this)">Remove</button></td>
+            `;
+            table.appendChild(row);
+        }
+
+        function removeRow(button) {
+            const row = button.closest('tr');
+            row.parentNode.removeChild(row);
+        }
+    </script>
+</body>
+</html>

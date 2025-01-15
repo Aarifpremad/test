@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders History</title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <style>
+        /* Same style as before */
+        .main-container {
+            display: flex;
+            height: 100vh;
+            background-color: #f4f7fc;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            margin-left: 20px;
+            overflow-y: auto;
+        }
+
+        .filter-container {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .filter-container label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .filter-container select, 
+        .filter-container input {
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="main-container">
+        <%- include('partials/sidebar', { page: 'orderHistory' }) %>
+
+        <div class="main-content">
+            <h3>Orders History</h3>
+
+            <!-- Filter Section -->
+            <div class="filter-container">
+                <label for="orderStatusFilter">Filter by Order Status:</label>
+                <select id="orderStatusFilter">
+                    <option value="">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <label for="gameTypeFilter">Filter by Game Type:</label>
+                <select id="gameTypeFilter">
+                    <option value="">All</option>
+                    <option value="ludo">Ludo</option>
+                    <option value="tournament">Tournament</option>
+                </select>
+                <label for="dateFilter">Filter by Date:</label>
+                <input type="date" id="startDate" />
+                <input type="date" id="endDate" />
+            </div>
+
+            <!-- Data Table Section -->
+            <div class="table-container">
+                <table id="ordersTable" class="display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>User ID</th>
+                            <th>Game Type</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#ordersTable').DataTable({
+                serverSide: true,
+                processing: true,
+                pageLength: 10,
+                dom: 'lBfrtip',
+                buttons: [
+                    'excelHtml5', 'pdfHtml5'
+                ],
+                ajax: function(data, callback, settings) {
+                    const searchText = data.search.value || '';
+                    const orderStatus = $('#orderStatusFilter').val();
+                    const gameType = $('#gameTypeFilter').val();
+                    const startDate = $('#startDate').val();
+                    const endDate = $('#endDate').val();
+                    const limit = data.length || 10;
+                    const page = Math.floor(data.start / limit) + 1;
+                    const orderColumn = data.columns[data.order[0].column].data || 'createdAt';
+                    const orderDir = data.order[0].dir || 'desc';
+
+                    $.ajax({
+                        url: '/api/orders',
+                        method: 'GET',
+                        data: {
+                            search: searchText,
+                            orderStatus,
+                            gameType,
+                            startDate,
+                            endDate,
+                            limit,
+                            page,
+                            orderColumn,
+                            orderDir,
+                        },
+                        success: function(response) {
+                            callback({
+                                draw: settings.draw,
+                                recordsTotal: response.totalRecords,
+                                recordsFiltered: response.filteredRecords,
+                                data: response.orders.map(order => [
+                                    order.orderId,
+                                    order.userId,
+                                    order.gameType,
+                                    order.status,
+                                    `$${order.amount}`,
+                                    new Date(order.createdAt).toLocaleString(),
+                                ])
+                            });
+                        },
+                        error: function() {
+                            callback({
+                                draw: settings.draw,
+                                recordsTotal: 0,
+                                recordsFiltered: 0,
+                                data: []
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('#orderStatusFilter, #gameTypeFilter, #startDate, #endDate').change(function() {
+                table.ajax.reload();
+            });
+        });
+    </script>
+</body>
+</html>
