@@ -376,13 +376,10 @@ const deleteEnquiry = async (req, res) => {
 const userlist = async (req, res) => {
     try {
         const { search, limit, page, orderColumn, orderDir } = req.query;
-
-        // Parse pagination parameters
         const limitValue = parseInt(limit) || 10;
         const pageValue = parseInt(page) || 1;
         const skip = (pageValue - 1) * limitValue;
 
-        // Build search filter
         const searchFilter = search
             ? {
                   $or: [
@@ -393,16 +390,10 @@ const userlist = async (req, res) => {
               }
             : {};
 
-        // Build sorting options
-        const columns = ['username', 'refercode', 'email', 'balance'];
         const sortOptions = {};
-        if (orderColumn && columns[orderColumn]) {
-            sortOptions[columns[orderColumn]] = orderDir === 'asc' ? 1 : -1;
-        } else {
-            sortOptions['createdAt'] = -1;
-        }
+        if (orderColumn) sortOptions[orderColumn] = orderDir === 'asc' ? 1 : -1;
+        else sortOptions['createdAt'] = -1;
 
-        // Query database
         const users = await Model.User.find(searchFilter)
             .sort(sortOptions)
             .skip(skip)
@@ -419,7 +410,9 @@ const userlist = async (req, res) => {
             email: user.email,
             balance: user.balance,
         }));
-
+        console.log({
+            totalRecords: totalCount,
+            filteredRecords: filteredCount,})
         res.status(200).json({
             data: formattedData,
             totalRecords: totalCount,
