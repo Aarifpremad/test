@@ -91,13 +91,6 @@
             transform: scale(1.05);
         }
 
-        .dynamic-fields {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
         .prize-distribution-table {
             width: 100%;
             margin-top: 20px;
@@ -158,11 +151,6 @@
             transform: scale(1.05);
         }
 
-        .tooltip {
-            font-size: 12px;
-            color: #888;
-        }
-
         @media (max-width: 768px) {
             .main-content {
                 padding: 20px;
@@ -175,6 +163,61 @@
             }
         }
     </style>
+
+<style>
+    .prize-distribution-table input[type="text"],
+    .prize-distribution-table select {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background-color: #f9f9f9;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+    .prize-distribution-table input[type="text"]:focus,
+    .prize-distribution-table select:focus {
+        border-color: #007bff;
+        background-color: #fff;
+        outline: none;
+    }
+
+    .prize-distribution-table td {
+        vertical-align: middle;
+    }
+
+    .prize-distribution-table .remove-button {
+        padding: 8px 15px;
+        font-size: 14px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .prize-distribution-table .remove-button:hover {
+        background-color: #c82333;
+        transform: scale(1.05);
+    }
+
+    .add-button {
+        margin-top: 10px;
+    }
+
+    .room-size-inputs {
+    display: flex;
+    gap: 10px; /* Adjust spacing between the inputs */
+}
+
+#minRoomSize, #maxRoomSize {
+    width: 48%; /* Makes both inputs take up 50% of the width each */
+}
+</style>
+
 </head>
 <body>
     <%- include('partials/header') %>
@@ -205,8 +248,8 @@
                     <div class="form-group">
                         <label for="gameMode">Game Mode:</label>
                         <select id="gameMode" name="gameMode" required>
-                            <option value="single">2 Player</option>
-                            <option value="multiplayer">4 Player</option>
+                            <option value="single">Cllasic</option>
+                            <!-- <option value="multiplayer">4 Player</option> -->
                         </select>
                     </div>
                 </div>
@@ -224,7 +267,10 @@
                     </div>
                     <div class="form-group">
                         <label for="roomSize">Room Size:</label>
-                        <input type="number" id="roomSize" name="roomSize" placeholder="Enter players per room" required />
+                        <div class="room-size-inputs">
+                            <input type="number" id="minRoomSize" name="minRoomSize" placeholder="Minimum players per room" required />
+                            <input type="number" id="maxRoomSize" name="maxRoomSize" placeholder="Maximum players per room" required />
+                        </div>
                     </div>
                 </div>
 
@@ -234,25 +280,33 @@
                     <table class="prize-distribution-table">
                         <thead>
                             <tr>
-                                <th>Rank</th>
-                                <th>Prize Amount</th>
-                                <th>Actions</th>
+                                <th style="width: 20%;">Rank</th>
+                                <th style="width: 30%;">Prize Type</th>
+                                <th style="width: 40%;">Prize Value</th>
+                                <th style="width: 10%;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="prizeDistribution">
                             <tr>
-                                <td>1</td>
-                                <td><input type="number" name="rank1" placeholder="Enter amount" required /></td>
+                                <td><input type="text" name="rank[]" placeholder="Rank (e.g., 1)" required /></td>
+                                <td>
+                                    <select name="prizeType[]" required>
+                                        <option value="amount">Amount</option>
+                                        <option value="gift">Gift</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" name="prizeValue[]" placeholder="Enter prize value" required /></td>
                                 <td><button type="button" class="remove-button" onclick="removeRow(this)">Remove</button></td>
                             </tr>
                         </tbody>
                     </table>
+                    
                     <button type="button" class="add-button" onclick="addRow()">Add Rank</button>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="form-actions">
-                    <button type="submit" class="add-button" >Create Tournament</button>
+                    <button type="submit" class="add-button">Create Tournament</button>
                 </div>
             </form>
         </div>
@@ -263,8 +317,14 @@
             const table = document.getElementById('prizeDistribution');
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${table.children.length + 1}</td>
-                <td><input type="number" name="rank${table.children.length + 1}" placeholder="Enter amount" required /></td>
+                <td><input type="text" name="rank[]" placeholder="Rank" required /></td>
+                <td>
+                    <select name="prizeType[]" required>
+                        <option value="amount">Amount</option>
+                        <option value="gift">Gift</option>
+                    </select>
+                </td>
+                <td><input type="text" name="prizeValue[]" placeholder="Enter prize value" required /></td>
                 <td><button type="button" class="remove-button" onclick="removeRow(this)">Remove</button></td>
             `;
             table.appendChild(row);
