@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Pool</title>
+    <title>Create Poll</title>
     <link rel="stylesheet" href="/dashboard.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
@@ -20,7 +20,6 @@
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-left: 240px; /* Adjusted for sidebar */
         }
 
         h1 {
@@ -75,6 +74,36 @@
         .form-actions button:hover {
             background-color: #0056b3;
         }
+
+        /* Thumbnail Styling */
+        .thumbnail-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-top: 10px;
+        }
+
+        .time-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .time-container .form-group {
+            width: 48%; /* Split equally */
+        }
+
+        .slider-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .slider-container input {
+            width: 80%;
+        }
     </style>
 </head>
 <body>
@@ -87,56 +116,136 @@
 
         <!-- Main content area -->
         <div class="main-content">
-            <h1>Create Pool</h1>
-            <form id="poolForm" action="/create-pool" method="POST">
-                <!-- Pool Details -->
+            <h1>Create Poll</h1>
+            <form id="pollForm" action="/create-poll" method="POST" enctype="multipart/form-data">
+                
                 <div class="form-section">
-                    <h2>Pool Details</h2>
+                    <h2>Poll Details</h2>
                     <div class="form-group">
-                        <label for="poolName">Pool Name:</label>
-                        <input type="text" id="poolName" name="poolName" placeholder="Enter pool name" required />
+                        <label for="pollName">Poll Name:</label>
+                        <input type="text" id="pollName" name="pollName" placeholder="Enter poll name" required />
                     </div>
                     <div class="form-group">
-                        <label for="poolDescription">Description:</label>
-                        <textarea id="poolDescription" name="poolDescription" placeholder="Enter pool description" required></textarea>
+                        <label for="pollDescription">Description:</label>
+                        <textarea id="pollDescription" name="pollDescription" placeholder="Enter poll description" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="startTime">Start Date/Time:</label>
+                        <input type="datetime-local" id="startTime" name="startTime" required />
                     </div>
                     <div class="form-group">
-                        <label for="poolType">Pool Type:</label>
-                        <select id="poolType" name="poolType" required>
-                            <option value="open">Open Pool</option>
-                            <option value="closed">Closed Pool</option>
+                        <label for="pollStatus">Status:</label>
+                        <select id="pollStatus" name="pollStatus" required>
+                            <option value="open">Open</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pollType">Poll Type:</label>
+                        <select id="pollType" name="pollType" required>
+                            <option value="2">2 Players</option>
+                            <option value="4">4 Players</option>
                         </select>
                     </div>
                 </div>
-
-                <!-- Participation Details -->
                 <div class="form-section">
-                    <h2>Participation Details</h2>
+                    <h2>Thumbnail</h2>
                     <div class="form-group">
-                        <label for="entryFee">Entry Fee (per user):</label>
-                        <input type="number" id="entryFee" name="entryFee" placeholder="Enter entry fee" required />
+                        <label for="thumbnail">Upload Thumbnail:</label>
+                        <input type="file" id="thumbnail" name="thumbnail" accept="image/*" onchange="previewThumbnail(event)">
+                        <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none;">
                     </div>
+                </div>
+                <!-- Prize Distribution -->
+                <div class="form-section">
+                    <h2>Prize Distribution</h2>
+
+
                     <div class="form-group">
-                        <label for="maxParticipants">Maximum Participants:</label>
-                        <input type="number" id="maxParticipants" name="maxParticipants" placeholder="Enter maximum participants" required />
+                        <label for="entryFee">Entry Fee (in coins):</label>
+                        <input type="number" id="entryFee" name="entryFee" placeholder="Enter entry fee" min="1" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prizeType">Prize Type:</label>
+                        <select id="prizeType" name="prizeType" onchange="togglePrizeField()" required>
+                            <option value="automatic">Automatic</option>
+                            <option value="manual">Manual</option>
+                        </select>
+                    </div>
+                    <!-- Prize Amount (if Manual selected) -->
+                    <div class="form-group" id="manualPrizeGroup" style="display: none;">
+                        <label for="prizeAmount">Prize Amount:</label>
+                        <input type="number" id="prizeAmount" name="prizeAmount" placeholder="Enter prize amount">
                     </div>
                 </div>
 
-                <!-- Pool Rewards -->
+                <!-- Time Limit: Wait Time and Game Duration -->
                 <div class="form-section">
-                    <h2>Rewards</h2>
-                    <div class="form-group">
-                        <label for="rewardAmount">Reward Amount:</label>
-                        <input type="number" id="rewardAmount" name="rewardAmount" placeholder="Enter reward amount" required />
+                    <h2>Time Limit</h2>
+                    <div class="time-container">
+                        <!-- Wait Time -->
+                        <div class="form-group">
+                            <label for="waitTime">Wait Time (in minutes):</label>
+                            <input type="number" id="waitTime" name="waitTime" placeholder="Enter wait time in minutes" min="1" max="60" required />
+                        </div>
+                        <!-- Game Duration -->
+                        <div class="form-group">
+                            <label for="gameDuration">Game Duration (in minutes):</label>
+                            <input type="number" id="gameDuration" name="gameDuration" placeholder="Enter game duration in minutes" min="1" max="120" required />
+                        </div>
                     </div>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="form-actions">
-                    <button type="submit">Create Pool</button>
+                    <button type="submit">Create Poll</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        // Thumbnail Preview Function
+        function previewThumbnail(event) {
+            const thumbnail = document.getElementById('thumbnailPreview');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    thumbnail.style.display = 'block';
+                    thumbnail.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Toggle Prize Amount Field Based on Selection
+        function togglePrizeField() {
+            const prizeType = document.getElementById('prizeType').value;
+            const manualPrizeGroup = document.getElementById('manualPrizeGroup');
+
+            if (prizeType === 'manual') {
+                manualPrizeGroup.style.display = 'block';
+            } else {
+                manualPrizeGroup.style.display = 'none';
+            }
+        }
+
+        // Update Wait Time on Slider Change
+        function updateWaitTime(value) {
+            document.getElementById('waitTime').value = value;
+            document.getElementById('waitTimeDisplay').textContent = value;
+        }
+
+        // Update Game Duration on Slider Change
+        function updateGameDuration(value) {
+            document.getElementById('gameDuration').value = value;
+            document.getElementById('gameDurationDisplay').textContent = value;
+        }
+    </script>
 </body>
 </html>
