@@ -376,9 +376,10 @@ const deleteEnquiry = async (req, res) => {
 const userlist = async (req, res) => {
     try {
         const { search, limit, page, orderColumn, orderDir } = req.query;
-        const limitValue = parseInt(limit) || 10;
+        let limitValue = parseInt(limit) || 10;
         const pageValue = parseInt(page) || 1;
         const skip = (pageValue - 1) * limitValue;
+        limitValue = limitValue < 0 ? 0 : limitValue;
 
         const searchFilter = search
             ? {
@@ -412,7 +413,7 @@ const userlist = async (req, res) => {
         }));
         console.log({
             totalRecords: totalCount,
-            filteredRecords: filteredCount,})
+            filteredRecords: filteredCount,dd:formattedData.length})
         res.status(200).json({
             data: formattedData,
             totalRecords: totalCount,
