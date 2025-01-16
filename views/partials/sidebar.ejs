@@ -15,8 +15,8 @@
         <li>
             <a href="#" class="pool-toggle">Pools</a>
             <ul class="pool-dropdown" style="display: none;" >
-                <li><a href="/pool" >Pools create </a></li>
-                <li><a href="#" >Pools list</a></li>
+                <li><a href="/pool" class="<%= page === 'create-poll' ? 'active' : '' %>">Pools create </a></li>
+                <li><a href="/poll/list" class="<%= page === 'poll-list' ? 'active' : '' %>" >Pools list</a></li>
             </ul>
         </li>         
         <li>

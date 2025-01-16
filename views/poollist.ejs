@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll List</title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .sidebar a {
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #34495e;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table.dataTable {
+            width: 100% !important;
+            margin-bottom: 20px;
+        }
+
+        table th {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+        }
+
+        table td {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-container label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .filter-container input, .filter-container button {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .filter-container button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .filter-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="main-container">
+        <%- include('partials/sidebar', { page: 'poll-list' }) %>
+        <div class="main-content">
+            <h1>Poll List</h1>
+            <div class="filter-container">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate">
+                
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate">
+                
+                <button id="filterButton">Filter</button>
+            </div>
+            <table id="pollTable" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const table = $('#pollTable').DataTable({
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: '/api/poll-list',
+                    type: 'GET',
+                    data: function (d) {
+                        d.startDate = $('#startDate').val();
+                        d.endDate = $('#endDate').val();
+                    },
+                },
+                columns: [
+                    { data: '_id', title: 'ID' },
+                    { data: 'pollName', title: 'Name' },
+                    { data: 'pollDescription', title: 'Description' },
+                    { data: 'startTime', title: 'Start Date' },
+                    { data: 'pollStatus', title: 'Status' },
+                    {
+                        data: '_id',
+                        render: function (data) {
+                            return `
+                                <button onclick="viewPoll('${data}')">View</button>`;
+                        },
+                        orderable: false,
+                        searchable: false,
+                    },
+                ],
+                dom: 'lBfrtip',
+                buttons: [
+                    { extend: 'excel', text: 'Export to Excel' },
+                    { extend: 'pdf', text: 'Export to PDF' },
+                    { extend: 'print', text: 'Print' },
+                ],
+                responsive: true,
+                language: {
+                    search: 'Search Poll:',
+                },
+            });
+
+            $('#filterButton').on('click', function () {
+                table.ajax.reload();
+            });
+        });
+
+        function viewPoll(id) {
+            alert("Upcoming feature!"); // Replace with actual functionality
+        }
+    </script>
+</body>
+</html>
