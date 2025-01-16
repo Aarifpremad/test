@@ -22,5 +22,7 @@ let Room = require("./room.model");
 
 let Bot = require("./bot.model");
 
+let Tournament = require("./tournament.model");
 
-module.exports = { User, OTP ,Enquiry ,Spin, Transaction  ,Management , Content ,Notification , Order , Room,Bot};
+
+module.exports = { User, OTP ,Enquiry ,Spin, Transaction  ,Management , Content ,Notification , Order , Room,Bot,Tournament};

@@ -225,7 +225,7 @@
         <%- include('partials/sidebar', { page: 'tournament-create' }) %>
         <div class="main-content">
             <h1>Create Ludo Tournament</h1>
-            <form id="tournamentForm" action="/create-tournament" method="POST">
+            <form id="tournamentForm" action="/api/create-tournament" method="POST" enctype="multipart/form-data">
                 <!-- Tournament Details -->
                 <div class="form-section">
                     <h2>Tournament Details</h2>
@@ -245,10 +245,16 @@
                         <label for="endDate">End Date:</label>
                         <input type="datetime-local" id="endDate" name="endDate" required />
                     </div>
+                                    
+                <div class="form-group">
+                    <label for="thumbnail">Tournament Thumbnail:</label>
+                    <input type="file" id="thumbnail" name="thumbnail" accept="image/*" required />
+                  </div>
+
                     <div class="form-group">
                         <label for="gameMode">Game Mode:</label>
                         <select id="gameMode" name="gameMode" required>
-                            <option value="single">Cllasic</option>
+                            <option value="cllasic">Cllasic</option>
                             <!-- <option value="multiplayer">4 Player</option> -->
                         </select>
                     </div>
@@ -313,6 +319,49 @@
     </div>
 
     <script>
+        document.getElementById('tournamentForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+    
+            const formData = new FormData(this);
+            const thumbnail = formData.get('thumbnail');
+            const minRoomSize = parseInt(formData.get('minRoomSize'));
+            const maxRoomSize = parseInt(formData.get('maxRoomSize'));
+            const ranks = formData.getAll('rank[]');
+    
+            // Client-side validations
+            if (!thumbnail) {
+                alert('Thumbnail is required');
+                return;
+            }
+            if (minRoomSize > maxRoomSize) {
+                alert('Minimum room size cannot be greater than maximum room size');
+                return;
+            }
+            if (new Set(ranks).size !== ranks.length) {
+                alert('Ranks must be unique');
+                return;
+            }
+    
+            try {
+                // Show a loading spinner or disable the submit button (optional)
+                const response = await fetch('/api/create-tournament', {
+                    method: 'POST',
+                    body: formData,
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    this.reset(); // Reset the form on success
+                } else {
+                    // Display backend validation errors
+                    alert(`Error: ${result.message}`);
+                }
+            } catch (error) {
+                alert(`An error occurred: ${error.message}`);
+            }
+        });
+    
         function addRow() {
             const table = document.getElementById('prizeDistribution');
             const row = document.createElement('tr');
@@ -329,11 +378,38 @@
             `;
             table.appendChild(row);
         }
-
+    
         function removeRow(button) {
             const row = button.closest('tr');
             row.parentNode.removeChild(row);
         }
     </script>
+    
+
+<script>
+    document.getElementById('tournamentForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+  
+      const formData = new FormData(this);
+  
+      try {
+        const response = await fetch('/api/create-tournament', {
+          method: 'POST',
+          body: formData,
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          alert(result.message);
+          this.reset(); // Reset the form
+        } else {
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    });
+  </script>
+  
 </body>
 </html>

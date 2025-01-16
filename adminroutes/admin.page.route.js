@@ -74,5 +74,8 @@ router.get('/tournament', (req, res) => {
 router.get('/pool', (req, res) => {
     res.render('pool', { title: 'pool', page: 'pool' });
 });
+router.get('/tournament/list', (req, res) => {
+    res.render('tournamentlist', { title: 'tournamentlist', page: 'tournamentlist' });
+});
 
 module.exports = router;
