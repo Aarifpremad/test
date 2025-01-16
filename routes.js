@@ -8,7 +8,7 @@ let adminPageRouter = require("./adminroutes/admin.page.route");
 let botsRouter = require("./adminroutes/bots.route");
 let supportRouter = require("./adminroutes/suppot.conntent.notification");
 let tournament = require("./adminroutes/tournament.router");
-
+let poll  = require("./adminroutes/poll.router");
 // Define adminroutes
 router.use("/api",userRouter.userRouter)
 router.use("/",userRouter.setting)
@@ -17,6 +17,7 @@ router.use("/", adminPageRouter);
 router.use("/", botsRouter);
 router.use("/", supportRouter);
 router.use("/", tournament);
+router.use("/", poll);
 
 // You can add more adminroutes here if needed
 

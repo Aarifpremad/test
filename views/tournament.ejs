@@ -341,7 +341,7 @@
                 alert('Ranks must be unique');
                 return;
             }
-    
+            console.log(formData)
             try {
                 // Show a loading spinner or disable the submit button (optional)
                 const response = await fetch('/api/create-tournament', {

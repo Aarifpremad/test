@@ -112,12 +112,12 @@
 
     <div class="main-container">
         <!-- Include the sidebar -->
-        <%- include('partials/sidebar', { page: 'create-pool' }) %>
+        <%- include('partials/sidebar', { page: 'create-poll' }) %>
 
         <!-- Main content area -->
         <div class="main-content">
             <h1>Create Poll</h1>
-            <form id="pollForm" action="/create-poll" method="POST" enctype="multipart/form-data">
+            <form id="pollForm" enctype="multipart/form-data">
                 
                 <div class="form-section">
                     <h2>Poll Details</h2>
@@ -161,8 +161,6 @@
                 <!-- Prize Distribution -->
                 <div class="form-section">
                     <h2>Prize Distribution</h2>
-
-
                     <div class="form-group">
                         <label for="entryFee">Entry Fee (in coins):</label>
                         <input type="number" id="entryFee" name="entryFee" placeholder="Enter entry fee" min="1" required />
@@ -212,7 +210,7 @@
         function previewThumbnail(event) {
             const thumbnail = document.getElementById('thumbnailPreview');
             const file = event.target.files[0];
-
+    
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -222,30 +220,52 @@
                 reader.readAsDataURL(file);
             }
         }
-
+    
         // Toggle Prize Amount Field Based on Selection
         function togglePrizeField() {
             const prizeType = document.getElementById('prizeType').value;
             const manualPrizeGroup = document.getElementById('manualPrizeGroup');
-
+    
             if (prizeType === 'manual') {
                 manualPrizeGroup.style.display = 'block';
             } else {
                 manualPrizeGroup.style.display = 'none';
             }
         }
-
-        // Update Wait Time on Slider Change
-        function updateWaitTime(value) {
-            document.getElementById('waitTime').value = value;
-            document.getElementById('waitTimeDisplay').textContent = value;
-        }
-
-        // Update Game Duration on Slider Change
-        function updateGameDuration(value) {
-            document.getElementById('gameDuration').value = value;
-            document.getElementById('gameDurationDisplay').textContent = value;
-        }
+    
+        // Handle Poll Form Submit
+        document.getElementById('pollForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+    
+            const formData = new FormData(this);
+            const startTime = formData.get('startTime');
+            const startDateObj = new Date(startTime);
+    
+            // Ensure the datetime-local fields have valid values
+            if (isNaN(startDateObj.getTime())) {
+                alert('Please select a valid start date.');
+                return;
+            }
+    
+            // Continue with form submission
+            try {
+                const response = await fetch('/api/create-poll', {
+                    method: 'POST',
+                    body: formData,
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    this.reset(); // Reset the form
+                } else {
+                    alert(`Error: ${result.message}`);
+                }
+            } catch (error) {
+                alert(`An error occurred: ${error.message}`);
+            }
+        });
     </script>
+    
 </body>
 </html>

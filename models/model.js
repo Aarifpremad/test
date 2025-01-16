@@ -24,5 +24,7 @@ let Bot = require("./bot.model");
 
 let Tournament = require("./tournament.model");
 
+let Poll = require("./poll.model");
 
-module.exports = { User, OTP ,Enquiry ,Spin, Transaction  ,Management , Content ,Notification , Order , Room,Bot,Tournament};
+
+module.exports = { User, OTP ,Enquiry ,Spin, Transaction  ,Management , Content ,Notification , Order , Room,Bot,Tournament , Poll};
