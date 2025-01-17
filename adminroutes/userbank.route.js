@@ -3,7 +3,7 @@ const router = express.Router();
 const Bank = require('../models/bank.model');
 
 // Create bank details
-router.post('/api/bank-details', async (req, res) => {
+router.post('/bank-details', async (req, res) => {
   try {
     const {  name, accountNumber, ifscCode, bankName, accountType } = req.body;
 
@@ -37,7 +37,7 @@ router.post('/api/bank-details', async (req, res) => {
 
 
 // Fetch bank details by userId
-router.get('/api/bank-details', async (req, res) => {
+router.get('/bank-details', async (req, res) => {
     try {
       // const { userId } = req.params;
       let userId = req.user.id;
@@ -55,12 +55,12 @@ router.get('/api/bank-details', async (req, res) => {
 
 
 
-  router.delete('/api/bank-details', async (req, res) => {
+router.delete('/api/bank-details', async (req, res) => {
     try {
       const  userId  = req.user.id;
   
       // Find and delete the bank details
-      const deletedBankDetails = await Bank.findByIdAndDelete({  userId });
+      const deletedBankDetails = await Bank.findOneAndDelete({  userId });
       if (!deletedBankDetails) {
         return res.status(404).json({ message: 'Bank details not found' });
       }

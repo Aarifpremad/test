@@ -2,7 +2,8 @@ let express = require("express")
 let router = express.Router();
 
 let Model = require("../models/model");
-
+let authenticateSessionadmin = require("../service/auth").authenticateSessionadmin;
+router.use(authenticateSessionadmin)
 router.route("/admin").get((req, res) => {
     res.render("index", { title: "Dashboard", page: "dashboard" });
 });

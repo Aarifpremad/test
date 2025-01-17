@@ -5,9 +5,18 @@ const path = require('path');
 const fs = require('fs');
 const { Server } = require('socket.io');
 let http = require("http")
+const session = require("express-session");
 
 
 let app = express();
+app.use(
+    session({
+      secret: "your_secret_key", // Replace with a strong secret key
+      resave: false, // Save session only if it is modified
+      saveUninitialized: false, // Don't save uninitialized sessions
+      cookie: { secure: false, maxAge: 1000 * 60 * 60 }, // Adjust cookie options as needed
+    })
+  );
 let server = http.createServer(app)
 const io = new Server(server);
 
@@ -41,6 +50,7 @@ io.use(socketauth);
 io.on('connection', (socket) => {
     socketevents(socket, io);
 });
+
 
 server.listen(port,()=>{
 console.log("server started in port:",port)
