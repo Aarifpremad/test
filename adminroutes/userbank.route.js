@@ -30,7 +30,7 @@ router.post('/api/bank-details', async (req, res) => {
     await bankDetails.save();
     res.status(201).json({ message: 'Bank details added successfully', bankDetails });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: 'An error occurred while adding bank details' });
   }
 });
