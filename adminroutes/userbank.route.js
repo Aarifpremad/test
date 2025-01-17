@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Bank = require('../models/bank.model');
-
+let authenticate = require("../service/auth").authenticateToken;
 // Create bank details
-router.post('/bank-details', async (req, res) => {
+router.post('/bank-details', authenticate, async (req, res) => {
   try {
     const {  name, accountNumber, ifscCode, bankName, accountType } = req.body;
 
@@ -37,7 +37,7 @@ router.post('/bank-details', async (req, res) => {
 
 
 // Fetch bank details by userId
-router.get('/bank-details', async (req, res) => {
+router.get('/bank-details',authenticate, async (req, res) => {
     try {
       // const { userId } = req.params;
       let userId = req.user.id;
@@ -53,7 +53,7 @@ router.get('/bank-details', async (req, res) => {
     }
   });
 
-router.delete('/bank-details', async (req, res) => {
+router.delete('/bank-details',authenticate, async (req, res) => {
     try {
       const  userId  = req.user.id;
   

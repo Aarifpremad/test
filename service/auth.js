@@ -40,14 +40,13 @@ let socketauth = (socket, next) => {
 
 
 const authenticateSessionadmin = (req, res, next) => {
-  console.log(req.session ,"line43");
-  // if(!req.session){
-  //   return res.redirect("/");
-  // }
-  // if (!req.session.admin) {
-  //   return res.redirect("/"); // Redirect if session is missing
-  // }
-  // res.locals.admin = req.session.admin; // Make admin info available to EJS
+  if(!req.session){
+    return res.redirect("/");
+  }
+  if (!req.session.admin) {
+    return res.redirect("/"); 
+  }
+  res.locals.admin = req.session.admin; 
   next();
 };
 
