@@ -52,9 +52,25 @@ router.get('/api/bank-details', async (req, res) => {
       res.status(500).json({ message: 'An error occurred while fetching bank details' });
     }
   });
+
+
+
+  router.delete('/api/bank-details', async (req, res) => {
+    try {
+      const  userId  = req.user.id;
+  
+      // Find and delete the bank details
+      const deletedBankDetails = await Bank.findByIdAndDelete({  userId });
+      if (!deletedBankDetails) {
+        return res.status(404).json({ message: 'Bank details not found' });
+      }
+  
+      res.status(200).json({ message: 'Bank details deleted successfully', deletedBankDetails });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred while deleting bank details' });
+    }
+  });
   
   module.exports = router;
 
-  
-
-module.exports = router;
