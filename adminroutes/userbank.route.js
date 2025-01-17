@@ -53,9 +53,7 @@ router.get('/bank-details', async (req, res) => {
     }
   });
 
-
-
-router.delete('/api/bank-details', async (req, res) => {
+router.delete('/bank-details', async (req, res) => {
     try {
       const  userId  = req.user.id;
   

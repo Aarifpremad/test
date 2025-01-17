@@ -17,7 +17,6 @@ let authenticate = require("./service/auth").authenticateToken;
 router.use("/api",userRouter.userRouter)
 router.use("/", adminRouter);
 
-// router.use("/api",authenticate ,bank);
 
 router.use("/",userRouter.setting)
 router.use("/", adminPageRouter);
@@ -25,6 +24,7 @@ router.use("/", botsRouter);
 router.use("/", supportRouter);
 router.use("/", tournament);
 router.use("/", poll);
+router.use("/api",authenticate ,bank);
 
 // You can add more adminroutes here if needed
 
