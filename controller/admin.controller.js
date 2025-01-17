@@ -10,6 +10,7 @@ let adminlogin =  async (req, res) => {
 
   try {
     // Check if admin exists
+    console.log(email,password);
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(404).json({ message: 'Admin not found' });
