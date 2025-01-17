@@ -5,10 +5,10 @@ const Bank = require('../models/bank.model');
 // Create bank details
 router.post('/api/bank-details', async (req, res) => {
   try {
-    const { userId, name, accountNumber, ifscCode, bankName, accountType } = req.body;
+    const {  name, accountNumber, ifscCode, bankName, accountType } = req.body;
 
     // Check for existing account number
-
+    userId = req.user.id;
     if(name == null || accountNumber == null || ifscCode == null || bankName == null || accountType == null){
         return res.status(400).json({ message: 'All fields are required' });
     }
@@ -37,10 +37,10 @@ router.post('/api/bank-details', async (req, res) => {
 
 
 // Fetch bank details by userId
-router.get('/api/bank-details/:userId', async (req, res) => {
+router.get('/api/bank-details', async (req, res) => {
     try {
-      const { userId } = req.params;
-  
+      // const { userId } = req.params;
+      let userId = req.user.id;
       const bankDetails = await Bank.find({ userId });
       if (!bankDetails || bankDetails.length === 0) {
         return res.status(404).json({ message: 'No bank details found for this user' });
