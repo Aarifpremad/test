@@ -2,9 +2,10 @@ let express = require("express")
 let router = express.Router();
 let Model = require("../models/model");
 const moment = require('moment'); 
-
+let admincontroller = require("../controller/admin.controller")
 router.route("/admin/login").post((req,res)=>{
-    res.status(200).send({status : true ,message : "success"})
+    console.log("admin login",req.body)
+    admincontroller.adminlogin(req,res)
 })
 
 
