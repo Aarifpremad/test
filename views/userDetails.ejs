@@ -19,12 +19,18 @@
             overflow: auto;
         }
 
+        .content{
+            width: 84%;
+            margin-left: 1rem;
+        }
+
         .user-details-container {
-            max-width: 1000px;
+            max-width: 100%;
             padding: 20px;
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 1rem;
         }
 
         .user-details-header {
@@ -151,7 +157,7 @@
                         <%= user.walletFrozen ? 'Unfreeze Wallet' : 'Freeze Wallet' %>
                     </button>
                     <button class="btn-status" onclick="toggleTransactionHistory()">Transaction History</button>
-                    <button class="btn-status" onclick="toggleTransactionHistory()">Beting History</button>
+                    <button class="btn-status" >Beting History</button>
                 </div>
 
                 <!-- Transaction History Section -->
@@ -184,6 +190,107 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <!-- Include SweetAlert2 CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function toggleStatus(userId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to change the user status?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/api/users/toggle-status/${userId}`, {
+                    method: 'PUT'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire('Success!', data.message, 'success');
+                    const statusButton = document.querySelector('.btn-status');
+                    statusButton.textContent = data.user.status === 'Active' ? 'Deactivate Account' : 'Activate Account';
+                })
+                .catch(error => {
+                    Swal.fire('Error!', 'Failed to change status.', 'error');
+                    console.error('Error toggling status:', error);
+                });
+            }
+        });
+    }
+
+    function modifyWallet(userId, action) {
+        Swal.fire({
+            title: 'Enter the amount',
+            input: 'number',
+            inputAttributes: {
+                min: 1
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            preConfirm: (amount) => {
+                if (!amount || isNaN(amount) || amount <= 0) {
+                    Swal.showValidationMessage('Please enter a valid amount.');
+                }
+                return amount;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const endpoint = action === 'credit' ? '/wallet/deposit/' : '/wallet/withdraw/';
+                fetch(`/api/users${endpoint}${userId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: result.value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire('Success!', data.message, 'success');
+                    document.querySelector('.user-info p:nth-child(3)').textContent = `Wallet Balance: $${data.user.balance}`;
+                })
+                .catch(error => {
+                    Swal.fire('Error!', 'Failed to modify wallet.', 'error');
+                    console.error('Error modifying wallet:', error);
+                });
+            }
+        });
+    }
+
+    function toggleFreeze(userId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to toggle wallet freeze?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/api/users/toggle-freeze/${userId}`, {
+                    method: 'PUT'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire('Success!', data.message, 'success');
+                    const freezeButton = document.querySelector('.btn-freeze');
+                    freezeButton.textContent = data.user.walletFrozen ? 'Unfreeze Wallet' : 'Freeze Wallet';
+                })
+                .catch(error => {
+                    Swal.fire('Error!', 'Failed to toggle wallet freeze.', 'error');
+                    console.error('Error freezing/unfreezing wallet:', error);
+                });
+            }
+        });
+    }
+</script>
 
     <script>
         const apiBase = '/api/users';
@@ -242,60 +349,6 @@
                     initializeTransactionTable(); // Initialize DataTable if not already initialized
                 }
             }
-        }
-
-        function toggleStatus(userId) {
-            fetch(`/api/users/toggle-status/${userId}`, {
-                method: 'PUT'
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                const statusButton = document.querySelector('.btn-status');
-                statusButton.textContent = data.user.status === 'Active' ? 'Deactivate Account' : 'Activate Account';
-            })
-            .catch(error => {
-                console.error('Error toggling status:', error);
-            });
-        }
-
-        function modifyWallet(userId, action) {
-            const amount = prompt('Enter the amount to credit/debit:');
-            if (!amount || isNaN(amount) || amount <= 0) {
-                alert('Please enter a valid amount.');
-                return;
-            }
-
-            const endpoint = action === 'credit' ? '/wallet/deposit/' : '/wallet/withdraw/';
-            
-            fetch(`/api/users${endpoint}${userId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                document.querySelector('.user-info p:nth-child(3)').textContent = `Wallet Balance: $${data.user.balance}`;
-            })
-            .catch(error => {
-                console.error('Error modifying wallet:', error);
-            });
-        }
-
-        function toggleFreeze(userId) {
-            fetch(`/api/users/toggle-freeze/${userId}`, {
-                method: 'PUT'
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                const freezeButton = document.querySelector('.btn-freeze');
-                freezeButton.textContent = data.user.walletFrozen ? 'Unfreeze Wallet' : 'Freeze Wallet';
-            })
-            .catch(error => {
-                console.error('Error freezing/unfreezing wallet:', error);
-            });
         }
 
         document.addEventListener("DOMContentLoaded", () => {
