@@ -64,6 +64,9 @@ const tournamentSchema = new mongoose.Schema({
     enum: ['draft', 'published', 'completed'],
     default: 'draft',
   },
+  tournamentid: { 
+    type: String, unique: true, required: true,
+  },
 });
 
 const Tournament = mongoose.model('Tournament', tournamentSchema);

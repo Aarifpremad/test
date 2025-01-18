@@ -65,6 +65,7 @@ const isValidDate = (date) => {
         maxRoomSize: parseInt(maxRoomSize),
         thumbnail: `/uploads/${req.file.filename}`,
         prizes,
+        tournamentid: `T-${Date.now()}`
       });
   
       await newTournament.save();
@@ -85,7 +86,7 @@ const isValidDate = (date) => {
   
       // Search by tournament name
       if (search) {
-        query.tournamentName = { $regex: new RegExp(search, 'i') };
+        query.tournamentName = { $regex: new RegExp(search.value, 'i') };
       }
   
       // Filter by start and end date

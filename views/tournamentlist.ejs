@@ -154,17 +154,17 @@
                     },
                 },
                 columns: [
-                    { data: '_id', title: 'ID' },
+                    { data: 'tournamentid', title: 'ID' },
                     { data: 'tournamentName', title: 'Name' },
                     { data: 'tournamentDescription', title: 'Description' },
                     { data: 'startDate', title: 'Start Date' },
                     { data: 'endDate', title: 'End Date' },
                     { data: 'status', title: 'Status' },
                     {
-                        data: '_id',
+                        data: 'tournamentid',
                         render: function (data) {
                             return `
-                                <button onclick="veiwTournament('${data}')">veiw</button>`;
+                                <button onclick="veiwTournament('${data}')">view</button>`;
                         },
                         orderable: false,
                         searchable: false,

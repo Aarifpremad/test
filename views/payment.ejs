@@ -164,6 +164,7 @@
             var table = $('#transactionTable').DataTable({
                 serverSide: true,
                 processing: true,
+                searching: false,  // Enable search box
                 pageLength: 10,  // Default to 10 records per page
                 dom: 'lBfrtip',  // 'l' - Show entries, 'B' - Buttons, 'f' - Filter, 'r' - Processing, 't' - Table, 'i' - Info, 'p' - Pagination
                 buttons: [
@@ -199,7 +200,7 @@
                                     data: response.transactions.map(function(transaction) {
                                         return [
                                             transaction._id,
-                                            transaction.userId,
+                                            transaction.userId.username,
                                             transaction.type,
                                             `$${transaction.amount}`,
                                             `$${transaction.currentbalance}`,

@@ -50,6 +50,9 @@ const pollSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  poolid: { 
+    type: String, unique: true, required: true,
+  },
 });
 
 const Poll = mongoose.model('Poll', pollSchema);

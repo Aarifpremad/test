@@ -40,7 +40,8 @@ const userTransactions = async (req, res) => {
 
 const deposit = async (req, res) => {
     try {
-        const { amount } = req.body;
+        let { amount } = req.body;
+        amount = parseInt(amount);  
         const userId = req.user._id; 
 
         if (!amount || amount <= 0) {
@@ -200,7 +201,18 @@ try {
         ];
     }
     if (type) query.type = type;
-    if (userId) query.userId = userId;
+
+
+    if (userId) {
+        const user = await models.User.findOne({
+            username: { $regex: userId, $options: 'i' }, // Case-insensitive search for username
+        });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        query.userId = user._id;
+    }
+
 
     // Sorting setup
     const columns = ['type', 'amount', 'currentbalance', 'status', 'createdAt'];
@@ -213,7 +225,7 @@ try {
 
     // Fetch transactions
     console.log(query)
-    const transactions = await models.Transaction.find(query)
+    const transactions = await models.Transaction.find(query).populate('userId', 'username email')
         .sort(sortOptions)
         .skip(skip)
         .limit(limitValue);

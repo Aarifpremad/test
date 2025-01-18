@@ -45,6 +45,7 @@ router.post('/api/create-poll', upload.single('thumbnail'), async (req, res) => 
       waitTime,
       gameDuration,
       thumbnail: thumbnailPath,
+      poolid: `P-${Date.now()}`
     });
 
     await newPoll.save();

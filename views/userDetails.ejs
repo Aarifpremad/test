@@ -145,8 +145,8 @@
                     <button class="btn-status" onclick="toggleStatus('<%= user.id %>')">
                         <%= user.status === 'Active' ? 'Deactivate Account' : 'Activate Account' %>
                     </button>
-                    <button class="btn-credit" onclick="modifyWallet('<%= user.id %>', 'credit')">deposit Wallet</button>
-                    <button class="btn-debit" onclick="modifyWallet('<%= user.id %>', 'debit')">withdraw Wallet</button>
+                    <button class="btn-credit" onclick="modifyWallet('<%= user.id %>', 'credit')">Deposit Wallet</button>
+                    <button class="btn-debit" onclick="modifyWallet('<%= user.id %>', 'debit')">Withdraw Wallet</button>
                     <button class="btn-freeze" onclick="toggleFreeze('<%= user.id %>')">
                         <%= user.walletFrozen ? 'Unfreeze Wallet' : 'Freeze Wallet' %>
                     </button>

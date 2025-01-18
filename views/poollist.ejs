@@ -150,13 +150,13 @@
                     },
                 },
                 columns: [
-                    { data: '_id', title: 'ID' },
+                    { data: 'poolid', title: 'ID' },
                     { data: 'pollName', title: 'Name' },
                     { data: 'pollDescription', title: 'Description' },
                     { data: 'startTime', title: 'Start Date' },
                     { data: 'pollStatus', title: 'Status' },
                     {
-                        data: '_id',
+                        data: 'poolid',
                         render: function (data) {
                             return `
                                 <button onclick="viewPoll('${data}')">View</button>`;
