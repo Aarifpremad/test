@@ -317,7 +317,8 @@
             </form>
         </div>
     </div>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.getElementById('tournamentForm').addEventListener('submit', async function (event) {
             event.preventDefault();
@@ -351,14 +352,15 @@
     
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
+                    Swal.fire('Success!', "successfully create tournament", 'success');
                     this.reset(); // Reset the form on success
                 } else {
                     // Display backend validation errors
-                    alert(`Error: ${result.message}`);
+                    Swal.fire('Success!', "something wrong", 'success');
+
                 }
             } catch (error) {
-                alert(`An error occurred: ${error.message}`);
+                Swal.fire('Success!', "something wrong", 'success');
             }
         });
     
@@ -386,7 +388,7 @@
     </script>
     
 
-<script>
+<!-- <script>
     document.getElementById('tournamentForm').addEventListener('submit', async function (event) {
       event.preventDefault();
   
@@ -400,16 +402,15 @@
   
         const result = await response.json();
         if (response.ok) {
-          alert(result.message);
-          this.reset(); // Reset the form
+        Swal.fire('Success!', "successfully create tournament", 'success');
+          this.reset(); 
         } else {
-          alert(`Error: ${result.message}`);
         }
       } catch (error) {
-        alert(`Error: ${error.message}`);
+        Swal.fire('Success!', "something wrong", 'success');
       }
     });
-  </script>
+  </script> -->
   
 </body>
 </html>

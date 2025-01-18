@@ -204,7 +204,8 @@
             </form>
         </div>
     </div>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Thumbnail Preview Function
         function previewThumbnail(event) {
@@ -256,10 +257,10 @@
     
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
                     this.reset(); // Reset the form
+                    Swal.fire('Success!', "Create Pool", 'success');
                 } else {
-                    alert(`Error: ${result.message}`);
+                    Swal.fire('Success!', "something wrong", 'success');
                 }
             } catch (error) {
                 alert(`An error occurred: ${error.message}`);
