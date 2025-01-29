@@ -59,13 +59,7 @@ header nav ul li a:hover {
     overflow: auto;
 }
 
-/* Sidebar Styles */
-.sidebar {
-    color: white;
-    padding: 20px;
-    overflow-y: auto;
-    /* height: 100vh; */
-}
+
 
 .sidebar ul {
     list-style: none;
@@ -84,6 +78,16 @@ header nav ul li a:hover {
     border-radius: 4px;
     display: block;
     transition: background-color 0.3s;
+}
+
+.sidebar ul li a.bg-primary{
+    background-color: #FEF611 !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+}
+
+.sidebar ul li a.bg-primary:hover{
+    color: #000000 !important;
 }
 
 .sidebar ul li a.active {
@@ -121,9 +125,9 @@ header nav ul li a:hover {
 }
 
 .dashboard-card h3 {
-    font-size: 1.7rem;
+    font-size: 1.4rem;
     margin-bottom: 10px;
-    color: #000000;
+    color: #fef611;
     line-height: 1.4;
     font-weight: 500;
 }
@@ -167,7 +171,6 @@ header nav ul li a:hover {
 }
 
 .graph-container, .top-users-container {
-    width: 48%;
     padding: 20px;
     background: white;
     border-radius: 8px;
@@ -237,22 +240,22 @@ table .user-image {
 }
 
 #dashboard-container .dashboard-card{
-    background: #22c1c3;  
+    background: #22c1c3;
     background: -webkit-linear-gradient(to right, #fdbb2d, #22c1c3);
-    background: linear-gradient(to right, #fdbb2d, #22c1c3); 
+    background: linear-gradient(to right, #931f84, #6200cb);
     padding: 2.5rem;
     color: #000000;
 }
 
 #dashboard-container .dashboard-card a{
     text-decoration: none;
-    color: #000000;
+    color: #ffffff;
     font-size: 1.5rem;
     font-weight: 600;
 }
 
 #dashboard-container .dashboard-card a p{
-    color: #000000;
+    color: #ffffff;
     font-size: 2.2rem;
     font-weight: 700;
     margin-bottom: 0;
@@ -261,7 +264,9 @@ table .user-image {
 
 #sideBar.col-xl-2.col-lg-2.col-md-3.col-sm-4{
     background: #2B1C3B !important;
-    height: 190vh;
+    max-height: 260vh;
+    min-height: 162vh;
+    padding: 0 !important;
 }
 
 .sidebar ul li a:hover{
@@ -277,3 +282,87 @@ table .user-image {
     opacity: 1;
 }
 
+#dashboard-container .dashboard-card p {
+    color: #ffffff;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.list-unstyled.collapse{
+    margin-top: .9rem;
+}
+
+table.table-responsive{
+    padding-top: 1rem;
+}
+
+table.dataTable thead, table.table-responsive thead{
+    background-color: #931f84 !important;
+    color: #ffffff !important;
+    --bs-table-bg: #931f84;
+    --bs-table-striped-bg: #931f84;
+    --bs-table-striped-color: #fff;
+    --bs-table-active-bg: #931f84;
+    --bs-table-active-color: #fff;
+    --bs-table-hover-bg: #931f84;
+    --bs-table-hover-color: #fff;
+    color: #fff;
+    border-color: #931f84;
+}
+
+table.dataTable thead th, table.table-responsive thead th{ 
+    background-color: #931f84 !important;
+    color: #ffffff !important;
+    color: #fff;
+    border-color: #931f84;
+}
+
+.card-header.bg-primary.text-white{
+    background-color: #931f84 !important;
+}
+
+.buttons-excel.buttons-html5{
+    background-color: #931f84 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+}
+
+.buttons-excel.buttons-html5 span{
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+
+#prize-list .prize-item{
+    width: 50%;
+    display: flex;
+    gap: 1rem;
+}
+
+.paginate_button.current{
+    background: #931f84 !important;
+    color: #ffffff !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{
+    color: #ffffff !important;
+}
+
+.dataTables_info{
+    padding-top: 1.7rem !important;
+}
+
+@media (max-width: 768px) {
+    .siteHeader{
+        text-align: center;
+    }
+
+    #sideBar.col-xl-2.col-lg-2.col-md-3.col-sm-4{
+        max-height: max-content;
+        min-height: max-content;
+    }
+}

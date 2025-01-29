@@ -15,14 +15,17 @@
         <%- include('partials/sidebar', { page: 'spin' }) %>
         <div class="main-content">
             <div class="settings-container">
-                <h2>Spin Wheel Settings</h2>
-
-                <div id="prize-list">
-                    <!-- Prize items will be dynamically added here -->
-                </div>
-                <div class="buttons-container">
-                    <button class="save-prize-button" onclick="savePrizes()">Save</button>
-                    <!-- <button class="add-prize-button" onclick="addPrize()">Add Prize</button> -->
+                <div class="row justify-content-start px-4">
+                    <div class="col-lg-8">
+                        <h2 class="mb-4">Spin Wheel Settings</h2>
+                        
+                        <div id="prize-list">
+                            <!-- Prize items will be dynamically added here -->
+                        </div>
+                        <div class="buttons-container">
+                            <button class="save-prize-button" onclick="savePrizes()">Save</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -30,24 +33,63 @@
 
     <script>
         const prizeList = document.getElementById('prize-list');
-
+    
         // Populate prize items with exactly 12 rows from the server data or placeholders
         async function fetchPrizes() {
             const response = await fetch('/api/prizes');
             const prizes = await response.json();
-
+    
             for (let i = 0; i < 12; i++) {
                 const prize = prizes[i] || { title: '', amount: '' }; // Use empty values if no prize data exists
                 const prizeItem = document.createElement('div');
-                prizeItem.classList.add('prize-item');
-                prizeItem.innerHTML = `
-                    <input type="text" value="${prize.title}" placeholder="Prize Title">
-                    <input type="number" value="${prize.amount}" placeholder="Amount">
-                `;
+                prizeItem.classList.add('mb-3');  // Adds margin-bottom for spacing between items
+    
+                // Create a container for each row of inputs
+                const row = document.createElement('div');
+                row.classList.add('row');
+    
+                // Prize Title Label and Input
+                const titleCol = document.createElement('div');
+                titleCol.classList.add('col-md-6');  // 6 columns to fit 2 inputs per row
+                const titleLabel = document.createElement('label');
+                titleLabel.classList.add('form-label');
+                titleLabel.textContent = `Prize Title ${i + 1}:`;
+                const titleInput = document.createElement('input');
+                titleInput.type = 'text';
+                titleInput.value = prize.title;
+                titleInput.placeholder = 'Enter Prize Title';
+                titleInput.classList.add('form-control');
+    
+                // Amount Label and Input
+                const amountCol = document.createElement('div');
+                amountCol.classList.add('col-md-6');  // 6 columns to fit 2 inputs per row
+                const amountLabel = document.createElement('label');
+                amountLabel.classList.add('form-label');
+                amountLabel.textContent = `Amount ${i + 1}:`;
+                const amountInput = document.createElement('input');
+                amountInput.type = 'number';
+                amountInput.value = prize.amount;
+                amountInput.placeholder = 'Enter Amount';
+                amountInput.classList.add('form-control');
+    
+                // Append label and input to their respective columns
+                titleCol.appendChild(titleLabel);
+                titleCol.appendChild(titleInput);
+                amountCol.appendChild(amountLabel);
+                amountCol.appendChild(amountInput);
+    
+                // Append columns to row
+                row.appendChild(titleCol);
+                row.appendChild(amountCol);
+    
+                // Append row to prize item
+                prizeItem.appendChild(row);
+    
+                // Append prize item to prize list
                 prizeList.appendChild(prizeItem);
             }
         }
-
+    
         // Save prizes to the server
         async function savePrizes() {
             const prizes = Array.from(prizeList.children).map(item => {
@@ -56,18 +98,20 @@
                     amount: parseFloat(item.querySelector('input[type="number"]').value) || 0,
                 };
             });
-
+    
             await fetch('/api/prizes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(prizes),
             });
-
+    
             alert('Prizes saved successfully!');
         }
-
+    
         // Load prizes on page load
         fetchPrizes();
     </script>
 </body>
+
+
 </html>

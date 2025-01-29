@@ -46,42 +46,45 @@
 <body>
     <%- include('partials/header') %>
 
-    <div class="main-container">
+    <div class="main-container d-flex">
         <%- include('partials/sidebar', { page: 'roomsHistory' }) %>
 
-        <div class="main-content">
-            <h3>Rooms/Games History</h3>
-
-            <!-- Filter Section -->
-            <div class="filter-container">
-                <label for="gameTypeFilter">Filter by Game Type:</label>
-                <select id="gameTypeFilter">
-                    <option value="">All</option>
-                    <option value="ludo">Ludo</option>
-                    <option value="tournament">Tournament</option>
-                </select>
-                <label for="dateFilter">Filter by Date:</label>
-                <input type="date" id="startDate" />
-                <input type="date" id="endDate" />
-            </div>
-
-            <!-- Data Table Section -->
-            <div class="table-container">
-                <table id="roomsTable" class="display nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Room ID</th>
-                            <th>Game Type</th>
-                            <th>Participants</th>
-                            <th>Winner</th>
-                            <th>Created At</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data will be populated dynamically -->
-                    </tbody>
-                </table>
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12 px-4 py-4">
+            <h3 class="mb-4">Rooms/Games History</h3>
+            
+            <div class="card px-3 py-3">
+    
+                <!-- Filter Section -->
+                <div class="filter-container">
+                    <label for="gameTypeFilter">Filter by Game Type:</label>
+                    <select id="gameTypeFilter">
+                        <option value="">All</option>
+                        <option value="ludo">Ludo</option>
+                        <option value="tournament">Tournament</option>
+                    </select>
+                    <label for="dateFilter">Filter by Date:</label>
+                    <input type="date" id="startDate" />
+                    <input type="date" id="endDate" />
+                </div>
+    
+                <!-- Data Table Section -->
+                <div class="table-container">
+                    <table id="roomsTable" class="display nowrap table-responsive" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Room ID</th>
+                                <th>Game Type</th>
+                                <th>Participants</th>
+                                <th>Winner</th>
+                                <th>Created At</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -107,16 +107,14 @@
     <!-- Include Header -->
     <%- include('partials/header') %>
 
-    <div class="container-fluid">
-        <div class="row">
+        <div class="main-container d-flex">
             <!-- Include Sidebar -->
-            <div class="col-md-3 col-lg-2 bg-light sidebar">
-                <%- include('partials/sidebar', { page: 'paymenthistory' }) %>
-            </div>
+            <%- include('partials/sidebar', { page: 'paymenthistory' }) %>
+
     
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-10">
-                <div class="py-4">
+            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12">
+                <div class="py-4 px-4">
                     <h3 class="mb-4">Transaction History</h3>
     
                     <!-- Filter Section -->
@@ -167,8 +165,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
     
 
     <!-- Scripts -->

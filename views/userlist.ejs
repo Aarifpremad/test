@@ -23,7 +23,6 @@
             overflow-y: auto;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-left: 20px;
         }
 
         /* Table Styling */
@@ -106,32 +105,35 @@
     <!-- Include Header -->
     <%- include('partials/header') %>
 
-    <div class="main-container">
+    <div class="main-container d-flex">
         <!-- Include Sidebar -->
         <%- include('partials/sidebar', { page: 'users' }) %>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <div class="table-container">
-                <table id="userTable" class="display nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Image</th>
-                            <th>User Name</th>
-                            <th>Refer Code</th>
-                            <th>Mobile No</th>
-                            <th>Email</th>
-                            <th>Wallet Balance</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data will be populated dynamically -->
-                    </tbody>
-                </table>
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12 px-4 py-4">
+            <div class="main-content">
+                <div class="table-container">
+                    <table id="userTable" class="display nowrap table-responsive " style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Image</th>
+                                <th>User Name</th>
+                                <th>Refer Code</th>
+                                <th>Mobile No</th>
+                                <th>Email</th>
+                                <th>Wallet Balance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
     </div>
 
     <!-- Scripts -->

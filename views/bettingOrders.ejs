@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/dashboard.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-    <!-- <style>
+    <style>
         /* Same style as before */
         .main-container {
             display: flex;
@@ -42,21 +42,20 @@
             border-radius: 4px;
             margin-right: 15px;
         }
-    </style> -->
+    </style>
 </head>
 <body>
     <%- include('partials/header') %>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
 
+            <!-- Sidebar -->
+            <div class="main-container d-flex">
             <%- include('partials/sidebar', { page: 'orderHistory' }) %>
 
     
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-10">
-                <div class="py-4">
+            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12">
+                <div class="py-4 px-4">
                     <h3 class="mb-4">Orders History</h3>
     
                     <!-- Filter Section -->
@@ -115,9 +114,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    
+
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

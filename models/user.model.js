@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     bonus: { type: Number, default: 0 },
     referbonus: { type: Number, default: 0 },
     refercommission: { type: Number, default: 0 },
-    email: { type: String, unique: true, default: "" },
+    email: { type: String, default: "" },
     dob: { type: String, default: "" },
     state: { type: String },
     city: { type: String },
