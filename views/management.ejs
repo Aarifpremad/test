@@ -58,13 +58,12 @@
     <!-- Include Header -->
     <%- include('partials/header') %>
 
-    <div class="container-fluid">
+    <div class="main-container">
         <!-- Include Sidebar -->
-        <div class="row">
-            <%- include('partials/sidebar', { page: 'management' }) %>
-    
+        <%- include('partials/sidebar', { page: 'management' }) %>
+        <div class="main-content" >
             <!-- Main Content -->
-            <div class="col-lg-10 offset-lg-2">
+            <div class="col-lg-10 offset-lg-2" style="margin-left: 150px;" >
                 <div class="container py-4">
                     <div class="text-center mb-4">
                         <h1 class="display-5">Management Settings</h1>
@@ -72,7 +71,7 @@
                     </div>
                     
                     <form id="managementForm" class="needs-validation" novalidate>
-                        <div class="row g-3">
+                        <div class="row">
                             <!-- Commission -->
                             <div class="col-md-6">
                                 <label for="commission" class="form-label">Commission (%)</label>
@@ -108,7 +107,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
     
