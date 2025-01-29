@@ -25,10 +25,12 @@ let adminlogin =  async (req, res) => {
     // Generate and store JWT
     const token = await admin.generateAuthToken();
     console.log(req.session,"line27");
+   
     req.session.admin = {
       id: admin._id,
       name: admin.name,
       role: admin.role,
+      email : admin.email
     };
     console.log(req.session ,"line29")
 

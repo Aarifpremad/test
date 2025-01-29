@@ -11,7 +11,7 @@ let tournament = require("./adminroutes/tournament.router");
 let poll  = require("./adminroutes/poll.router");
 let bank  = require("./adminroutes/userbank.route");
 let adminprofile  = require("./adminroutes/adminprofile.route");
-
+let apipool = require("./router/tournamentpull.router")
 let authenticate = require("./service/auth").authenticateToken;
 
 // Define adminroutes
@@ -27,6 +27,7 @@ router.use("/", tournament);
 router.use("/", poll);
 router.use("/admin", adminprofile);
 router.use("/api" ,bank);
+router.use("/api" ,apipool);
 
 // You can add more adminroutes here if needed
 

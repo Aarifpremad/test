@@ -67,6 +67,11 @@ const tournamentSchema = new mongoose.Schema({
   tournamentid: { 
     type: String, unique: true, required: true,
   },
+  iscompleted:{
+    type:Boolean,
+    default : false
+  },
+  
 });
 
 const Tournament = mongoose.model('Tournament', tournamentSchema);

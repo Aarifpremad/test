@@ -1,93 +1,68 @@
 let Model = require("../models/model")
 
-lastSpins = [
-    10, 20, 10, 50, 10, 20, 20, 50, 10, 10, 20, 50, 10, 10, 20, 50, 10, 20, 50, 50,
-    10, 10, 20, 50, 10, 20, 50, 10, 20, 20, 50, 10, 10, 20, 50, 50, 10, 20, 50, 10,
-    10, 20, 50, 10, 20, 50, 50, 10, 10, 20, 50, 50, 10, 20, 50, 10, 20, 20, 50, 10,
-    10, 20, 50, 50, 10, 20, 50, 10, 10, 20, 50, 10, 20, 50, 50, 10, 10, 20, 50, 50,
-    10, 20, 50, 10, 20, 20, 50, 10, 10, 20, 50, 50, 10, 20, 50, 10
-];
+const cron = require('node-cron');
 
-// Create or update spin settings
-const setSpinSettings = async (req, res) => {
-    try {
-        const { spins } = req.body; // Array of { amount, percentage }
-
-        if (!spins || !Array.isArray(spins) || spins.length === 0) {
-            return res.status(400).json({ message: 'Invalid input. Provide spin settings.' });
-        }
-
-        const totalPercentage = spins.reduce((sum, spin) => sum + spin.percentage, 0);
-        if (totalPercentage > 100) {
-            return res.status(400).json({ message: 'Total percentage must be 100.' });
-        }
-
-        // Clear existing settings
-        await Model.Spin.deleteMany();
-
-        // Save new settings
-        await Model.Spin.insertMany(spins);
-
-        res.status(200).json({ message: 'Spin settings updated successfully' });
-    } catch (error) {
-        console.error('Error setting spin settings:', error);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
-    }
-};
 
 // Get all spin settings
 const getSpinSettings = async (req, res) => {
     try {
         const spins = await Model.Spin.find();
 
-        res.status(200).json({ message: 'Spin settings retrieved successfully', spins });
+        // Get the current date and time in UTC
+        const now = new Date();
+
+        // Adjust to IST (UTC + 5:30)
+        const IST_OFFSET = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
+        const nowInIST = new Date(now.getTime() + IST_OFFSET);
+
+        // Calculate the next midnight in IST
+        const nextMidnight = new Date(nowInIST);
+        nextMidnight.setDate(nowInIST.getDate() + 1);
+        nextMidnight.setHours(0, 0, 0, 0);
+
+        // Calculate the countdown in milliseconds
+        const countdownMs = nextMidnight - nowInIST;
+
+        // Convert the countdown to hours, minutes, and seconds
+        const hours = Math.floor(countdownMs / (1000 * 60 * 60));
+        const minutes = Math.floor((countdownMs % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((countdownMs % (1000 * 60)) / 1000);
+
+        const countdown = {
+            hours,
+            minutes,
+            seconds,
+        };
+
+        let spincount = req.user.spincount;
+
+        res.status(200).json({ 
+            message: 'Spin settings retrieved successfully', 
+            spins,
+            countdown, // Include the countdown in the response
+            spincount
+        });
     } catch (error) {
         console.error('Error fetching spin settings:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
 
+
+
 const spinWheel = async (req, res) => {
     try {
-        const spins = await Model.Spin.find(); // Fetch spin configuration
-        if (spins.length === 0) {
-            return res.status(400).json({ message: 'Spin settings not configured yet.' });
-        }
-
-        // Total spins in history (up to 100)
-        const totalSpins = lastSpins.length;
-
-        // Calculate actual occurrences of each amount in the last 100 spins
-        const actualFrequencies = {};
-        lastSpins.forEach((amount) => {
-            actualFrequencies[amount] = (actualFrequencies[amount] || 0) + 1;
-        });
-
-        // Calculate weighted probabilities for each amount
-        const weightedAmounts = [];
-        spins.forEach((spin) => {
-            const expectedFrequency = (spin.percentage / 100) * totalSpins;
-            const actualFrequency = actualFrequencies[spin.amount] || 0;
-
-            // Add weight inversely proportional to actual frequency
-            const weight = Math.max(1, expectedFrequency - actualFrequency);
-            for (let i = 0; i < weight; i++) {
-                weightedAmounts.push(spin.amount);
-            }
-        });
-
-        // Randomly select a winning amount from the weighted pool
-        const winningAmount = weightedAmounts[Math.floor(Math.random() * weightedAmounts.length)];
-
-        // Update last spins (limit to last 100)
-        lastSpins.push(winningAmount);
-        if (lastSpins.length > 100) {
-            lastSpins.shift(); // Remove the oldest spin
-        }
+        
+        let winningAmount  = req.body.winningAmount; 
         let userId = req.user._id
-
+        if(!winningAmount){
+            return res.status(400).json({ message: 'Winning amount is required' });
+        }
+        console.log(userId ,winningAmount)
         const user = await Model.User.findById(userId);
-        user.balance += winningAmount;
+        // console.log(user.balance , Number(winningAmount))
+        user.balance += Number(winningAmount);
+        user.spincount -= 1;
         await user.save();
         
         const transaction = new Model.Transaction({
@@ -96,7 +71,6 @@ const spinWheel = async (req, res) => {
             amount: winningAmount,
             currentbalance: user.balance, 
             details: {
-                spins: spins, // Include spin configuration IDs for reference
                 description: 'Spin Wheel Win'
             }
         });
@@ -115,4 +89,19 @@ const spinWheel = async (req, res) => {
     }
 };
 
-module.exports = { setSpinSettings, getSpinSettings, spinWheel };
+cron.schedule('0 0 * * *', 
+    async () => {
+        try {
+
+            await Model.User.updateMany({}, { $set: { spincount: 10 } });
+            console.log("Spin count successfully reset to 1 for all users at midnight IST.");
+        } catch (error) {
+            console.error("Error during spin count reset:", error);
+        }
+    },
+    {
+        timezone: "Asia/Kolkata", 
+    }
+);
+
+module.exports = {  getSpinSettings, spinWheel };

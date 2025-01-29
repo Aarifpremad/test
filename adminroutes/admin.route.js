@@ -60,7 +60,7 @@ router.get('/api/dashboard-data', async (req, res) => {
         const topUsers = await Model.User.find({})
             .sort({ createdAt: -1 }) 
             .limit(4)
-            .select('username balance profilePic'); 
+            .select('username balance avatar'); 
 
         const data = {
             totalUsers,

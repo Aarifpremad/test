@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const spinSchema = new mongoose.Schema({
-    amount: { type: Number, required: true },
-    percentage: { type: Number, required: true },
+    title : { type: String, default: 'Spin' },
+    amount: { type: Number, default: 0 },
 }, { timestamps: true });
 
 const Spin = mongoose.model('Spin', spinSchema);

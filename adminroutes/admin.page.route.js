@@ -72,6 +72,7 @@ router.get('/tournament',authenticateSessionadmin, (req, res) => {
     res.render('tournament', { title: 'tournament', page: 'tournament' });
 });
 router.get('/pool',authenticateSessionadmin, (req, res) => {
+    console.log("yaya")
     res.render('pool', { title: 'pool', page: 'pool' });
 });
 router.get('/tournament/list',authenticateSessionadmin, (req, res) => {

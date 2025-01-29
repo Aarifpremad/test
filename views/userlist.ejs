@@ -116,6 +116,7 @@
                 <table id="userTable" class="display nowrap" style="width:100%">
                     <thead>
                         <tr>
+                            <th>Id</th>
                             <th>Image</th>
                             <th>User Name</th>
                             <th>Refer Code</th>
@@ -188,7 +189,8 @@
                             recordsFiltered: response.filteredRecords,
                             data: response.data.map(function(user) {
                                 return [
-                                    `<img src="${user.image}" class="user-image" alt="${user.username}">`,
+                                    user.numericid,
+                                    `<img src= "/bot/${user.avatar}.png" class="user-image" alt="${user.username}">`,
                                     user.username,
                                     user.refercode,
                                     user.email,

@@ -107,50 +107,69 @@
     <!-- Include Header -->
     <%- include('partials/header') %>
 
-    <div class="main-container">
-        <!-- Include Sidebar -->
-        <%- include('partials/sidebar', { page: 'paymenthistory' }) %>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <h3>Transaction History</h3>
-
-            <!-- Filter Section -->
-            <div class="filter-container">
-                <label for="typeFilter">Filter by Type: </label>
-                <select id="typeFilter">
-                    <option value="">All</option>
-                    <option value="game">Game</option>
-                    <option value="spin">Spin</option>
-                    <option value="deposit">Deposit</option>
-                    <option value="withdraw">withdraw</option>
-                    <option value="referral">Referral</option>
-                </select>
-                <label for="userIdFilter">Filter by User ID: </label>
-                <input type="text" id="userIdFilter" placeholder="Enter User ID" />
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Include Sidebar -->
+            <div class="col-md-3 col-lg-2 bg-light sidebar">
+                <%- include('partials/sidebar', { page: 'paymenthistory' }) %>
             </div>
-
-            <!-- Data Table Section -->
-            <div class="table-container">
-                <table id="transactionTable" class="display nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Transaction ID</th>
-                            <th>User ID</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Current Balance</th>
-                            <th>Status</th>
-                            <th>Created At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data will be populated dynamically -->
-                    </tbody>
-                </table>
+    
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="py-4">
+                    <h3 class="mb-4">Transaction History</h3>
+    
+                    <!-- Filter Section -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="typeFilter" class="form-label">Filter by Type:</label>
+                                    <select id="typeFilter" class="form-select">
+                                        <option value="">All</option>
+                                        <option value="game">Game</option>
+                                        <option value="spin">Spin</option>
+                                        <option value="deposit">Deposit</option>
+                                        <option value="withdraw">Withdraw</option>
+                                        <option value="referral">Referral</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="userIdFilter" class="form-label">Filter by User ID:</label>
+                                    <input type="text" id="userIdFilter" class="form-control" placeholder="Enter User ID" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+    
+                    <!-- Data Table Section -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="transactionTable" class="table table-striped table-bordered nowrap" style="width:100%">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Transaction ID</th>
+                                            <th>User ID</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                            <th>Current Balance</th>
+                                            <th>Status</th>
+                                            <th>Created At</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

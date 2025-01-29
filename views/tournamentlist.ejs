@@ -157,8 +157,30 @@
                     { data: 'tournamentid', title: 'ID' },
                     { data: 'tournamentName', title: 'Name' },
                     { data: 'tournamentDescription', title: 'Description' },
-                    { data: 'startDate', title: 'Start Date' },
-                    { data: 'endDate', title: 'End Date' },
+                    {
+                        data: 'startDate',
+                        title: 'Start Date',
+                        render: function(data) {
+                            // Format the date as dd-mm-yyyy
+                            const date = new Date(data);
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                            const year = date.getFullYear();
+                            return `${day}-${month}-${year}`;
+                        }
+                    },
+                    {
+                        data: 'endDate',
+                        title: 'End Date',
+                        render: function(data) {
+                            // Format the date as dd-mm-yyyy
+                            const date = new Date(data);
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                            const year = date.getFullYear();
+                            return `${day}-${month}-${year}`;
+                        }
+                    },
                     { data: 'status', title: 'Status' },
                     {
                         data: 'tournamentid',

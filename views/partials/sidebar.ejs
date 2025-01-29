@@ -1,45 +1,70 @@
-<aside class="sidebar">
-    <ul>
-        <li><a href="/admin" class="<%= page === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
-        <li><a href="/userlist" class="<%= page === 'users' ? 'active' : '' %>">User Management</a></li>
-        <li><a href="/paymenthistory" class="<%= page === 'paymenthistory' ? 'active' : '' %>">Payment History</a></li>
-        <li><a  href="/betting-orders" class="<%= page === 'orderHistory' ? 'active' : '' %>">Betting Orders</a></li>
-        <li><a  href="/rooms-history" class="<%= page === 'roomsHistory' ? 'active' : '' %>">Rooms/Games History</a></li>
-        <li>
-            <a href="#" class="Tournament-toggle">Tournament</a>
-            <ul class="Tournament-dropdown" style="display: none;">
-                <li><a href="/tournament" class="<%= page === 'tournament-create' ? 'active' : '' %>">Tournament Create</a></li>
-                <li><a href="/tournament/list" class="<%= page === 'tournament-list' ? 'active' : '' %>">Tournament List</a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#" class="pool-toggle">Pools</a>
-            <ul class="pool-dropdown" style="display: none;" >
-                <li><a href="/pool" class="<%= page === 'create-poll' ? 'active' : '' %>">Pools create </a></li>
-                <li><a href="/poll/list" class="<%= page === 'poll-list' ? 'active' : '' %>" >Pools list</a></li>
-            </ul>
-        </li>         
-        <li>
-            <a href="#" class="boot-toggle">Bot Management</a>
-            <ul class="boot-dropdown" style="display: none;" >
-                <li><a href="/boot"  class="<%= page === 'bots-create' ? 'active' : '' %>">Bots create </a></li>
-                <li><a href="/botlist" class="<%= page === 'botslist' ? 'active' : '' %>">Bots list</a></li>
-            </ul>
-        </li>
-        <li><a href="/admin/support" class="<%= page == 'support' ? 'active' : '' %>">Enquiry Mangment</a></li>
-        <li>
-            <a href="#" class="settings-toggle">Settings</a>
-            <ul class="settings-dropdown" style="display: none;" >
-                <li><a href="/speenwheel" class="<%= page === 'spin' ? 'active' : '' %>">Spin Wheel</a></li>
-                <li><a href="/management" class="<%= page === 'management' ? 'active' : '' %>">Management</a></li>
-                <li><a href="/content-notification" class="<%= page == 'content-notification' ? 'active' : '' %>">Content</a></li>
-                <li><a href="/notification" class="<%= page == 'notification' ? 'active' : '' %>">Notification</a></li>
-            </ul>
-        </li>
-    </ul>
-</aside>
+<div class="col-xl-2 col-lg-2 col-md-3 col-sm-4" id="sideBar">
+    <aside class="sidebar p-3">
+        <ul class="list-unstyled">
+            <li>
+                <a href="/admin" class="d-block py-2 px-3 rounded <%= page === 'dashboard' ? 'bg-primary text-white' : '' %>">Dashboard</a>
+            </li>
+            <li>
+                <a href="/userlist" class="d-block py-2 px-3 rounded <%= page === 'users' ? 'bg-primary text-white' : '' %>">User Management</a>
+            </li>
+            <li>
+                <a href="/paymenthistory" class="d-block py-2 px-3 rounded <%= page === 'paymenthistory' ? 'bg-primary text-white' : '' %>">Payment History</a>
+            </li>
+            <li>
+                <a href="/betting-orders" class="d-block py-2 px-3 rounded <%= page === 'orderHistory' ? 'bg-primary text-white' : '' %>">Betting Orders</a>
+            </li>
+            <li>
+                <a href="/rooms-history" class="d-block py-2 px-3 rounded <%= page === 'roomsHistory' ? 'bg-primary text-white' : '' %>">Rooms/Games History</a>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="d-block py-2 px-3 rounded <%= page.includes('tournament') ? 'bg-primary text-white' : '' %> Tournament-toggle" data-bs-toggle="collapse" data-bs-target="#tournament-dropdown">
+                    Tournament <i class="bi bi-chevron-down ms-2"></i>
+                </a>
+                <ul id="tournament-dropdown" class="list-unstyled collapse">
+                    <li><a href="/tournament" class="d-block py-2 px-3 rounded <%= page === 'tournament-create' ? 'bg-primary text-white' : '' %>">Tournament Create</a></li>
+                    <li><a href="/tournament/list" class="d-block py-2 px-3 rounded <%= page === 'tournament-list' ? 'bg-primary text-white' : '' %>">Tournament List</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="d-block py-2 px-3 rounded <%= page.includes('pool') ? 'bg-primary text-white' : '' %> pool-toggle" data-bs-toggle="collapse" data-bs-target="#pool-dropdown">
+                    Pools <i class="bi bi-chevron-down ms-2"></i>
+                </a>
+                <ul id="pool-dropdown" class="list-unstyled collapse">
+                    <li><a href="/pool" class="d-block py-2 px-3 rounded <%= page === 'create-poll' ? 'bg-primary text-white' : '' %>">Pools create</a></li>
+                    <li><a href="/poll/list" class="d-block py-2 px-3 rounded <%= page === 'poll-list' ? 'bg-primary text-white' : '' %>">Pools list</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="d-block py-2 px-3 rounded <%= page.includes('bot') ? 'bg-primary text-white' : '' %> boot-toggle" data-bs-toggle="collapse" data-bs-target="#bot-dropdown">
+                    Bot Management <i class="bi bi-chevron-down ms-2"></i>
+                </a>
+                <ul id="bot-dropdown" class="list-unstyled collapse">
+                    <li><a href="/boot" class="d-block py-2 px-3 rounded <%= page === 'bots-create' ? 'bg-primary text-white' : '' %>">Bots create</a></li>
+                    <li><a href="/botlist" class="d-block py-2 px-3 rounded <%= page === 'botslist' ? 'bg-primary text-white' : '' %>">Bots list</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/admin/support" class="d-block py-2 px-3 rounded <%= page === 'support' ? 'bg-primary text-white' : '' %>">Enquiry Management</a>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="d-block py-2 px-3 rounded <%= page.includes('settings') ? 'bg-primary text-white' : '' %> settings-toggle" data-bs-toggle="collapse" data-bs-target="#settings-dropdown">
+                    Settings <i class="bi bi-chevron-down ms-2"></i>
+                </a>
+                <ul id="settings-dropdown" class="list-unstyled collapse">
+                    <li><a href="/speenwheel" class="d-block py-2 px-3 rounded <%= page === 'spin' ? 'bg-primary text-white' : '' %>">Spin Wheel</a></li>
+                    <li><a href="/management" class="d-block py-2 px-3 rounded <%= page === 'management' ? 'bg-primary text-white' : '' %>">Management</a></li>
+                    <li><a href="/content-notification" class="d-block py-2 px-3 rounded <%= page === 'content-notification' ? 'bg-primary text-white' : '' %>">Content</a></li>
+                    <li><a href="/notification" class="d-block py-2 px-3 rounded <%= page === 'notification' ? 'bg-primary text-white' : '' %>">Notification</a></li>
+                    <li><a href="/upload-images" class="d-block py-2 px-3 rounded <%= page === 'notification' ? 'bg-primary text-white' : '' %>">Images</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+</div>
 
-<script>
+
+
+<!-- <script>
     // Add toggle functionality for settings dropdown
     document.addEventListener('DOMContentLoaded', () => {
         const settingsToggle = document.querySelector('.settings-toggle');
@@ -99,4 +124,4 @@
             });
         }
     });
-</script>
+</script> -->

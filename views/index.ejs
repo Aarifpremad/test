@@ -6,88 +6,124 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for graph -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <!-- Include Header -->
     <%- include('partials/header') %>
 
-    <div class="main-container">
+    <div class="main-container d-flex">
         <!-- Include Sidebar -->
         <%- include('partials/sidebar', { page: 'dashboard' }) %>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <!-- Dashboard Cards -->
-            <div class="dashboard-cards">
-                <div class="dashboard-card">
-                    <h3>Total Users</h3>
-                    <a href="/userlist"><p id="total-users">--</p></a>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Online Users</h3>
-                    <p id="total-users">--</p>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Today New Users</h3>
-                    <p id="new-users">--</p>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Total Revenue</h3>
-                    <p id="total-revenue">--</p>
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12">
+            <div class="main-content" id="dashboard-container">
+                <!-- Dashboard Cards -->
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Total Users</h3>
+                            <a href="/userlist"><p id="total-users" class="dashboard-text">--</p></a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Online Users</h3>
+                            <p id="total-online-users" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Today New Users</h3>
+                            <p id="new-users" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Total Revenue</h3>
+                            <p id="total-revenue" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Total Commissions</h3>
+                            <p id="total-commissions" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Total Deposit</h3>
+                            <p id="total-deposit" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Total Withdrawal</h3>
+                            <p id="total-withdrawal" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Total Referral Amount</h3>
+                            <p id="total-referral" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Active Tournament</h3>
+                            <p id="active-tournament" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Active Pool</h3>
+                            <p id="active-pool" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Today Rooms</h3>
+                            <p id="today-rooms" class="dashboard-text">--</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dashboard-card shadow-sm">
+                            <h3>Active Bots</h3>
+                            <p id="active-bots" class="dashboard-text">--</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="dashboard-card">
-                    <h3>Total Commissions</h3>
-                    <p id="total-commissions">--</p>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Total Deposit</h3>
-                    <p id="total-commissions">--</p>
-                </div>      
-                <div class="dashboard-card">
-                    <h3>Total withdrawl</h3>
-                    <p id="total-commissions">--</p>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Total Referral amount</h3>
-                    <p id="total-commissions">--</p>
-                </div>  
-                <div class="dashboard-card">
-                    <h3>Active Tournament</h3>
-                    <p id="total-commissions">--</p>
-                </div>  
-                <div class="dashboard-card">
-                    <h3>Active pool</h3>
-                    <p id="total-commissions">--</p>
-                </div> 
-                <div class="dashboard-card">
-                    <h3>Today Rooms</h3>
-                    <p id="total-commissions">--</p>
-                </div>  
-                 <div class="dashboard-card">
-                    <h3>Active Bots</h3>
-                    <p id="total-commissions">--</p>
-                </div>  
-            </div>
+                <!-- Graph and Top Users Section -->
+                <div class="row mt-4">
+                    <!-- Graph Section -->
+                    <div class="col-md-8">
+                        <div class="graph-container card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">User Statistics</h5>
+                                <canvas id="user-stats-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Graph and Top Users Section -->
-            <div class="graph-users-container">
-                <!-- Graph Section -->
-                <div class="graph-container">
-                    <h3>User Statistics</h3>
-                    <canvas id="user-stats-chart"></canvas>
-                </div>
-
-                <!-- Top Users Section -->
-                <div class="top-users-container">
-                    <h3>Recent Users</h3>
-                    <div id="top-users">
-                        <!-- User details dynamically populated -->
+                    <!-- Top Users Section -->
+                    <div class="col-md-4">
+                        <div class="top-users-container card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Recent Users</h5>
+                                <div id="top-users">
+                                    <!-- User details dynamically populated -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <script>
         // API Integration Example
@@ -146,7 +182,7 @@
                 const userCard = document.createElement('div');
                 userCard.classList.add('user-card');
                 userCard.innerHTML = `
-                    <img src="${user.image}" alt="image" class="user-image">
+                    <img src= "/bot/${user.avatar}.png " alt="image" class="user-image">
                     <p><strong>${user.username}</strong></p>
                     <p>Balance: ${user.balance}</p>
                 `;

@@ -4,14 +4,10 @@ let Model = require("../models/model");
 const moment = require('moment'); 
 
 
-let staticSupportData = [
-    { id: 1, name: "Alice", email: "alice@example.com", mobile: "1234567890", subject: "Login Issue", message: "Unable to login.", status: "Pending", createdAt: "2024-12-20" ,state :"rrrr",dis : "dis"},
-    { id: 2, name: "Bob", email: "bob@example.com", mobile: "9876543210", subject: "Wallet Problem", message: "Wallet balance not updating.", status: "Resolved", createdAt: "2024-12-21" },
-    { id: 3, name: "Charlie", email: "charlie@example.com", mobile: "1112223334", subject: "Payment Issue", message: "Payment failed during checkout.", status: "Pending", createdAt: "2024-12-22" }
-];
 
-router.get('/api/support', (req, res) => {
-    res.json({ success: true, data: staticSupportData });
+router.get('/api/support', async (req, res) => {
+    let finddata =await Model.Enquiry.find()
+    res.json({ success: true, data: finddata });
 });
 
 router.post('/api/support/update-status', (req, res) => {
@@ -26,12 +22,10 @@ router.post('/api/support/update-status', (req, res) => {
     }
 });
 
-router.delete('/api/support/delete/:id', (req, res) => {
+router.delete('/api/support/delete/:id', async (req, res) => {
     const id = parseInt(req.params.id, 10);
-    const index = staticSupportData.findIndex(query => query.id === id);
-
-    if (index !== -1) {
-        staticSupportData.splice(index, 1);
+    let index = await Model.Enquiry.deleteOne({ srno: id });
+    if (index) {
         res.json({ success: true, message: `Query ID: ${id} deleted successfully.` });
     } else {
         res.status(404).json({ success: false, message: 'Query not found.' });

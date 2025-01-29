@@ -330,9 +330,11 @@ const createEnquiry = async (req, res) => {
             return res.status(400).json({ message: 'Name, mobile, and description are required' });
         }
 
-        const userRef = req.user._id; 
+        const userRef = req.user._id;
+        let enquiryno = await Model.Enquiry.findOne().sort({ srno: -1 });
+        enquiryno = enquiryno ? parseInt(enquiryno.srno) + 1 : 1000;
 
-        const newEnquiry = new Model.Enquiry({ name, mobileno, email, state, city, description, userRef });
+        const newEnquiry = new Model.Enquiry({ name, mobileno, email, state, city, description, userRef , srno: enquiryno });
         await newEnquiry.save();
 
         res.status(201).json({ message: 'Enquiry created successfully', enquiry: newEnquiry });
@@ -404,12 +406,14 @@ const userlist = async (req, res) => {
         const filteredCount = await Model.User.countDocuments(searchFilter);
 
         const formattedData = users.map(user => ({
+            numericid : user.numericid,
             id: user._id,
             username: user.username,
             refercode: user.refercode,
             image: user.image,
             email: user.email,
             balance: user.balance,
+            avatar: user.avatar,
         }));
         console.log({
             totalRecords: totalCount,

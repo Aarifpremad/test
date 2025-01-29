@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/dashboard.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-    <style>
+    <!-- <style>
         /* Same style as before */
         .main-container {
             display: flex;
@@ -42,57 +42,82 @@
             border-radius: 4px;
             margin-right: 15px;
         }
-    </style>
+    </style> -->
 </head>
 <body>
     <%- include('partials/header') %>
 
-    <div class="main-container">
-        <%- include('partials/sidebar', { page: 'orderHistory' }) %>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
 
-        <div class="main-content">
-            <h3>Orders History</h3>
+            <%- include('partials/sidebar', { page: 'orderHistory' }) %>
 
-            <!-- Filter Section -->
-            <div class="filter-container">
-                <label for="orderStatusFilter">Filter by Order Status:</label>
-                <select id="orderStatusFilter">
-                    <option value="">All</option>
-                    <option value="pending">Pending</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-                <label for="gameTypeFilter">Filter by Game Type:</label>
-                <select id="gameTypeFilter">
-                    <option value="">All</option>
-                    <option value="ludo">Ludo</option>
-                    <option value="tournament">Tournament</option>
-                </select>
-                <label for="dateFilter">Filter by Date:</label>
-                <input type="date" id="startDate" />
-                <input type="date" id="endDate" />
-            </div>
-
-            <!-- Data Table Section -->
-            <div class="table-container">
-                <table id="ordersTable" class="display nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>User ID</th>
-                            <th>Game Type</th>
-                            <th>Status</th>
-                            <th>Amount</th>
-                            <th>Created At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data will be populated dynamically -->
-                    </tbody>
-                </table>
+    
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="py-4">
+                    <h3 class="mb-4">Orders History</h3>
+    
+                    <!-- Filter Section -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="orderStatusFilter" class="form-label">Filter by Order Status:</label>
+                                    <select id="orderStatusFilter" class="form-select">
+                                        <option value="">All</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="gameTypeFilter" class="form-label">Filter by Game Type:</label>
+                                    <select id="gameTypeFilter" class="form-select">
+                                        <option value="">All</option>
+                                        <option value="ludo">Ludo</option>
+                                        <option value="tournament">Tournament</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="dateFilter" class="form-label">Filter by Date:</label>
+                                    <div class="d-flex">
+                                        <input type="date" id="startDate" class="form-control me-2" />
+                                        <input type="date" id="endDate" class="form-control" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+    
+                    <!-- Data Table Section -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="ordersTable" class="table table-striped table-bordered nowrap pt-3" style="width:100%">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>User ID</th>
+                                            <th>Game Type</th>
+                                            <th>Status</th>
+                                            <th>Amount</th>
+                                            <th>Created At</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

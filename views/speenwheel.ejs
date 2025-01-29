@@ -20,55 +20,40 @@
                 <div id="prize-list">
                     <!-- Prize items will be dynamically added here -->
                 </div>
-                    <div class="buttons-container">
-                        <button class="save-prize-button" onclick="savePrizes()">Save</button>
-                        <button class="add-prize-button" onclick="addPrize()">Add Prize</button>
-                    </div>
-         </div>
+                <div class="buttons-container">
+                    <button class="save-prize-button" onclick="savePrizes()">Save</button>
+                    <!-- <button class="add-prize-button" onclick="addPrize()">Add Prize</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const prizeList = document.getElementById('prize-list');
 
-        // Fetch existing prizes from the server
+        // Populate prize items with exactly 12 rows from the server data or placeholders
         async function fetchPrizes() {
             const response = await fetch('/api/prizes');
             const prizes = await response.json();
-            prizes.forEach(prize => {
+
+            for (let i = 0; i < 12; i++) {
+                const prize = prizes[i] || { title: '', amount: '' }; // Use empty values if no prize data exists
                 const prizeItem = document.createElement('div');
                 prizeItem.classList.add('prize-item');
                 prizeItem.innerHTML = `
-                    <input type="number" value="${prize.amount}" placeholder="Prize Name">
-                    <input type="number" value="${prize.percentage}" placeholder="Percentage">
-                    <button onclick="removePrize(this)">Delete</button>
+                    <input type="text" value="${prize.title}" placeholder="Prize Title">
+                    <input type="number" value="${prize.amount}" placeholder="Amount">
                 `;
                 prizeList.appendChild(prizeItem);
-            });
-        }
-
-        // Add a new prize item
-        function addPrize() {
-            const prizeItem = document.createElement('div');
-            prizeItem.classList.add('prize-item');
-            prizeItem.innerHTML = `
-                <input type="number" placeholder="Prize Name">
-                <input type="number" placeholder="Percentage">
-                <button onclick="removePrize(this)">Delete</button>
-            `;
-            prizeList.appendChild(prizeItem);
-        }
-
-        // Remove a prize item
-        function removePrize(button) {
-            const prizeItem = button.parentElement;
-            prizeList.removeChild(prizeItem);
+            }
         }
 
         // Save prizes to the server
         async function savePrizes() {
             const prizes = Array.from(prizeList.children).map(item => {
                 return {
-                    amount: item.querySelector('input[type="number"]').value,
-                    percentage: parseFloat(item.querySelector('input[type="number"]').value),
+                    title: item.querySelector('input[type="text"]').value,
+                    amount: parseFloat(item.querySelector('input[type="number"]').value) || 0,
                 };
             });
 

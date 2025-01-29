@@ -150,19 +150,29 @@
                 ajax: '/api/support',
                 destroy: true, // Reinitialize table with updated data
                 columns: [
-                    { data: 'id' },
+                    { data: 'srno' },
                     { data: 'name' },
                     { data: 'email' },
-                    { data: 'mobile' },
-                    { data: 'subject' },
-                    { data: 'status' },
-                    { data: 'createdAt' },
+                    { data: 'mobileno' },
+                    { data: 'description' },
+                    { data: 'status' }, 
+                    {
+                        data: 'createdAt',
+                        render: function(data) {
+                            // Format the date as dd-mm-yyyy
+                            const date = new Date(data);
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                            const year = date.getFullYear();
+                            return `${day}-${month}-${year}`;
+                        }
+                    },
                     {
                         data: null,
                         render: function(data) {
                             return `
-                                <button onclick="viewQuery(${data.id})" class="btn-primary">View</button>
-                                <button onclick="deleteQuery(${data.id})" class="btn-secondary">Delete</button>
+                                <button onclick="viewQuery(${data.srno})" class="btn-primary">View</button>
+                                <button onclick="deleteQuery(${data.srno})" class="btn-secondary">Delete</button>
                             `;
                         }
                     }
@@ -170,44 +180,44 @@
             });
         }
 
-        function viewQuery(id) {
-            const modal = $('#viewModal');
-            const queryDetails = $('#queryDetails');
+        function viewQuery(srno) { // Update parameter to srno
+    const modal = $('#viewModal');
+    const queryDetails = $('#queryDetails');
 
-            $.get('/api/support', function(response) {
-                const data = response.data.find(item => item.id === id);
-                if (data) {
-                    queryDetails.html(`
-                        <p><strong>ID:</strong> ${data.id}</p>
-                        <p><strong>Name:</strong> ${data.name}</p>
-                        <p><strong>Email:</strong> ${data.email}</p>
-                        <p><strong>Mobile:</strong> ${data.mobile}</p>
-                        <p><strong>Subject:</strong> ${data.subject}</p>
-                        <p><strong>Message:</strong> ${data.message}</p>
-                        <p><strong>Status:</strong> ${data.status}</p>
-                    `);
-                    $('#status').val(data.status);
-                    modal.show();
+    $.get('/api/support', function(response) {
+        // Correctly compare srno to the srno field in data
+        const data = response.data.find(item => item.srno == srno); 
+        if (data) {
+            queryDetails.html(`
+                <p><strong>ID:</strong> ${data.srno}</p>
+                <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>Mobile:</strong> ${data.mobileno}</p>
+                <p><strong>Message:</strong> ${data.description}</p>
+                <p><strong>Status:</strong> ${data.status}</p>
+            `);
+            $('#status').val(data.status);
+            modal.show();
 
-                    $('#updateStatus').off('click').on('click', function() {
-                        const newStatus = $('#status').val();
-                        $.post('/api/support/update-status', { id: id, status: newStatus }, function(res) {
-                            if (res.success) {
-                                alert(res.message);
-                                modal.hide();
-                                fetchSupportData();
-                            } else {
-                                alert('Failed to update status.');
-                            }
-                        });
-                    });
-                }
-            });
-
-            $('#closeModal').off('click').on('click', function() {
-                modal.hide();
+            $('#updateStatus').off('click').on('click', function() {
+                const newStatus = $('#status').val();
+                $.post('/api/support/update-status', { id: data.srno, status: newStatus }, function(res) { // Use data.srno here
+                    if (res.success) {
+                        alert(res.message);
+                        modal.hide();
+                        fetchSupportData();
+                    } else {
+                        alert('Failed to update status.');
+                    }
+                });
             });
         }
+    });
+
+    $('#closeModal').off('click').on('click', function() {
+        modal.hide();
+    });
+}
 
         function deleteQuery(id) {
             if (confirm(`Are you sure you want to delete query ID: ${id}?`)) {

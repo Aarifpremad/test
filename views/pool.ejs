@@ -111,99 +111,113 @@
     <%- include('partials/header') %>
 
     <div class="main-container">
-        <!-- Include the sidebar -->
         <%- include('partials/sidebar', { page: 'create-poll' }) %>
-
-        <!-- Main content area -->
+    
         <div class="main-content">
-            <h1>Create Pool</h1>
-            <form id="pollForm" enctype="multipart/form-data">
-                
-                <div class="form-section">
-                    <h2>Pool Details</h2>
-                    <div class="form-group">
-                        <label for="pollName">Pool Name:</label>
-                        <input type="text" id="pollName" name="pollName" placeholder="Enter Pool name" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="pollDescription">Description:</label>
-                        <textarea id="pollDescription" name="pollDescription" placeholder="Enter Pool description" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="startTime">Start Date/Time:</label>
-                        <input type="datetime-local" id="startTime" name="startTime" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="pollStatus">Status:</label>
-                        <select id="pollStatus" name="pollStatus" required>
-                            <option value="open">Open</option>
-                            <option value="closed">Closed</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="pollType">Pool Type:</label>
-                        <select id="pollType" name="pollType" required>
-                            <option value="2">2 Players</option>
-                            <option value="4">4 Players</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-section">
-                    <h2>Thumbnail</h2>
-                    <div class="form-group">
-                        <label for="thumbnail">Upload Thumbnail:</label>
-                        <input type="file" id="thumbnail" name="thumbnail" accept="image/*" onchange="previewThumbnail(event)">
-                        <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none;">
-                    </div>
-                </div>
-                <!-- Prize Distribution -->
-                <div class="form-section">
-                    <h2>Prize Distribution</h2>
-                    <div class="form-group">
-                        <label for="entryFee">Entry Fee (in coins):</label>
-                        <input type="number" id="entryFee" name="entryFee" placeholder="Enter entry fee" min="1" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="prizeType">Prize Type:</label>
-                        <select id="prizeType" name="prizeType" onchange="togglePrizeField()" required>
-                            <option value="automatic">Automatic</option>
-                            <option value="manual">Manual</option>
-                        </select>
-                    </div>
-                    <!-- Prize Amount (if Manual selected) -->
-                    <div class="form-group" id="manualPrizeGroup" style="display: none;">
-                        <label for="prizeAmount">Prize Amount:</label>
-                        <input type="number" id="prizeAmount" name="prizeAmount" placeholder="Enter prize amount">
-                    </div>
-                </div>
-
-                <!-- Time Limit: Wait Time and Game Duration -->
-                <div class="form-section">
-                    <h2>Time Limit</h2>
-                    <div class="time-container">
-                        <!-- Wait Time -->
-                        <div class="form-group">
-                            <label for="waitTime">Wait Time (in minutes):</label>
-                            <input type="number" id="waitTime" name="waitTime" placeholder="Enter wait time in minutes" min="1" max="60" required />
+            <div class="container">
+                <h1 class="mb-4">Create Pool</h1>
+                <form id="pollForm" enctype="multipart/form-data">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h2>Pool Details</h2>
                         </div>
-                        <!-- Game Duration -->
-                        <div class="form-group">
-                            <label for="gameDuration">Game Duration (in minutes):</label>
-                            <input type="number" id="gameDuration" name="gameDuration" placeholder="Enter game duration in minutes" min="1" max="120" required />
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="pollName" class="form-label">Pool Name:</label>
+                                <input type="text" class="form-control" id="pollName" name="pollName" placeholder="Enter Pool name" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="pollDescription" class="form-label">Description:</label>
+                                <textarea class="form-control" id="pollDescription" name="pollDescription" rows="3" placeholder="Enter Pool description" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="startTime" class="form-label">Start Date/Time:</label>
+                                <input type="datetime-local" class="form-control" id="startTime" name="startTime" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="pollStatus" class="form-label">Status:</label>
+                                <select class="form-select" id="pollStatus" name="pollStatus" required>
+                                    <option value="open">Open</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pollType" class="form-label">Pool Type:</label>
+                                <select class="form-select" id="pollType" name="pollType" required>
+                                    <option value="2">2 Players</option>
+                                    <option value="4">4 Players</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="form-actions">
-                    <button type="submit">Create Pool</button>
-                </div>
-            </form>
+    
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h2>Thumbnail</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="thumbnail" class="form-label">Upload Thumbnail:</label>
+                                <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept="image/*" onchange="previewThumbnail(event)" />
+                                <img id="thumbnailPreview" class="img-fluid mt-3" src="#" alt="Thumbnail Preview" style="display: none; max-width: 200px; border: 1px solid #ddd;" />
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h2>Prize Distribution</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="entryFee" class="form-label">Entry Fee (in coins):</label>
+                                <input type="number" class="form-control" id="entryFee" name="entryFee" placeholder="Enter entry fee" min="1" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="prizeType" class="form-label">Prize Type:</label>
+                                <select class="form-select" id="prizeType" name="prizeType" onchange="togglePrizeField()" required>
+                                    <option value="automatic">Automatic</option>
+                                    <option value="manual">Manual</option>
+                                </select>
+                            </div>
+                            <div class="mb-3" id="manualPrizeGroup" style="display: none;">
+                                <label for="prizeAmount" class="form-label">Prize Amount:</label>
+                                <input type="number" class="form-control" id="prizeAmount" name="prizeAmount" placeholder="Enter prize amount" />
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h2>Time Limit</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="waitTime" class="form-label">Wait Time (in minutes):</label>
+                                        <input type="number" class="form-control" id="waitTime" name="waitTime" placeholder="Enter wait time in minutes" min="1" max="60" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="gameDuration" class="form-label">Game Duration (in minutes):</label>
+                                        <input type="number" class="form-control" id="gameDuration" name="gameDuration" placeholder="Enter game duration in minutes" min="1" max="120" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg">Create Pool</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+    
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

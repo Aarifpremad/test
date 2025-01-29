@@ -83,31 +83,37 @@
 </head>
 <body>
     <%- include('partials/header') %>
-    <div class="content-management-container">
-        <%- include('partials/sidebar', { page: 'content-notification' }) %>
-
-        <div class="content-management-content">
-            <!-- Content Management Buttons -->
-            <div class="content-management-buttons">
-                <button id="contentManagementTermsBtn">Terms & Conditions</button>
-                <button id="contentManagementPrivacyBtn">Privacy Policy</button>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Include Sidebar -->
+            <div class="col-md-3 col-lg-2 bg-light sidebar">
+                <%- include('partials/sidebar', { page: 'content-notification' }) %>
             </div>
-
-            <!-- Terms & Conditions Section -->
-            <div id="contentManagementTermsSection" class="content-management-section">
-                <h2>Edit Terms & Conditions</h2>
-                <textarea id="contentManagementTermsContent" class="content-management-textarea" placeholder="Enter Terms & Conditions..."></textarea>
-                <button id="contentManagementSaveTerms" class="content-management-save-button">Save Terms</button>
-            </div>
-
-            <!-- Privacy Policy Section -->
-            <div id="contentManagementPrivacySection" class="content-management-section">
-                <h2>Edit Privacy Policy</h2>
-                <textarea id="contentManagementPrivacyContent" class="content-management-textarea" placeholder="Enter Privacy Policy..."></textarea>
-                <button id="contentManagementSavePrivacy" class="content-management-save-button">Save Privacy</button>
+    
+            <div class="col-md-9 col-lg-10 py-4">
+                <!-- Content Management Buttons -->
+                <div class="d-flex justify-content-start mb-4">
+                    <button id="contentManagementTermsBtn" class="btn btn-primary me-2">Terms & Conditions</button>
+                    <button id="contentManagementPrivacyBtn" class="btn btn-secondary">Privacy Policy</button>
+                </div>
+    
+                <!-- Terms & Conditions Section -->
+                <div id="contentManagementTermsSection" class="mb-4">
+                    <h2 class="mb-3">Edit Terms & Conditions</h2>
+                    <textarea id="contentManagementTermsContent" class="form-control mb-3" rows="8" placeholder="Enter Terms & Conditions..."></textarea>
+                    <button id="contentManagementSaveTerms" class="btn btn-success">Save Terms</button>
+                </div>
+    
+                <!-- Privacy Policy Section -->
+                <div id="contentManagementPrivacySection">
+                    <h2 class="mb-3">Edit Privacy Policy</h2>
+                    <textarea id="contentManagementPrivacyContent" class="form-control mb-3" rows="8" placeholder="Enter Privacy Policy..."></textarea>
+                    <button id="contentManagementSavePrivacy" class="btn btn-success">Save Privacy</button>
+                </div>
             </div>
         </div>
     </div>
+    
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

@@ -15,8 +15,7 @@ Router.get("/getProfile", authenticate , UserController.getProfile);
 Router.post("/updateProfile",authenticate ,  UserController.updateProfile);
 
 Router.post("/image",authenticate, UserController.uploadProfileImage);
-Router.post("/deletaccount",authenticate,  UserController.deleteAccount);
-
+Router.post("/deleteaccount",authenticate,  UserController.deleteAccount);
 
 Router.post('/add-enquiries', authenticate, UserController.createEnquiry); // Create enquiry
 Router.get('/enquiries', authenticate, UserController.getEnquiries); // Get all enquiries

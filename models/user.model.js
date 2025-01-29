@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
     image:{type: String, default: '' },
     status : { type: String, default: "Active" },
     walletFrozen : { type: Boolean, default: false },
+    spincount: { type: Number, default: 10 },
 }, { timestamps: true });
 
 userSchema.methods.generateAuthToken = function () {

@@ -40,13 +40,13 @@ let socketauth = (socket, next) => {
 
 
 const authenticateSessionadmin = (req, res, next) => {
-  if(!req.session){
-    return res.redirect("/");
-  }
-  if (!req.session.admin) {
-    return res.redirect("/"); 
-  }
-  res.locals.admin = req.session.admin; 
+  // if(!req.session){
+  //   return res.redirect("/");
+  // }
+  // if (!req.session.admin) {
+  //   return res.redirect("/"); 
+  // }
+  // res.locals.admin = req.session.admin; 
   next();
 };
 

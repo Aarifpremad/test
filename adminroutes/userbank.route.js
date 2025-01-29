@@ -5,19 +5,38 @@ let authenticate = require("../service/auth").authenticateToken;
 // Create bank details
 router.post('/bank-details', authenticate, async (req, res) => {
   try {
-    const {  name, accountNumber, ifscCode, bankName, accountType } = req.body;
+    console.log("call this ")
+    const { name, accountNumber, ifscCode, bankName, accountType } = req.body;
 
-    // Check for existing account number
-    userId = req.user.id;
-    if(name == null || accountNumber == null || ifscCode == null || bankName == null || accountType == null){
-        return res.status(400).json({ message: 'All fields are required' });
+    // Validate required fields
+    if (!name || !accountNumber || !ifscCode || !bankName || !accountType) {
+      return res.status(400).json({ message: 'All fields are required' });
     }
-    const existingAccount = await Bank.findOne({ accountNumber });
+
+    const userId = req.user.id;
+
+    // Check if account number already exists for another user
+    const existingAccount = await Bank.findOne({ accountNumber, userId: { $ne: userId } });
     if (existingAccount) {
-      return res.status(400).json({ message: 'Account number already exists' });
+      return res.status(400).json({ status: false, message: 'Account number already exists for another user' });
     }
 
-    // Create and save new bank details
+    // Check if the user already has bank details
+    const existingBankDetails = await Bank.findOne({ userId });
+
+    if (existingBankDetails) {
+      // Update existing bank details
+      existingBankDetails.name = name;
+      existingBankDetails.accountNumber = accountNumber;
+      existingBankDetails.ifscCode = ifscCode;
+      existingBankDetails.bankName = bankName;
+      existingBankDetails.accountType = accountType;
+
+      await existingBankDetails.save();
+      return res.status(200).json({ message: 'Bank details updated successfully', bankDetails: existingBankDetails });
+    }
+
+    // Create and save new bank details if not already present
     const bankDetails = new Bank({
       userId,
       name,
@@ -30,10 +49,11 @@ router.post('/bank-details', authenticate, async (req, res) => {
     await bankDetails.save();
     res.status(201).json({ message: 'Bank details added successfully', bankDetails });
   } catch (error) {
-    // console.error(error);
-    res.status(500).json({ message: 'An error occurred while adding bank details' });
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while processing bank details' });
   }
 });
+
 
 
 // Fetch bank details by userId

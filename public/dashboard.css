@@ -17,13 +17,13 @@ body {
 
 /* Header Styling */
 header {
-    background-color: #007bff;
+    background-color: #931F84;
     color: white;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #0056b3;
+    border-bottom: 2px solid #931F84    ;
 }
 
 header h1 {
@@ -56,17 +56,15 @@ header nav ul li a:hover {
 .main-container {
     display: flex;
     flex: 1;
-    overflow: hidden;
+    overflow: auto;
 }
 
 /* Sidebar Styles */
 .sidebar {
-    width: 250px;
-    background-color: #343a40;
     color: white;
     padding: 20px;
     overflow-y: auto;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 .sidebar ul {
@@ -89,8 +87,9 @@ header nav ul li a:hover {
 }
 
 .sidebar ul li a.active {
-    background-color: #007bff;
-    color: white;
+    background-color: #FEF611;
+    color: #000000 !important;
+    font-weight: 600;
 }
 
 .sidebar ul li a:hover {
@@ -122,15 +121,17 @@ header nav ul li a:hover {
 }
 
 .dashboard-card h3 {
-    font-size: 18px;
+    font-size: 1.7rem;
     margin-bottom: 10px;
-    color: #333;
+    color: #000000;
+    line-height: 1.4;
+    font-weight: 500;
 }
 
 .dashboard-card p {
     font-size: 22px;
     font-weight: bold;
-    color: #007bff;
+    color: #000000;
 }
 
 /* Responsive Styles */
@@ -208,3 +209,71 @@ header nav ul li a:hover {
     border-radius: 50%;
     margin-bottom: 10px;
 }
+
+/* Start CSS */
+table tr td button{
+    background-color: #C33764;
+    padding: 0.2rem 1.2rem;
+    color: #ffffff;
+    border: unset;
+}
+
+table .user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 0 !important;
+    background: #931f84;
+    object-fit: contain;
+}
+
+.dt-buttons {
+    margin-left: 20px  ;
+}
+
+.col-md-3.col-lg-2.bg-light.sidebar{
+    padding-left: 0 !important;
+    padding-top: 0 !important;
+}
+
+#dashboard-container .dashboard-card{
+    background: #22c1c3;  
+    background: -webkit-linear-gradient(to right, #fdbb2d, #22c1c3);
+    background: linear-gradient(to right, #fdbb2d, #22c1c3); 
+    padding: 2.5rem;
+    color: #000000;
+}
+
+#dashboard-container .dashboard-card a{
+    text-decoration: none;
+    color: #000000;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+#dashboard-container .dashboard-card a p{
+    color: #000000;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+#sideBar.col-xl-2.col-lg-2.col-md-3.col-sm-4{
+    background: #2B1C3B !important;
+    height: 190vh;
+}
+
+.sidebar ul li a:hover{
+    color: #FFFFFF !important;
+}
+
+.sidebar .nav-link.d-flex.justify-content-between.align-items-center.collapsed{
+    position: relative;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: rgb(255 255 255) !important;
+    opacity: 1;
+}
+

@@ -107,63 +107,70 @@
     <!-- Include Header -->
     <%- include('partials/header') %>
 
-    <div class="main-container">
-        <!-- Include Sidebar -->
-        <%- include('partials/sidebar', { page: 'botslist' }) %>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <h3>Bots List</h3>
-            <div class="table-container">
-                <table id="botsTable" class="display nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Bot ID</th>
-                            <th>Bot Name</th>
-                            <th>Nickname</th>
-                            <th>Balance</th>
-                            <th>Profile Picture</th>
-                            <th>Status</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Include Sidebar -->
+            <div class="col-md-3 col-lg-2 bg-light sidebar">
+                <%- include('partials/sidebar', { page: 'botslist' }) %>
+            </div>
+    
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 py-4">
+                <h3 class="mb-4">Bots List</h3>
+                <div class="table-responsive">
+                    <table id="botsTable" class="table table-striped table-bordered nowrap" style="width:100%">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Bot ID</th>
+                                <th>Bot Name</th>
+                                <th>Nickname</th>
+                                <th>Balance</th>
+                                <th>Profile Picture</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Edit Bot Modal -->
+        <div id="editModal" class="modal fade" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="editModalLabel">Edit Bot</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="botName" class="form-label">Bot Name</label>
+                            <input type="text" id="botName" class="form-control" placeholder="Enter Bot Name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="avatar" class="form-label">Profile Picture</label>
+                            <input type="file" id="avatar" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select id="status" class="form-select">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">Cancel</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Edit Bot Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Edit Bot</h4>
-                <button id="closeModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div style="margin-bottom: 15px;">
-                    <label for="botName" style="display: block; font-weight: bold; margin-bottom: 5px;">Bot Name</label>
-                    <input type="text" id="botName" placeholder="Enter Bot Name" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="avatar" style="display: block; font-weight: bold; margin-bottom: 5px;">Profile Picture</label>
-                    <input type="file" id="avatar" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;" />
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="status" style="display: block; font-weight: bold; margin-bottom: 5px;">Status</label>
-                    <select id="status" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer" style="text-align: right;">
-                <button id="saveBtn">Save</button>
-                <button class="cancel" id="cancelBtn">Cancel</button>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
