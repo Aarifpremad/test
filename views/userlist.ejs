@@ -120,6 +120,7 @@
                             <th>Image</th>
                             <th>User Name</th>
                             <th>Refer Code</th>
+                            <th>Mobile No</th>
                             <th>Email</th>
                             <th>Wallet Balance</th>
                             <th>Actions</th>
@@ -193,8 +194,9 @@
                                     `<img src= "/bot/${user.avatar}.png" class="user-image" alt="${user.username}">`,
                                     user.username,
                                     user.refercode,
+                                    user.mobileno,
                                     user.email,
-                                    `$${user.balance}`,
+                                    `${user.balance}`,
                                     `<button onclick="viewUser('${user.id}')">View</button>`
                                 ];
                             })

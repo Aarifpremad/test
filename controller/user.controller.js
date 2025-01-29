@@ -426,6 +426,7 @@ const userlist = async (req, res) => {
         const filteredCount = await Model.User.countDocuments(searchFilter);
 
         const formattedData = users.map(user => ({
+
             numericid : user.numericid,
             id: user._id,
             username: user.username,
@@ -434,6 +435,7 @@ const userlist = async (req, res) => {
             email: user.email,
             balance: user.balance,
             avatar: user.avatar,
+            mobileno : user.mobileno
         }));
         console.log({
             totalRecords: totalCount,
