@@ -185,7 +185,6 @@ const transactionbyuser = async (req, res) => {
 try {
     console.log("Fetching transactions...");
     const { search, type, userId, limit, page, orderColumn, orderDir } = req.query;
-    console.log(req.query);
 
     // Pagination setup
     const limitValue = parseInt(limit) || 10;
@@ -203,15 +202,29 @@ try {
     if (type) query.type = type;
 
 
+
     if (userId) {
-        const user = await models.User.findOne({
-            username: { $regex: userId, $options: 'i' }, // Case-insensitive search for username
+        // Ensure userId is a valid number or string that can be cast to a number
+        const userIdNumber = Number(userId);
+    
+        // Check if it's a valid number before proceeding
+        if (isNaN(userIdNumber)) {
+            return res.status(400).json({ message: 'Invalid userId' });
+        }
+    
+        const user = await models.User.find({
+            numericid: userIdNumber, // Apply regex with userId as string
         });
-        if (!user) {
+    
+        if (!user || user.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
-        query.userId = user._id;
+    
+        let getalluserids = user.map((u) => u._id);
+        query.userId = { $in: getalluserids };
     }
+    
+
 
 
     // Sorting setup
@@ -225,7 +238,7 @@ try {
 
     // Fetch transactions
     console.log(query)
-    const transactions = await models.Transaction.find(query).populate('userId', 'username email')
+    const transactions = await models.Transaction.find(query).populate('userId', 'username email numericid')
         .sort(sortOptions)
         .skip(skip)
         .limit(limitValue);

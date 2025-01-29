@@ -219,7 +219,7 @@
                                     data: response.transactions.map(function(transaction) {
                                         return [
                                             transaction._id,
-                                            transaction.userId.username,
+                                            transaction.userId.numericid,
                                             transaction.type,
                                             `$${transaction.amount}`,
                                             `$${transaction.currentbalance}`,

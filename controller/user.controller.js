@@ -30,7 +30,6 @@ const signUp = async (req, res) => {
         if (otpRecord.expireTime < new Date()) {
             return res.status(400).json({ message: 'OTP has expired' });
         }
-        console.log("otp check ")
 
         await Model.OTP.updateOne({ _id: otpRecord._id }, { $set: { hitCount: 0 } });
         await Model.OTP.deleteOne({ _id: otpRecord._id });
@@ -40,20 +39,41 @@ const signUp = async (req, res) => {
         const numericid = lastUser ? lastUser.numericid + 1 : 100000;
 
         const generatedReferCode = username.slice(0, 3).toUpperCase() + numericid;
-
+        let referuser = await Model.User.findOne({ refercode });
+        if(referuser){
+            return res.status(400).json({ message: 'Give a valid refer code' });
+        }
         const newUser = new Model.User({
             username,
             mobileno,
             avatar:1,
             numericid,
             refercode: generatedReferCode,
-            refuser: refercode ? await Model.User.findOne({ refercode })._id : null
+            refuser: referuser._id  
         });
+        referuser.balance += 50
+        await referuser.save()
+
         const token = newUser.generateAuthToken(); // Generate token
         newUser.token = token
         await newUser.save();
-
+        
         res.status(201).json({ message: 'User registered successfully', user: newUser });
+
+        const transaction = new Model.Transaction({
+            userId: referuser._id,
+            type: 'referral',
+            amount: 50,
+            currentbalance: referuser.balance,
+            status: 'success',
+            note: 'refer successfully ',
+            details : {
+                description: 'refer successfully '
+            },
+        });
+        const lastTransaction = await Model.Transaction.findOne().sort('-transactionId');
+        transaction.transactionId = lastTransaction ? lastTransaction.transactionId + 1 : 1;
+        await transaction.save();
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Internal server error', error });
