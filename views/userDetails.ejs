@@ -141,7 +141,7 @@
                         <h2>UserName:<%= user.username %></h2>
                         <p>Mobile No: <%= user.mobileno %></p>
                         <p>Email: <%= user.email %></p>
-                        <p>Wallet Balance: $<%= user.balance %></p>
+                        <p>Wallet Balance: <%= user.balance %></p>
                         <p>Status: <%= user.status %></p>
                         <p>Wallet Frozen: <%= user.walletFrozen ? 'Yes' : 'No' %></p>
                     </div>
@@ -230,7 +230,7 @@
 
     function modifyWallet(userId, action) {
         Swal.fire({
-            title: 'Enter the amount',
+            title: 'Enter the amount Available Balance is <%= user.balance %>',
             input: 'number',
             inputAttributes: {
                 min: 1
@@ -254,7 +254,7 @@
                 .then(response => response.json())
                 .then(data => {
                     Swal.fire('Success!', data.message, 'success');
-                    document.querySelector('.user-info p:nth-child(3)').textContent = `Wallet Balance: $${data.user.balance}`;
+                    document.querySelector('.user-info p:nth-child(4)').textContent = `Wallet Balance: ${data.user.balance}`;
                 })
                 .catch(error => {
                     Swal.fire('Error!', 'Failed to modify wallet.', 'error');
@@ -282,6 +282,7 @@
                 .then(data => {
                     Swal.fire('Success!', data.message, 'success');
                     const freezeButton = document.querySelector('.btn-freeze');
+                    document.querySelector('.user-info p:nth-child(6)').textContent = `Wallet Frozen: ${data.user.walletFrozen ? 'No' : 'Yes'}`;
                     freezeButton.textContent = data.user.walletFrozen ? 'Unfreeze Wallet' : 'Freeze Wallet';
                 })
                 .catch(error => {
