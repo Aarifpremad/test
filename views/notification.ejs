@@ -1,21 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notification Settings</title>
+    <title>Send Notification</title>
     <link rel="stylesheet" href="/dashboard.css">
-    <link rel="stylesheet" href="/speen.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .main-container {
+            display: flex;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background: white;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            color: #555;
+        }
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        button {
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: block;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .user-list {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        .user-list label {
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
     <%- include('partials/header') %>
     <div class="main-container">
         <%- include('partials/sidebar', { page: 'notification' }) %>
         <div class="main-content">
-           <h1>UP comming</h1> 
-         
+            <h1>Send Notification</h1>
+            
+            <label>Select Users:</label>
+            <div class="user-list">
+                <label><input type="checkbox" id="selectAll"> Select All</label>
+                <div id="userList"></div>
+            </div>
+
+            <!-- New Title Input -->
+            <label for="titleInput">Title:</label>
+            <input type="text" id="titleInput" placeholder="Enter notification title">
+
+            <!-- New Image/Icon Input -->
+            <label for="iconInput">Select Icon:</label>
+            <input type="file" id="iconInput" accept="image/*">
+
+            <label for="messageInput">Message:</label>
+            <textarea id="messageInput" rows="3" placeholder="Enter your message..."></textarea>
+            
+            <button id="sendNotification">Send Notification</button>
+
+            <script>
+                const firebaseConfig = {
+                   apiKey: "AIzaSyBuK1cJIqbDvCPWgyoVSH8pltkb5-mMwS8",
+                   authDomain: "scorbnao.firebaseapp.com",
+                   projectId: "scorbnao",
+                   storageBucket: "scorbnao.appspot.com",
+                   messagingSenderId: "598750961271",
+                   appId: "1:598750961271:web:5c2d4520a974efb2e9b072",
+                   measurementId: "G-49RCD4TCE3"
+                 };
+                
+                firebase.initializeApp(firebaseConfig);
+                const messaging = firebase.messaging();
+
+                document.addEventListener("DOMContentLoaded", async () => {
+                    try {
+                        let response = await fetch("/get-users");
+                        let users = await response.json();
+                        let userList = document.getElementById("userList");
+
+                        users.forEach(user => {
+                            let label = document.createElement("label");
+                            let checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.value = user.token;
+                            checkbox.classList.add("user-checkbox");
+                            
+                            label.appendChild(checkbox);
+                            label.appendChild(document.createTextNode(` ${user.username}`));
+                            userList.appendChild(label);
+                        });
+
+                        // Select All functionality
+                        document.getElementById("selectAll").addEventListener("change", function () {
+                            let checkboxes = document.querySelectorAll(".user-checkbox");
+                            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+                        });
+
+                    } catch (error) {
+                        console.error("Error fetching users:", error);
+                    }
+                });
+
+                document.getElementById("sendNotification").addEventListener("click", async () => {
+                    let selectedTokens = [];
+                    document.querySelectorAll(".user-checkbox:checked").forEach(checkbox => {
+                        selectedTokens.push(checkbox.value);
+                    });
+
+                    if (selectedTokens.length === 0) {
+                        alert("Please select at least one user.");
+                        return;
+                    }
+
+                    let title = document.getElementById("titleInput").value;
+                    let iconFile = document.getElementById("iconInput").files[0];
+                    let message = document.getElementById("messageInput").value;
+
+                    // If an image is selected, upload it or convert it to a URL (for now, just assume it's a URL)
+                    let iconUrl = iconFile ? URL.createObjectURL(iconFile) : null;
+
+                    fetch("/send-notification", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ 
+                            tokens: selectedTokens, 
+                            title, 
+                            message, 
+                            iconUrl 
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => alert(data.message))
+                    .catch(error => console.error("Error:", error));
+                });
+            </script>
         </div>
+    </div>
 </body>
 </html>

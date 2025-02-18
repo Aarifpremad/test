@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-    username: { type: String, required: true },
+    username: { type: String,  },
     nickname: { type: String },
-    mobileno: { type: String, required: true },
+    mobileno: { type: String,  },
     refercode: { type: String, unique: true },
     balance: { type: Number, default: 0 },
     bonus: { type: Number, default: 0 },
@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
     token: { type: String },
     notification : {type : Boolean ,default :true},
     image:{type: String, default: '' },
+    fcmtoken:{type: String, default: '' },
     status : { type: String, default: "Active" },
     walletFrozen : { type: Boolean, default: false },
     spincount: { type: Number, default: 10 },

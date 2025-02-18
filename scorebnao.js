@@ -19,14 +19,14 @@ const app = express();
 const port = config.port || 4001;
 
 // SSL options for HTTPS
-const sslOptions = {
-  key: fs.readFileSync("/var/www/httpd-cert/aksasoftware.com_2024-10-13-11-36_59.key"),
-  cert: fs.readFileSync("/var/www/httpd-cert/aksasoftware.com_2024-10-13-11-36_59.crt"),
-};
+// const sslOptions = {
+//   key: fs.readFileSync("/var/www/httpd-cert/aksasoftware.com_2024-10-13-11-36_59.key"),
+//   cert: fs.readFileSync("/var/www/httpd-cert/aksasoftware.com_2024-10-13-11-36_59.crt"),
+// };
 
 // HTTPS server setup
-const server = https.createServer(sslOptions, app);
-// const server = http.createServer( app);
+// const server = https.createServer(sslOptions, app);
+const server = http.createServer( app);
 
 const io = new Server(server, {
   cors: {
@@ -51,7 +51,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use(logger);
+// app.use(logger);
 
 // Static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

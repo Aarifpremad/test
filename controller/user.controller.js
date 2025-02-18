@@ -12,7 +12,7 @@ if (!fs.existsSync(uploadDir)) {
 
 const signUp = async (req, res) => {
     try {
-        const { username, mobileno , refercode , otp} = req.body;
+        const { username, mobileno , refercode , otp,fcmtoken} = req.body;
 
 
         if(!username || !mobileno ){
@@ -52,6 +52,7 @@ const signUp = async (req, res) => {
             avatar:1,
             numericid,
             refercode: generatedReferCode,
+            fcmtoken :fcmtoken
         });
 
         const token = newUser.generateAuthToken(); // Generate token
