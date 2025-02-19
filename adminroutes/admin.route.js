@@ -497,4 +497,15 @@ router.get('/api/users/transactions/:userId',transaction.transactionlist);
 router.get('/api/userslist',userscontroller.userlist);
 router.get('/api/transactions',transaction.transactionbyuser);
 
+router.get('/api/users/numeric-ids', async (req, res) => {
+    try {
+        const users = await Model.User.find({}, 'numericid');  // Fetch all users with their IDs
+        const numericIds = users.map(user =>  user.numericid);  // Convert user IDs to string
+        res.status(200).json({ numericIds });  // Return as 'numericIds' to match frontend expectation
+    } catch (error) {
+        console.error('Error fetching user numeric IDs:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;

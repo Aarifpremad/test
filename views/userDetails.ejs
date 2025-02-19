@@ -138,7 +138,7 @@
                 <div class="user-details-header">
                     <img src="/bot/<%= user.avatar %>.png" alt="User Image">
                     <div class="user-info">
-                        <h2>UserName:<%= user.username %></h2>
+                        <h5>Name: <%= user.username %></h5>
                         <p>Mobile No: <%= user.mobileno %></p>
                         <p>Email: <%= user.email %></p>
                         <p>Wallet Balance: <%= user.balance %></p>
@@ -255,6 +255,7 @@
                 .then(data => {
                     Swal.fire('Success!', data.message, 'success');
                     document.querySelector('.user-info p:nth-child(4)').textContent = `Wallet Balance: ${data.user.balance}`;
+                    location.reload(); // Reload the page to reflect changes
                 })
                 .catch(error => {
                     Swal.fire('Error!', 'Failed to modify wallet.', 'error');
@@ -283,7 +284,9 @@
                     Swal.fire('Success!', data.message, 'success');
                     const freezeButton = document.querySelector('.btn-freeze');
                     document.querySelector('.user-info p:nth-child(6)').textContent = `Wallet Frozen: ${data.user.walletFrozen ? 'No' : 'Yes'}`;
+                    location.reload(); // Reload the page to reflect changes
                     freezeButton.textContent = data.user.walletFrozen ? 'Unfreeze Wallet' : 'Freeze Wallet';
+
                 })
                 .catch(error => {
                     Swal.fire('Error!', 'Failed to toggle wallet freeze.', 'error');

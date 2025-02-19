@@ -417,6 +417,7 @@ const userlist = async (req, res) => {
                       { username: { $regex: search, $options: 'i' } },
                       { email: { $regex: search, $options: 'i' } },
                       { refercode: { $regex: search, $options: 'i' } },
+                      {mobileno :   { $regex: search, $options: 'i' }}
                   ],
               }
             : {};

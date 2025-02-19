@@ -182,83 +182,61 @@ const transactionlist = async (req, res) => {
 }
 
 const transactionbyuser = async (req, res) => {
-try {
-    console.log("Fetching transactions...");
-    const { search, type, userId, limit, page, orderColumn, orderDir } = req.query;
+    try {
+        console.log("Fetching transactions...");
+        const { search, type, userId, limit, page, orderColumn, orderDir } = req.query;
 
-    // Pagination setup
-    const limitValue = parseInt(limit) || 10;
-    const pageValue = parseInt(page) || 1;
-    const skip = (pageValue - 1) * limitValue;
+        // Pagination setup
+        const limitValue = parseInt(limit) || 10;
+        const pageValue = parseInt(page) || 1;
+        const skip = (pageValue - 1) * limitValue;
 
-    // Build the query
-    const query = {};
-    if (search) {
-        query.$or = [
-            { type: { $regex: search, $options: 'i' } },
-            { status: { $regex: search, $options: 'i' } },
-        ];
-    }
-    if (type) query.type = type;
+        // Build the query
+        const query = {};
 
-
-
-    if (userId) {
-        // Ensure userId is a valid number or string that can be cast to a number
-        const userIdNumber = Number(userId);
-    
-        // Check if it's a valid number before proceeding
-        if (isNaN(userIdNumber)) {
-            return res.status(400).json({ message: 'Invalid userId' });
+        if (search) {
+            query.$or = [
+                { type: { $regex: search, $options: 'i' } },
+                { status: { $regex: search, $options: 'i' } },
+            ];
         }
-    
-        const user = await models.User.find({
-            numericid: userIdNumber, // Apply regex with userId as string
+        if (type) query.type = type;
+        if (userId) {
+            const userIdNumber = Number(userId);
+            if (isNaN(userIdNumber)) {
+                return res.status(400).json({ message: 'Invalid userId' });
+            }
+            const user = await models.User.findOne({ numericid: userIdNumber }).select('_id').lean();
+            query.userId = user._id
+        }
+
+        const columns = ['type', 'amount', 'currentbalance', 'status', 'createdAt'];
+        const sortOptions = {};
+        sortOptions[columns.includes(orderColumn) ? orderColumn : 'createdAt'] = orderDir === 'asc' ? 1 : -1;
+
+        // Execute both queries in parallel for better performance
+        const [transactions, filteredCount, totalCount] = await Promise.all([
+            models.Transaction.find(query)
+                .populate('userId', 'username email numericid')
+                .sort(sortOptions)
+                .skip(skip)
+                .limit(limitValue)
+                .lean(), // Convert to plain JS objects for faster response
+
+            models.Transaction.countDocuments(query),
+            models.Transaction.estimatedDocumentCount() // Faster than countDocuments() for total records
+        ]);
+
+        res.json({
+            transactions,
+            totalRecords: totalCount,
+            filteredRecords: filteredCount,
         });
-    
-        if (!user || user.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-    
-        let getalluserids = user.map((u) => u._id);
-        query.userId = { $in: getalluserids };
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to fetch transactions' });
     }
-    
-
-
-
-    // Sorting setup
-    const columns = ['type', 'amount', 'currentbalance', 'status', 'createdAt'];
-    const sortOptions = {};
-    if (orderColumn && columns.includes(orderColumn)) {
-        sortOptions[orderColumn] = orderDir === 'asc' ? 1 : -1;
-    } else {
-        sortOptions['createdAt'] = -1; // Default sort by createdAt descending
-    }
-
-    // Fetch transactions
-    console.log(query)
-    const transactions = await models.Transaction.find(query).populate('userId', 'username email numericid')
-        .sort(sortOptions)
-        .skip(skip)
-        .limit(limitValue);
-
-    // Get total records count (without any filter)
-    const totalCount = await models.Transaction.countDocuments();
-
-    // Get filtered records count (with filters applied)
-    const filteredCount = await models.Transaction.countDocuments(query);
-
-    res.json({
-        transactions,
-        totalRecords: totalCount,
-        filteredRecords: filteredCount,
-    });
-} catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to fetch transactions' });
-}
-}
+};
 
 
 module.exports = { userTransactions ,withdraw ,deposit,transactionlist,transactionbyuser};

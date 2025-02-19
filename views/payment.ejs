@@ -8,14 +8,13 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
     <style>
-        /* Sidebar and Main Layout Styling */
+        /* Main Layout */
         .main-container {
             display: flex;
             flex-direction: row;
             height: 100vh;
             background-color: #f4f7fc;
         }
-
         .main-content {
             flex: 1;
             padding: 20px;
@@ -25,148 +24,101 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-left: 20px;
         }
-
         /* Table Styling */
-        .dataTables_wrapper .dataTables_length, 
-        .dataTables_wrapper .dataTables_filter {
-            margin-bottom: 10px;
-        }
-
-        .dt-buttons {
-            margin-bottom: 10px;
-        }
-
-        .dataTables_paginate {
-            margin-top: 20px;
-        }
-
         table.dataTable thead {
             background-color: #007bff;
-            color: #ffffff;
+            color: white;
         }
-
         table.dataTable tbody tr:hover {
             background-color: #f1f1f1;
             cursor: pointer;
         }
-
-        .view-button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .view-button:hover {
-            background-color: #218838;
-        }
-
-        /* Responsive Adjustment */
-        @media (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 15px;
-            }
-
-            .dataTables_wrapper {
-                margin-top: 20px;
-            }
-        }
-
-        /* UI Improvement for Filters */
+        /* Filters */
         .filter-container {
+            display: flex;
+            gap: 15px;
             margin-bottom: 15px;
             padding: 10px;
             border-radius: 8px;
             background-color: #f8f9fa;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
         .filter-container label {
             font-weight: 600;
-            margin-right: 8px;
         }
-
-        .filter-container select, .filter-container input {
+        .filter-container select {
             padding: 6px 10px;
-            margin-right: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
             width: 200px;
         }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+
 </head>
 <body>
+
     <!-- Include Header -->
     <%- include('partials/header') %>
 
-        <div class="main-container d-flex">
-            <!-- Include Sidebar -->
-            <%- include('partials/sidebar', { page: 'paymenthistory' }) %>
+    <div class="main-container">
+        <!-- Include Sidebar -->
+        <%- include('partials/sidebar', { page: 'paymenthistory' }) %>
 
-    
-            <!-- Main Content -->
-            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12">
-                <div class="py-4 px-4">
-                    <h3 class="mb-4">Transaction History</h3>
-    
-                    <!-- Filter Section -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <form class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="typeFilter" class="form-label">Filter by Type:</label>
-                                    <select id="typeFilter" class="form-select">
-                                        <option value="">All</option>
-                                        <option value="game">Game</option>
-                                        <option value="spin">Spin</option>
-                                        <option value="deposit">Deposit</option>
-                                        <option value="withdraw">Withdraw</option>
-                                        <option value="referral">Referral</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="userIdFilter" class="form-label">Filter by User ID:</label>
-                                    <input type="text" id="userIdFilter" class="form-control" placeholder="Enter User ID" />
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-    
-                    <!-- Data Table Section -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="transactionTable" class="table table-striped table-bordered nowrap" style="width:100%">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Transaction ID</th>
-                                            <th>User ID</th>
-                                            <th>Type</th>
-                                            <th>Amount</th>
-                                            <th>Current Balance</th>
-                                            <th>Status</th>
-                                            <th>Created At</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Data will be populated dynamically -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <h3 class="mb-4">Transaction History</h3>
+
+            <!-- Filter Section -->
+            <div class="filter-container">
+                <div>
+                    <label for="typeFilter">Filter by Type:</label>
+                    <select id="typeFilter">
+                        <option value="">All</option>
+                        <option value="game">Game</option>
+                        <option value="spin">Spin</option>
+                        <option value="deposit">Deposit</option>
+                        <option value="withdraw">Withdraw</option>
+                        <option value="referral">Referral</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="userIdFilter">Filter by User ID:</label>
+                    <select id="userIdFilter" class="searchable-dropdown">
+                        <option value="">All</option>
+                    </select>
                 </div>
             </div>
 
-    
+            <!-- Data Table -->
+            <div class="table-responsive">
+                <table id="transactionTable" class="table table-striped table-bordered nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>User ID</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Current Balance</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -175,31 +127,55 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    
     <script>
         $(document).ready(function() {
+
+            $('.searchable-dropdown').select2({
+            width: '200px',
+            placeholder: 'Search User ID...',
+            allowClear: true
+         });
+
+            $.ajax({
+                url: '/api/users/numeric-ids',
+                method: 'GET',
+                success: function(response) {
+                    if (response && Array.isArray(response.numericIds)) {
+                        const userIdFilter = $('#userIdFilter');
+                        response.numericIds.forEach(userId => {
+                            userIdFilter.append(new Option(userId, userId));
+                        });
+                    }
+                },
+                error: function(xhr, error, code) {
+                    console.error('Failed to fetch user IDs:', error);
+                }
+            });
+
+            // Initialize DataTable
             var table = $('#transactionTable').DataTable({
                 serverSide: true,
                 processing: true,
-                searching: false,  // Enable search box
-                pageLength: 10,  // Default to 10 records per page
-                dom: 'lBfrtip',  // 'l' - Show entries, 'B' - Buttons, 'f' - Filter, 'r' - Processing, 't' - Table, 'i' - Info, 'p' - Pagination
+                searching: false,  
+                pageLength: 10, 
+                dom: 'lBfrtip',  
                 buttons: [
-                    'excelHtml5', 'pdfHtml5'  // Export buttons for Excel and PDF
+                    'excelHtml5', 'pdfHtml5'  
                 ],
                 ajax: function(data, callback, settings) {
-                    const searchText = settings.search ? settings.search.value : '';
                     const typeFilter = $('#typeFilter').val();
                     const userIdFilter = $('#userIdFilter').val();
                     const limit = data.length || 10;  
                     const page = Math.floor(data.start / limit) + 1;  
                     const orderColumn = (settings.order && settings.order[0]) ? settings.columns[settings.order[0].column].data : 'createdAt';
                     const orderDir = (settings.order && settings.order[0]) ? settings.order[0].dir : 'desc';
-    
+
                     $.ajax({
                         url: '/api/transactions',
                         method: 'GET',
                         data: {
-                            search: searchText,
                             type: typeFilter,
                             userId: userIdFilter,
                             limit: limit,
@@ -208,49 +184,38 @@
                             orderDir: orderDir,
                         },
                         success: function(response) {
-                            if (response && response.transactions && Array.isArray(response.transactions)) {
+                            if (response && response.transactions) {
                                 callback({
                                     draw: settings.draw,
                                     recordsTotal: response.totalRecords,
                                     recordsFiltered: response.filteredRecords,
-                                    data: response.transactions.map(function(transaction) {
-                                        return [
-                                            transaction._id,
-                                            transaction.userId.numericid,
-                                            transaction.type,
-                                            `${transaction.amount}`,
-                                            `${transaction.currentbalance}`,
-                                            transaction.status,
-                                            new Date(transaction.createdAt).toLocaleString(),
-                                        ];
-                                    })
+                                    data: response.transactions.map(transaction => [
+                                        transaction._id,
+                                        transaction.userId.numericid,
+                                        transaction.type,
+                                        `${transaction.amount}`,
+                                        `${transaction.currentbalance}`,
+                                        transaction.status,
+                                        new Date(transaction.createdAt).toLocaleString(),
+                                    ])
                                 });
                             } else {
-                                callback({
-                                    draw: settings.draw,
-                                    recordsTotal: 0,
-                                    recordsFiltered: 0,
-                                    data: []
-                                });
+                                callback({ draw: settings.draw, recordsTotal: 0, recordsFiltered: 0, data: [] });
                             }
                         },
-                        error: function(xhr, error, code) {
-                            callback({
-                                draw: settings.draw,
-                                recordsTotal: 0,
-                                recordsFiltered: 0,
-                                data: []
-                            });
+                        error: function() {
+                            callback({ draw: settings.draw, recordsTotal: 0, recordsFiltered: 0, data: [] });
                         }
                     });
                 }
             });
 
-            // Event listener to reload table on filter change
+            // Reload Table on Filter Change
             $('#typeFilter, #userIdFilter').change(function() {
                 table.ajax.reload();
             });
         });
-    </script>    
+    </script>
+
 </body>
 </html>

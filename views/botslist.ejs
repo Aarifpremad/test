@@ -123,7 +123,7 @@
                                 <th>Bot Name</th>
                                 <th>Nickname</th>
                                 <th>Balance</th>
-                                <th>Profile Picture</th>
+                                <!-- <th>Profile Picture</th> -->
                                 <th>Status</th>
                                 <th>Created At</th>
                                 <th>Actions</th>
@@ -148,10 +148,10 @@
                             <label for="botName" class="form-label">Bot Name</label>
                             <input type="text" id="botName" class="form-control" placeholder="Enter Bot Name">
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="avatar" class="form-label">Profile Picture</label>
                             <input type="file" id="avatar" class="form-control">
-                        </div>
+                        </div> -->
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>
                             <select id="status" class="form-select">
@@ -206,7 +206,7 @@
                         bot.username,
                         bot.nickname || 'N/A',
                         bot.balance,
-                        bot.profilePic ? `<img src="${bot.profilePic}" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A',
+                        // bot.profilePic ? `<img src="${bot.profilePic}" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A',
                         bot.status ? 'Active' : 'Inactive',
                         new Date(bot.createdAt).toLocaleString(),
                         `<button class="view-button edit-btn" data-id="${bot.numericid}">Edit</button>
