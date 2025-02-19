@@ -30,7 +30,8 @@
             </div>
         </div>
     </div>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const prizeList = document.getElementById('prize-list');
     
@@ -105,7 +106,8 @@
                 body: JSON.stringify(prizes),
             });
     
-            alert('Prizes saved successfully!');
+            Swal.fire('Success!', "successfully Save", 'success');
+
         }
     
         // Load prizes on page load

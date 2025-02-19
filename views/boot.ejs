@@ -164,7 +164,8 @@
         </div>
     </div>
     
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.getElementById('createBotForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -177,8 +178,11 @@
                 });
                 const result = await response.json();
                 if (result.success) {
-                    alert('Bot created successfully!');
+                    Swal.fire('Success!', "Bot created successfully!", 'success');
+
+                    // alert('Bot created successfully!');
                     e.target.reset();
+                    window.location ="/botlist"
                 } else {
                     alert('Error: ' + result.message);
                 }

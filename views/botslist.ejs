@@ -116,6 +116,8 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
             var table = $('#botsTable').DataTable({
@@ -178,7 +180,8 @@
                     contentType: 'application/json',
                     data: JSON.stringify({ username: botName, status }),
                     success: function () {
-                        alert('Bot updated successfully!');
+                        Swal.fire('Success!', "successfully update", 'success');
+
                         $('#editModal').hide();
                         table.ajax.reload();
                     },
@@ -191,12 +194,24 @@
             // Delete Bot
             $(document).on('click', '.delete-btn', function () {
                 const botId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this bot?')) {
+                
+            Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to Delete this Bot?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
                     $.ajax({
                         url: `/api/bots/${botId}`,
                         method: 'DELETE',
                         success: function (response) {
-                            alert(response.message || 'Bot deleted successfully!');
+                        Swal.fire('Success!', "successfully Delete Bot", 'success');
+
+                            // alert(response.message || 'Bot deleted successfully!');
                             table.ajax.reload();
                         },
                         error: function () {
@@ -205,7 +220,7 @@
                     });
                 }
             });
-
+        })
             // Close Modal
             $('#closeModal, #cancelBtn').click(function () {
                 $('#editModal').hide();

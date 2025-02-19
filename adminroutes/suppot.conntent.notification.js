@@ -10,15 +10,19 @@ router.get('/api/support', async (req, res) => {
     res.json({ success: true, data: finddata });
 });
 
-router.post('/api/support/update-status', (req, res) => {
+router.post('/api/support/update-status', async (req, res) => {
     const { id, status } = req.body;
-
-    const query = staticSupportData.find(query => query.id == id);
-    if (query) {
-        query.status = status;
-        res.json({ success: true, message: `Status updated to "${status}".` });
-    } else {
-        res.status(404).json({ success: false, message: 'Query not found.' });
+    try {
+        let query = await Model.Enquiry.findOne({ srno: id });
+        if (query) {
+            query.status = status;
+            await query.save();
+            res.json({ success: true, message: `Status updated to "${status}".` });
+        } else {
+            res.status(404).json({ success: false, message: 'Query not found.' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Something went wrong.' });
     }
 });
 

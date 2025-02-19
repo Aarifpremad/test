@@ -101,7 +101,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
             fetchSupportData();
@@ -159,9 +160,11 @@
                         const newStatus = $('#status').val();
                         $.post('/api/support/update-status', { id: data.srno, status: newStatus }, function (res) {
                             if (res.success) {
-                                alert(res.message);
-                                $('#viewModal').modal('hide');
-                                fetchSupportData();
+                                Swal.fire('Success!', "Successfully updated", 'success').then(() => {
+                                    $('#viewModal').modal('hide');
+                                    location.reload();
+                                });
+                            
                             } else {
                                 alert('Failed to update status.');
                             }
@@ -172,13 +175,22 @@
         }
 
         function deleteQuery(id) {
-            if (confirm(`Are you sure you want to delete query ID: ${id}?`)) {
+            Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to Delete ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 $.ajax({
                     url: `/api/support/delete/${id}`,
                     type: 'DELETE',
                     success: function (response) {
                         if (response.success) {
-                            alert(response.message);
+                            Swal.fire('Success!', "successfully Delete", 'success');
                             fetchSupportData();
                         } else {
                             alert('Failed to delete query.');
@@ -189,7 +201,8 @@
                     }
                 });
             }
-        }
+        })
+    }
     </script>
 </body>
 </html>
