@@ -19,7 +19,6 @@
             background-color: rgba(0, 0, 0, 0.5);
             padding-top: 60px;
         }
-
         .modal-content {
             background-color: #fff;
             margin: 5% auto;
@@ -29,7 +28,6 @@
             max-width: 600px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -38,92 +36,43 @@
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
-
-        .modal-footer button {
-            padding: 10px 20px;
+        .delete-button, .edit-button {
+            padding: 6px 12px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
-
-        #saveBtn {
-            background-color: #28a745;
-            color: white;
-        }
-
-        #saveBtn:hover {
-            background-color: #218838;
-        }
-
-        #cancelBtn {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        #cancelBtn:hover {
-            background-color: #5a6268;
-        }
-
-        #closeModal {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        #closeModal:hover {
-            color: red;
-        }
-
         .delete-button {
             background-color: #dc3545;
             color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
         }
-
         .delete-button:hover {
             background-color: #c82333;
         }
-
-        .view-button {
+        .edit-button {
             background-color: #28a745;
             color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
         }
-
-        .view-button:hover {
+        .edit-button:hover {
             background-color: #218838;
         }
     </style>
 </head>
 <body>
-    <!-- Include Header -->
     <%- include('partials/header') %>
-
     <div class="container-fluid">
         <div class="row">
-            <!-- Include Sidebar -->
-                <%- include('partials/sidebar', { page: 'botslist' }) %>
-    
-            <!-- Main Content -->
+            <%- include('partials/sidebar', { page: 'botslist' }) %>
             <div class="col-md-9 col-lg-10 py-4 px-4">
                 <h3 class="mb-4">Bots List</h3>
                 <div class="table-responsive">
-                    <table id="botsTable" class="table table-striped table-bordered nowra table-responsive" style="width:100%">
+                    <table id="botsTable" class="table table-striped table-bordered" style="width:100%">
                         <thead class="table-dark">
                             <tr>
                                 <th>Bot ID</th>
                                 <th>Bot Name</th>
                                 <th>Nickname</th>
                                 <th>Balance</th>
-                                <!-- <th>Profile Picture</th> -->
                                 <th>Status</th>
                                 <th>Created At</th>
                                 <th>Actions</th>
@@ -136,39 +85,33 @@
         </div>
     
         <!-- Edit Bot Modal -->
-        <div id="editModal" class="modal fade" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="editModalLabel">Edit Bot</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Edit Bot</h4>
+                    <button id="closeModal" style="font-size: 20px; cursor: pointer;">×</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="botId">
+                    <div class="mb-3">
+                        <label for="botName">Bot Name</label>
+                        <input type="text" id="botName" class="form-control">
                     </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="botName" class="form-label">Bot Name</label>
-                            <input type="text" id="botName" class="form-control" placeholder="Enter Bot Name">
-                        </div>
-                        <!-- <div class="mb-3">
-                            <label for="avatar" class="form-label">Profile Picture</label>
-                            <input type="file" id="avatar" class="form-control">
-                        </div> -->
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
-                            <select id="status" class="form-select">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label for="status">Status</label>
+                        <select id="status" class="form-control">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">Cancel</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="saveBtn" class="btn btn-success">Save</button>
+                    <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
-    
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -176,95 +119,76 @@
     <script>
         $(document).ready(function () {
             var table = $('#botsTable').DataTable({
-    serverSide: true,
-    processing: true,
-    dom: 'lBfrtip',
-    buttons: ['excelHtml5', 'pdfHtml5'],
-    pageLength: 10,
-    ajax: function (data, callback) {
-        const limit = data.length;
-        const page = Math.floor(data.start / limit) + 1;
-        const searchValue = data.search.value; // Get the search value from DataTable
+                serverSide: true,
+                processing: true,
+                ajax: function (data, callback) {
+                    $.ajax({
+                        url: '/api/bots',
+                        method: 'GET',
+                        data: {
+                            search: data.search.value,
+                            limit: data.length,
+                            page: Math.floor(data.start / data.length) + 1,
+                            orderColumn: data.columns[data.order[0].column].data,
+                            orderDir: data.order[0].dir,
+                        },
+                        success: function (response) {
+                            callback({
+                                draw: data.draw,
+                                recordsTotal: response.totalRecords,
+                                recordsFiltered: response.filteredRecords,
+                                data: response.bots.map(bot => [
+                                    bot.numericid,
+                                    bot.username,
+                                    bot.nickname || 'N/A',
+                                    bot.balance,
+                                    bot.status ? 'Active' : 'Inactive',
+                                    new Date(bot.createdAt).toLocaleString(),
+                                    `<button class="edit-button edit-btn" data-id="${bot.numericid}">Edit</button>
+                                     <button class="delete-button delete-btn" data-id="${bot.numericid}">Delete</button>`
+                                ])
+                            });
+                        }
+                    });
+                }
+            });
 
-        $.ajax({
-            url: '/api/bots',
-            method: 'GET',
-            data: {
-                search: searchValue, // Send the search value to the backend
-                limit,
-                page,
-                orderColumn: data.columns[data.order[0].column].data, // Send the ordered column name
-                orderDir: data.order[0].dir, // Send the order direction
-            },
-            success: function (response) {
-                callback({
-                    draw: data.draw,
-                    recordsTotal: response.totalRecords,
-                    recordsFiltered: response.filteredRecords,
-                    data: response.bots.map(bot => [
-                        bot.numericid,
-                        bot.username,
-                        bot.nickname || 'N/A',
-                        bot.balance,
-                        // bot.profilePic ? `<img src="${bot.profilePic}" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A',
-                        bot.status ? 'Active' : 'Inactive',
-                        new Date(bot.createdAt).toLocaleString(),
-                        `<button class="view-button edit-btn" data-id="${bot.numericid}">Edit</button>
-                         <button class="delete-button delete-btn" data-id="${bot.numericid}">Delete</button>`
-                    ])
-                });
-            }
-        });
-    }
-});
-
-            // Handle Edit button click
+            // Open Edit Modal
             $(document).on('click', '.edit-btn', function () {
                 const botId = $(this).data('id');
-                $.ajax({
-                    url: `/api/bots/${botId}`,
-                    method: 'GET',
-                    success: function (response) {
-                        if (response && response.bot) {
-                            $('#botName').val(response.bot.username);
-                            $('#status').val(response.bot.status ? 'active' : 'inactive');
-                            $('#editModal').data('botId', botId).show();
-                        }
+                $.get(`/api/bots/${botId}`, function (response) {
+                    if (response.bot) {
+                        $('#botId').val(botId);
+                        $('#botName').val(response.bot.username);
+                        $('#status').val(response.bot.status ? 'active' : 'inactive');
+                        $('#editModal').show();
                     }
                 });
             });
 
-            // Handle Save Button Click
-            $('#saveBtn').on('click', function () {
-                const botId = $('#editModal').data('botId');
+            // Save Bot Changes
+            $('#saveBtn').click(function () {
+                const botId = $('#botId').val();
                 const botName = $('#botName').val();
-                const status = $('#status').val();
-
-                var formData = new FormData();
-                formData.append('username', botName);
-                formData.append('status', status === 'active');
-
-                const avatar = $('#avatar')[0].files[0];
-                if (avatar) formData.append('avatar', avatar);
+                const status = $('#status').val() === 'active';
 
                 $.ajax({
                     url: `/api/bots/${botId}`,
                     method: 'PUT',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
+                    contentType: 'application/json',
+                    data: JSON.stringify({ username: botName, status }),
                     success: function () {
                         alert('Bot updated successfully!');
                         $('#editModal').hide();
                         table.ajax.reload();
                     },
                     error: function () {
-                        alert('Failed to update the bot!');
+                        alert('Failed to update bot!');
                     }
                 });
             });
 
-            // Handle Delete Button Click
+            // Delete Bot
             $(document).on('click', '.delete-btn', function () {
                 const botId = $(this).data('id');
                 if (confirm('Are you sure you want to delete this bot?')) {
@@ -276,15 +200,21 @@
                             table.ajax.reload();
                         },
                         error: function () {
-                            alert('Failed to delete the bot!');
+                            alert('Failed to delete bot!');
                         }
                     });
                 }
             });
 
             // Close Modal
-            $('#closeModal, #cancelBtn').on('click', function () {
+            $('#closeModal, #cancelBtn').click(function () {
                 $('#editModal').hide();
+            });
+
+            $(window).click(function (event) {
+                if (event.target.id === 'editModal') {
+                    $('#editModal').hide();
+                }
             });
         });
     </script>
