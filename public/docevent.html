@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket Events Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        .event-section {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Socket Events Documentation</h1>
+
+    <div class="event-section">
+        <h2>1. roomjoin</h2>
+        <p><strong>Description:</strong> Triggered when a user joins a room.</p>
+        <p><strong>Parameters (Sent by User):</strong></p>
+        <pre>{
+    "roomid": "string", // Unique Room ID
+    "betamount": "number" // Bet amount placed by the user
+}</pre>
+        <p><strong>Response (Emitted to Client):</strong></p>
+        <p><em>To the joining user: eventname -> playerjoin</em></p>
+        <pre>{
+    "player": { "id": "string", "username": "string", "balance": "number" },
+    "roomid": "string"
+}</pre>
+        <p><em>To all users in the room: eventname -> allPlayers</em></p>
+        <pre>{
+    "players": [{ "id": "string", "username": "string" }],
+    "roomid": "string"
+}</pre>
+        <p><strong>Error Response: eventname -> error</strong></p>
+        <pre>{
+    "message": "string" // e.g., "Insufficient balance!" or "User not found!"
+}</pre>
+    </div>
+
+    <div class="event-section">
+        <h2>2. gamestart</h2>
+        <p><strong>Description:</strong> Triggered when the game starts in a room.</p>
+        <p><strong>Parameters (Sent by User/Admin):</strong></p>
+        <pre>{
+    "roomid": "string",
+    "noofplayer": "number",
+    "players": [{ "userId": "string", "username": "string" }],
+    "betamount": "number",
+    "timeduration": "number"
+}</pre>
+        <p><strong>Response (Emitted to All Players in Room):</strong></p>
+        <pre>{
+    "message": "Game has started!",
+    "status": "start",
+    "noofplayer": "number",
+    "players": [{ "userId": "string", "username": "string" }],
+    "betamount": "number",
+    "timeduration": "number"
+}</pre>
+        <p><strong>Error Response:</strong></p>
+        <pre>{
+    "message": "Room already exists!"
+}</pre>
+    </div>
+
+    <div class="event-section">
+        <h2>3. gameend</h2>
+        <p><strong>Description:</strong> Triggered when a game ends and results are processed.</p>
+        <p><strong>Parameters (Sent by User/Admin):</strong></p>
+        <pre>{
+    "roomid": "string",
+    "players": [
+        { "userId": "string", "username": "string", "rank": "number" }
+    ]
+}</pre>
+        <p><strong>Response (Emitted to All Players in Room):</strong></p>
+        <pre>{
+    "message": "Game has ended!",
+    "status": "end",
+    "players": [
+        { "userId": "string", "username": "string", "rank": "number" }
+    ]
+}</pre>
+        <p><strong>Error Response:</strong></p>
+        <pre>{
+    "message": "Room not found!"
+}</pre>
+        <p><strong>Winner Transaction Response (Emitted to Winner):</strong></p>
+        <pre>{
+    "message": "You won ₹amount!",
+    "amount": "number"
+}</pre>
+    </div>
+</body>
+</html>
