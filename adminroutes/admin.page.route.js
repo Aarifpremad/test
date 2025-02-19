@@ -98,8 +98,12 @@ router.get('/tournament/list',authenticateSessionadmin, (req, res) => {
 router.get('/poll/list',authenticateSessionadmin, (req, res) => {
     res.render('poollist', { title: 'poollist', page: 'poollist' });
 });
-router.get('/adminprofile',authenticateSessionadmin, (req, res) => {
-    res.render('profile', { title: 'profile', page: 'profile' });
+router.get('/adminprofile',authenticateSessionadmin, async (req, res) => {
+    let  admin = await Model.Admin.findOne();
+    if (!admin) {
+        return res.status(404).send('Admin not found');
+    }
+    res.render('profile', { title: 'profile', page: 'profile' ,admin});
 });
 
 module.exports = router;
