@@ -7,7 +7,13 @@
     <link rel="stylesheet" href="/dashboard.css">
     <link rel="stylesheet" href="/speen.css">
     <link rel="stylesheet" href="/tournament.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-datepicker/1.12.1/jquery-ui.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-datepicker/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <%- include('partials/header') %>
@@ -28,12 +34,18 @@
                         <textarea id="tournamentDescription" name="tournamentDescription" placeholder="Enter tournament description" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="startDate">Start Date:</label>
-                        <input type="datetime-local" id="startDate" name="startDate" required />
+                        <label>Start Date & Time:</label>
+                        <div class="date-time-container" style="display: flex;">
+                            <input type="text" id="startDate" name="startDate" class="date-picker" placeholder="DD/MM/YYYY" required />
+                            <input type="time" id="startTime" name="startTime" required />
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="endDate">End Date:</label>
-                        <input type="date" data-date="" data-date-format="DD MMMM YYYY"  value="" id="endDate" name="endDate" required />
+                        <label>End Date & Time:</label>
+                        <div class="date-time-container" style="display: flex;">
+                            <input type="text" id="endDate" name="endDate" class="date-picker" placeholder="DD/MM/YYYY" required />
+                            <input type="time" id="endTime" name="endTime" required />
+                        </div>
                     </div>
                     
                                     
@@ -108,9 +120,16 @@
             </form>
         </div>
     </div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+
+            $(document).ready(function() {
+            $(".date-picker").datepicker({
+                dateFormat: "dd/mm/yy",
+                changeMonth: true,
+                changeYear: true
+            });
+            });
         document.getElementById('tournamentForm').addEventListener('submit', async function (event) {
             event.preventDefault();
     

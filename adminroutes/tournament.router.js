@@ -12,11 +12,14 @@ const isValidDate = (date) => {
   
   router.post('/api/create-tournament', upload.single('thumbnail'), async (req, res) => {
     try {
+      console.log(req.body)
       const {
         tournamentName,
         tournamentDescription,
         startDate,
         endDate,
+        startTime,
+        endTime,
         gameMode,
         entryFee,
         maxUsers,
@@ -32,10 +35,6 @@ const isValidDate = (date) => {
         return res.status(400).json({ message: 'Thumbnail is required' });
       }
   
-      // Validate dates
-      if (!isValidDate(startDate) || !isValidDate(endDate)) {
-        return res.status(400).json({ message: 'Invalid date format for startDate or endDate' });
-      }
   
       // Validate rank, prizeType, and prizeValue consistency
       if (!Array.isArray(rank) || !Array.isArray(prizeType) || !Array.isArray(prizeValue)) {
@@ -56,8 +55,10 @@ const isValidDate = (date) => {
       const newTournament = new Tournament({
         tournamentName,
         tournamentDescription,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
+        startDate: startDate,
+        endDate: endDate,
+        startTime: startDate,
+        endTime: endDate,
         gameMode,
         entryFee: parseFloat(entryFee),
         maxUsers: parseInt(maxUsers),
