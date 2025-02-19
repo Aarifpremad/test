@@ -5,7 +5,7 @@ const moment = require('moment');
 
 router.post('/api/management', async (req, res) => {
     const { commission, referral, bonus, rewards } = req.body;
-
+    console.log("8878787")
     if (!commission || !referral || !bonus || !rewards) {
         return res.status(400).json({ success: false, error: 'All fields are required.' });
     }

@@ -100,7 +100,8 @@
             <textarea id="messageInput" rows="3" placeholder="Enter your message..."></textarea>
             
             <button id="sendNotification">Send Notification</button>
-
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
                 const firebaseConfig = {
                    apiKey: "AIzaSyBuK1cJIqbDvCPWgyoVSH8pltkb5-mMwS8",
@@ -173,7 +174,9 @@
                         })
                     })
                     .then(response => response.json())
-                    .then(data => alert(data.message))
+                    .then(data =>{
+                        Swal.fire('Success!', "successfully send message", 'success');
+                    })
                     .catch(error => console.error("Error:", error));
                 });
             </script>

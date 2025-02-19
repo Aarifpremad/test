@@ -110,7 +110,8 @@
                 </div>
         </div>
     </div>
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         // Handle Form Submission
@@ -134,10 +135,11 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Settings updated successfully!');
+                        Swal.fire('Success!', "Settings updated successfully!", 'success');
+                        // alert('Settings updated successfully!');
                         location.reload(); // Refresh page to show updated values
                     } else {
-                        alert('Failed to update settings.');
+                        Swal.fire('Success!', "Failed to update settings.", 'success');
                     }
                 })
                 .catch(error => console.error('Error:', error));
