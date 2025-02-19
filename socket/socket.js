@@ -1,7 +1,7 @@
-const User = require('../models/user'); 
-const Transaction = require('../models/transaction'); 
-const Room = require("../models/room");
-
+// const User = require('../models/user'); 
+// const Transaction = require('../models/transaction'); 
+// const Room = require("../models/room");
+const Model = require("../models/model")
 const onlineUsers = new Set();
 
 let socketevents = (socket, io) => {
@@ -42,14 +42,14 @@ let socketevents = (socket, io) => {
         socket.emit("allPlayers", { players, roomid });
 
         try {
-            let foundUser = await User.findById(user.id);
+            let foundUser = await Model.User.findById(user.id);
             if (!foundUser) return socket.emit("error", { message: "User not found!" });
 
             if (foundUser.balance >= betamount) {
                 foundUser.balance -= betamount;
                 await foundUser.save();
 
-                const newTransaction = new Transaction({
+                const newTransaction = new Model.Transaction({
                     userId: user.id,
                     amount: betamount,
                     type: 'debit',
@@ -71,10 +71,10 @@ let socketevents = (socket, io) => {
         let { roomid, noofplayer, players, betamount, timeduration } = data;
 
         try {
-            let existingRoom = await Room.findOne({ roomId: roomid });
+            let existingRoom = await Model.Room.findOne({ roomId: roomid });
             if (existingRoom) return socket.emit("error", { message: "Room already exists!" });
 
-            const newRoom = new Room({
+            const newRoom = new Model.Room({
                 roomId: roomid,
                 gameType: "ludo",
                 participants: players.map((p) => p.userId),
@@ -107,7 +107,7 @@ let socketevents = (socket, io) => {
         let { roomid, players } = data;
 
         try {
-            let room = await Room.findOne({ roomId: roomid });
+            let room = await Model.Room.findOne({ roomId: roomid });
             if (!room) return socket.emit("error", { message: "Room not found!" });
 
             let winner = players.find((p) => p.rank === 1);
@@ -134,7 +134,7 @@ function saveGameHistory(roomid) {
 
 async function processTransactions(roomid, players) {
     try {
-        let room = await Room.findOne({ roomId: roomid });
+        let room = await Model.Room.findOne({ roomId: roomid });
         if (!room) {
             console.error(`Room ${roomid} not found for transactions!`);
             return;
@@ -144,14 +144,14 @@ async function processTransactions(roomid, players) {
         let winner = players.find((p) => p.rank === 1);
         if (!winner) return console.error("No winner found!");
 
-        let winnerUser = await User.findById(winner.userId);
+        let winnerUser = await Model.User.findById(winner.userId);
         if (!winnerUser) return console.error("Winner user not found!");
 
         let prizeAmount = totalBetAmount;
         winnerUser.balance += prizeAmount;
         await winnerUser.save();
 
-        const transaction = new Transaction({
+        const transaction = new Model.Transaction({
             userId: winnerUser._id,
             roomId: roomid,
             amount: prizeAmount,
