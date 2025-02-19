@@ -218,8 +218,8 @@
                                             transaction._id,
                                             transaction.userId.numericid,
                                             transaction.type,
-                                            `$${transaction.amount}`,
-                                            `$${transaction.currentbalance}`,
+                                            `${transaction.amount}`,
+                                            `${transaction.currentbalance}`,
                                             transaction.status,
                                             new Date(transaction.createdAt).toLocaleString(),
                                         ];

@@ -62,6 +62,31 @@ router.get('/api/dashboard-data', async (req, res) => {
             .limit(4)
             .select('username balance avatar'); 
 
+        let totaldeposit = await Model.Transaction.aggregate([
+            { $match: { type: 'deposit' } },
+            { $group: { _id: null, total: { $sum: "$amount" } } }
+        ]);
+
+        let totalwithdrowl = await Model.Transaction.aggregate([
+            { $match: { type: 'withdraw' } },
+            { $group: { _id: null, total: { $sum: "$amount" } } }
+        ]);
+
+        let totalreferlamount = await Model.Transaction.aggregate([
+            { $match: { type: 'referral' } },
+            { $group: { _id: null, total: { $sum: "$amount" } } }
+        ]);
+
+        totaldeposit = totaldeposit[0] ? totaldeposit[0].total : 0;
+        totalwithdrowl = totalwithdrowl[0] ? totalwithdrowl[0].total : 0;
+        totalreferlamount = totalreferlamount[0] ? totalreferlamount[0].total : 0;
+
+        const avtivtournament = await Model.Tournament.countDocuments({ status: 'draft' });
+        const todayrooms = await Model.Room.countDocuments({
+            createdAt: { $gte: startOfDay.toDate(), $lte: endOfDay.toDate() }
+        });
+        const activebots = await Model.Bot.countDocuments({ status: true });
+
         const data = {
             totalUsers,
             newUsers,
@@ -69,8 +94,14 @@ router.get('/api/dashboard-data', async (req, res) => {
             topUsers,
             totalRevenue :0,
             totalCommissions :0,
-
+            totaldeposit,
+            totalwithdrowl ,
+            totalreferlamount ,
+            avtivtournament ,
+            todayrooms ,
+            activebots ,
         };
+        console.log(data)
         res.json(data);
     } catch (error) {
         console.error('something went wrong', error);

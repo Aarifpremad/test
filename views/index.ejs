@@ -1,122 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/dashboard.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for graph -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body>
-    <!-- Include Header -->
-    <%- include('partials/header') %>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title><%= title %></title>
+        <link rel="stylesheet" href="/dashboard.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for graph -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    </head>
+    <body>
+        <!-- Include Header -->
+        <%- include('partials/header') %>
 
-    <div class="main-container d-flex">
-        <!-- Include Sidebar -->
-        <%- include('partials/sidebar', { page: 'dashboard' }) %>
+        <div class="main-container d-flex">
+            <!-- Include Sidebar -->
+            <%- include('partials/sidebar', { page: 'dashboard' }) %>
 
-        <!-- Main Content -->
-        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12">
-            <div class="main-content" id="dashboard-container">
-                <!-- Dashboard Cards -->
-                 <div class="card px-3 py-3">
-                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Total Users</h3>
-                                 <a href="/userlist"><p id="total-users" class="dashboard-text">--</p></a>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Online Users</h3>
-                                 <p id="total-online-users" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Today New Users</h3>
-                                 <p id="new-users" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Total Revenue</h3>
-                                 <p id="total-revenue" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Total Commissions</h3>
-                                 <p id="total-commissions" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Total Deposit</h3>
-                                 <p id="total-deposit" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Total Withdrawal</h3>
-                                 <p id="total-withdrawal" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Total Referral Amount</h3>
-                                 <p id="total-referral" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Active Tournament</h3>
-                                 <p id="active-tournament" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Active Pool</h3>
-                                 <p id="active-pool" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Today Rooms</h3>
-                                 <p id="today-rooms" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
-                             <div class="dashboard-card rounded shadow card">
-                                 <h3>Active Bots</h3>
-                                 <p id="active-bots" class="dashboard-text">--</p>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-
-                <!-- Graph and Top Users Section -->
-                <div class="row mt-4">
-                    <!-- Graph Section -->
-                    <div class="col-md-8">
-                        <div class="graph-container card shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">User Statistics</h5>
-                                <canvas id="user-stats-chart"></canvas>
+            <!-- Main Content -->
+            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 col-12">
+                <div class="main-content" id="dashboard-container">
+                    <!-- Dashboard Cards -->
+                    <div class="card px-3 py-3">
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Total Users</h3>
+                                    <a href="/userlist"><p id="total-users" class="dashboard-text">--</p></a>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Online Users</h3>
+                                    <p id="total-online-users" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Today New Users</h3>
+                                    <p id="new-users" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Total Revenue</h3>
+                                    <p id="total-revenue" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Total Commissions</h3>
+                                    <p id="total-commissions" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Total Deposit</h3>
+                                    <p id="total-deposit" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Total Withdrawal</h3>
+                                    <p id="total-withdrawal" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Total Referral Amount</h3>
+                                    <p id="total-referral" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Active Tournament</h3>
+                                    <p id="active-tournament" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Today Rooms</h3>
+                                    <p id="today-rooms" class="dashboard-text">--</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-6 mt-4 mb-3">
+                                <div class="dashboard-card rounded shadow card">
+                                    <h3>Active Bots</h3>
+                                    <p id="active-bots" class="dashboard-text">--</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Top Users Section -->
-                    <div class="col-md-4">
-                        <div class="top-users-container card shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">Recent Users</h5>
-                                <div id="top-users">
-                                    <!-- User details dynamically populated -->
+                    <!-- Graph and Top Users Section -->
+                    <div class="row mt-4">
+                        <!-- Graph Section -->
+                        <div class="col-md-8">
+                            <div class="graph-container card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">User Statistics</h5>
+                                    <canvas id="user-stats-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Users Section -->
+                        <div class="col-md-4">
+                            <div class="top-users-container card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Recent Users</h5>
+                                    <div id="top-users">
+                                        <!-- User details dynamically populated -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -124,75 +119,82 @@
                 </div>
             </div>
         </div>
-    </div>
 
 
-    <script>
-        // API Integration Example
-        async function fetchDashboardData() {
-            try {
-                const response = await fetch('/api/dashboard-data'); // Update this endpoint as per your backend API
-                const data = await response.json();
+        <script>
+            // API Integration Example
+            async function fetchDashboardData() {
+                try {
+                    const response = await fetch('/api/dashboard-data'); // Update this endpoint as per your backend API
+                    const data = await response.json();
 
-                // Update dashboard cards
-                document.getElementById('total-users').textContent = data.totalUsers;
-                document.getElementById('total-revenue').textContent = `${data.totalRevenue}`;
-                document.getElementById('new-users').textContent = data.newUsers;
-                document.getElementById('total-commissions').textContent = data.totalCommissions;
+                    // Update dashboard cards
+                    console.log(data)
+                    document.getElementById('total-users').textContent = data.totalUsers;
+                    document.getElementById('total-online-users').textContent = 0;
+                    document.getElementById('new-users').textContent = data.newUsers;
+                    document.getElementById('total-revenue').textContent = `${data.totalRevenue}`;
+                    document.getElementById('total-commissions').textContent = data.totalCommissions;
+                    document.getElementById('total-deposit').textContent = data.totaldeposit;
+                    document.getElementById('total-withdrawal').textContent = data.totalwithdrowl;
+                    document.getElementById('total-referral').textContent = data.totalreferlamount;
+                    document.getElementById('active-tournament').textContent = data.avtivtournament;
+                    document.getElementById('today-rooms').textContent = data.todayrooms;
+                    document.getElementById('active-bots').textContent = data.activebots;
 
-                // Update graph
-                updateGraph(data.monthlyUserStats);
+                    // Update graph
+                    updateGraph(data.monthlyUserStats);
 
-                // Update top users
-                updateTopUsers(data.topUsers);
-            } catch (error) {
-                console.error('Error fetching dashboard data:', error);
+                    // Update top users
+                    updateTopUsers(data.topUsers);
+                } catch (error) {
+                    console.error('Error fetching dashboard data:', error);
+                }
             }
-        }
 
-        // Update Graph
-        function updateGraph(monthlyUserStats) {
-            const ctx = document.getElementById('user-stats-chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: monthlyUserStats.labels,
-                    datasets: [{
-                        label: 'Users (Monthly)',
-                        data: monthlyUserStats.data,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
+            // Update Graph
+            function updateGraph(monthlyUserStats) {
+                const ctx = document.getElementById('user-stats-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: monthlyUserStats.labels,
+                        datasets: [{
+                            label: 'Users (Monthly)',
+                            data: monthlyUserStats.data,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
                         },
                     },
-                },
-            });
-        }
+                });
+            }
 
-        // Update Top Users
-        function updateTopUsers(topUsers) {
-            const topUsersContainer = document.getElementById('top-users');
-            topUsersContainer.innerHTML = ''; // Clear existing users
-            topUsers.forEach(user => {
-                const userCard = document.createElement('div');
-                userCard.classList.add('user-card');
-                userCard.innerHTML = `
-                    <img src= "/bot/${user.avatar}.png " alt="image" class="user-image">
-                    <p><strong>${user.username}</strong></p>
-                    <p>Balance: ${user.balance}</p>
-                `;
-                topUsersContainer.appendChild(userCard);
-            });
-        }
+            // Update Top Users
+            function updateTopUsers(topUsers) {
+                const topUsersContainer = document.getElementById('top-users');
+                topUsersContainer.innerHTML = ''; // Clear existing users
+                topUsers.forEach(user => {
+                    const userCard = document.createElement('div');
+                    userCard.classList.add('user-card');
+                    userCard.innerHTML = `
+                        <img src= "/bot/${user.avatar}.png " alt="image" class="user-image">
+                        <p><strong>${user.username}</strong></p>
+                        <p>Balance: ${user.balance}</p>
+                    `;
+                    topUsersContainer.appendChild(userCard);
+                });
+            }
 
-        fetchDashboardData();
-    </script>
-</body>
-</html>
+            fetchDashboardData();
+        </script>
+    </body>
+    </html>
