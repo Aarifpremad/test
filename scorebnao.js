@@ -89,19 +89,6 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB file size limit
 });
 
-// Upload routes
-app.get("/upload-images", (req, res) => {
-  res.render("uploadimages", { message: null });
-});
-
-app.post("/upload-images", upload.array("images", 10), (req, res) => {
-  if (req.files && req.files.length > 0) {
-    res.render("uploadimages", { message: "Images uploaded successfully!" });
-  } else {
-    res.render("uploadimages", { message: "Please select images to upload." });
-  }
-});
-
 // Socket.IO setup
 io.use(socketauth);
 io.on("connection", (socket) => {
