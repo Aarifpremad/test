@@ -181,6 +181,58 @@
                 });
             </script>
         </div>
+
+        <table id="notificationTable" class="display">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Message</th>
+                    <th>Icon</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+        </table>
+        <button id="deleteAllBtn">Delete All Notifications</button>
+
     </div>
+
+    <script>
+        $(document).ready(function() {
+            let table = $('#notificationTable').DataTable({
+                ajax: '/get-notifications',
+                columns: [
+                    { data: 'title' },
+                    { data: 'message' },
+                    { data: 'iconUrl', render: data => data ? `<img src="${data}" width="50">` : 'No Icon' },
+                    { data: 'createdAt', render: data => new Date(data).toLocaleString() },
+                    { data: '_id', render: id => `<button class='delete-btn' data-id='${id}'>Delete</button>` }
+                ]
+            });
+        
+            $('#notificationTable').on('click', '.delete-btn', function() {
+                let notificationId = $(this).data('id');
+                $.ajax({
+                    url: `/delete-notification/${notificationId}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success');
+                        table.ajax.reload();
+                    }
+                });
+            });
+        
+            $('#deleteAllBtn').click(function() {
+                $.ajax({
+                    url: '/delete-all-notifications',
+                    type: 'DELETE',
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success');
+                        table.ajax.reload();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

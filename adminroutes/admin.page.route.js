@@ -88,6 +88,25 @@ router.get('/botlist',authenticateSessionadmin, (req, res) => {
 router.get('/tournament',authenticateSessionadmin, (req, res) => {
     res.render('tournament', { title: 'tournament', page: 'tournament' });
 });
+router.get('/tournamentview/:id',authenticateSessionadmin, async (req, res) => {
+    try{
+    const tournamentId = req.params.id;
+    const tournament = await Model.Tournament.findById(tournamentId);
+
+    if (!tournament) {
+        return res.status(404).send("Tournament not found!");
+    }
+
+    res.render('tournamentview', { 
+        title: 'Tournament Details', 
+        page: 'tournament', 
+        tournament 
+    });
+} catch (error) {
+    console.error("Error fetching tournament:", error);
+    res.status(500).send("Internal Server Error");
+}
+});
 router.get('/pool',authenticateSessionadmin, (req, res) => {
     console.log("yaya")
     res.render('pool', { title: 'pool', page: 'pool' });
