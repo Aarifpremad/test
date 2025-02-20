@@ -118,6 +118,46 @@ const isValidDate = (date) => {
     }
   });
   
-  
+
+  router.get('/api/tournament-rooms/:tournamentId', async (req, res) => {
+    try {
+      const { tournamentId } = req.params;
+      const { start = 0, length = 10, search = '', order = [] } = req.query;
+
+      const tournament = await Tournament.findById(tournamentId);
+
+      if (!tournament) {
+        return res.status(404).json({ message: 'Tournament not found' });
+      }
+
+      // Assuming rooms are part of the tournament document
+      let rooms = tournament.rooms || [];
+
+      // Search by room name or other criteria
+      if (search) {
+        rooms = rooms.filter(room => room.name.toLowerCase().includes(search.value.toLowerCase()));
+      }
+
+      // Sort rooms
+      if (order.length) {
+        const sortField = order[0].column;
+        const sortOrder = order[0].dir === 'asc' ? 1 : -1;
+        rooms = rooms.sort((a, b) => (a[sortField] > b[sortField] ? sortOrder : -sortOrder));
+      }
+
+      const totalRecords = rooms.length;
+      const paginatedRooms = rooms.slice(parseInt(start), parseInt(start) + parseInt(length));
+
+      res.json({
+        draw: req.query.draw || 1,
+        recordsTotal: totalRecords,
+        recordsFiltered: totalRecords,
+        data: paginatedRooms,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to fetch tournament rooms', error });
+    }
+  });
 
 module.exports = router;

@@ -23,6 +23,7 @@ const roomSchema = new mongoose.Schema(
       default: "waiting",
     }, // Room status
     timeduration: { type: Number, default: 60 }, // Game duration
+    tournamentId: { type: mongoose.Schema.Types.ObjectId, ref: "Tournament", default: null } // Tournament ID reference
   },
   { timestamps: true }
 );

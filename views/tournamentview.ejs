@@ -200,18 +200,31 @@
                         <h2><%= tournament.tournamentName %></h2>
                         <p><strong>Description:</strong> <%= tournament.tournamentDescription %></p>
                         <p><strong>Start Date:</strong> <%= tournament.startDate %></p>
+                        <p><strong>Start Time:</strong> <%= tournament.startTime %></p>
                         <p><strong>End Date:</strong> <%= tournament.endDate %></p>
+                        <p><strong>End Time:</strong> <%= tournament.endTime %></p>
                         <p><strong>Status:</strong> <%= tournament.status %></p>
+                    </div>
+                    <div class="tournament-info">
+                        <h2><%= tournament.tournamentid %></h2>
+                        <p><strong>Entry Fee:</strong> <%= tournament.entryFee %></p>
+                        <p><strong>Max Users:</strong> <%= tournament.maxUsers %></p>
+                        <p><strong>Max Room Size:</strong> <%= tournament.maxRoomSize %></p>
+                        <p><strong>Game Mode:</strong> <%= tournament.gameMode %></p>
                     </div>
                 </div>
 
                 <div class="tournament-actions">
                     <button class="btn-edit" onclick="openStatusModal('<%= tournament.tournamentid %>')">Update Status</button>
                     <button class="btn-delete" onclick="deleteTournament('<%= tournament.tournamentid %>')">Delete</button>
-                    <button class="btn-back" onclick="upcomming()">Tournament Rooms</button>
+                    <button class="btn-back" onclick="toggleRooms()">Tournament Rooms</button>
                     <button class="btn-back" onclick="sendNotification()">Send Notification</button>
                 </div>
+
             </div>
+            
+            <div id="roomsContainer"></div>
+
         </div>
     </div>
 
@@ -239,9 +252,13 @@
         </div>
     </div>
 
-    <div id="upcomingRoomsModal" class="modal">
-        <div class="modal-content" style="width: 60%;">
-            <span class="close" onclick="closeUpcomingRoomsModal()">&times;</span>
+<script>
+function toggleRooms() {
+    let container = document.getElementById("roomsContainer");
+
+    if (container.innerHTML.trim() === "") {
+        // Agar table exist nahi karta, toh create karo
+        container.innerHTML = `
             <h2>Upcoming Rooms</h2>
             <table id="upcomingRoomsTable" class="display" style="width: 100%;">
                 <thead>
@@ -254,17 +271,11 @@
                     </tr>
                 </thead>
             </table>
-        </div>
-    </div>
+        `;  
 
-    <script>
-        function upcomming() {
-    $('#upcomingRoomsModal').show();  // Modal ko show karna
-
-    if (!$.fn.DataTable.isDataTable('#upcomingRoomsTable')) {
         $('#upcomingRoomsTable').DataTable({
             ajax: {
-                url: `/api/upcoming-rooms/<%= tournament.tournamentid %>`,
+                url: `/api/tournament-rooms/<%= tournament._id %>`,
                 dataSrc: 'data'
             },
             columns: [
@@ -277,15 +288,11 @@
             destroy: true
         });
     } else {
+        // Agar table pehle se exist karta hai, toh sirf data reload karo
         $('#upcomingRoomsTable').DataTable().ajax.reload();
     }
 }
-
-function closeUpcomingRoomsModal() {
-    $('#upcomingRoomsModal').hide();
-}
-
-    </script>
+</script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
