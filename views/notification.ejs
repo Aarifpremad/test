@@ -14,6 +14,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 10px;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -64,11 +67,11 @@
             background-color: #0056b3;
         }
         .user-list {
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 5px;
+            padding: 5px;
             background: #f9f9f9;
             border-radius: 5px;
-            max-height: 200px;
+            max-height: 100px;
             overflow-y: auto;
             border: 1px solid #ddd;
         }
@@ -104,7 +107,7 @@
 
             <button id="sendNotification">Send Notification</button>
 
-            <h2>Notification List</h2>
+            <h2 style="margin-top: 15px;">Notification List</h2>
             <table id="notificationTable" class="display">
                 <thead>
                     <tr>
@@ -193,7 +196,10 @@
             body: formData
             })
             .then(response => response.json())
-            .then(data => Swal.fire('Success!', "Successfully sent message", 'success'))
+            .then(data => {
+                Swal.fire('Success!', "Successfully sent message", 'success');
+                location.reload();
+            })
             .catch(error => console.error("Error:", error));
         });
 
