@@ -1,21 +1,24 @@
 let express = require("express");
 let router = express.Router();
 let Model = require("../models/model") 
+const admin = require("firebase-admin");
+const fs = require("fs");
+const upload = require('../service/imageupload'); // Multer middleware for file upload
 
-const { sendNotification, sendBulkNotification } = require("../firebase"); // Import notification functions
-
-
-router.post("/send-notification", async (req, res) => {
+router.post("/send-notification",upload.single('icon'), async (req, res) => {
+    try {
   const { tokens, title, message, iconUrl } = req.body;
-
-  const newNotification = new Model.Notification({ title, message, iconUrl });
+  let createnot = {
+    title, message,
+    iconUrl: `/uploads/${req.file.filename}`,
+  }
+  const newNotification = new Model.Notification(createnot);
   await newNotification.save();
 
   if (!tokens || !title || !message) {
     return res.status(400).json({ error: "Missing required fields (tokens, title, or message)" });
   }
 
-  try {
     await sendNotification(tokens, title, message, iconUrl);
     res.json({ success: true, message: "Notification sent successfully" });
   } catch (error) {
@@ -24,7 +27,6 @@ router.post("/send-notification", async (req, res) => {
   }
 });
 
-// Send notification to multiple users
 router.post("/send-bulk-notification", async (req, res) => {
   const { tokens, title, body } = req.body;
   if (!tokens || !Array.isArray(tokens) || tokens.length === 0 || !title || !body) {
@@ -48,7 +50,6 @@ router.get('/get-notifications', async (req, res) => {
     }
 });
 
-// Delete a Single Notification
 router.delete('/delete-notification/:id', async (req, res) => {
     try {
         await Model.Notification.findByIdAndDelete(req.params.id);
@@ -68,3 +69,46 @@ router.delete('/delete-all-notifications', async (req, res) => {
 });
 
 module.exports = router;
+
+const serviceAccount = require("../serviceAccountKey.json"); // Download from Firebase Console
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+const sendNotification = async (tokens, title, body, iconUrl) => {
+  const message = {
+    notification: {
+      title: title,
+      body: body,
+      image: iconUrl, // Include the iconUrl if it's provided
+    },
+    tokens: tokens, // Supports sending to multiple tokens
+  };
+
+  try {
+    // Use sendAll for sending notifications to multiple tokens
+    const response = await admin.messaging().sendAll(message.tokens.map(token => ({
+      ...message,
+      token
+    })));
+
+    console.log("Notification sent successfully:", response);
+  } catch (error) {
+    console.error("Error sending notification:", error);
+  }
+};
+
+const sendBulkNotification = async (tokens, title, body) => {
+  const message = {
+    notification: { title, body },
+    tokens,
+  };
+
+  try {
+    const response = await admin.messaging().sendMulticast(message);
+    console.log("Bulk notification sent successfully:", response);
+  } catch (error) {
+    console.error("Error sending bulk notification:", error);
+  }
+};
+

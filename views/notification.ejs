@@ -97,7 +97,7 @@
             <input type="text" id="titleInput" placeholder="Enter notification title">
 
             <label for="iconInput">Select Icon:</label>
-            <input type="file" id="iconInput" accept="image/*">
+            <input type="file" id="iconInput" name="icon" accept="image/*" required />
 
             <label for="messageInput">Message:</label>
             <textarea id="messageInput" rows="3" placeholder="Enter your message..."></textarea>
@@ -165,23 +165,32 @@
         document.getElementById("sendNotification").addEventListener("click", async () => {
             let selectedTokens = [];
             document.querySelectorAll(".user-checkbox:checked").forEach(checkbox => {
-                selectedTokens.push(checkbox.value);
+            selectedTokens.push(checkbox.value);
             });
 
             if (selectedTokens.length === 0) {
-                alert("Please select at least one user.");
-                return;
+            alert("Please select at least one user.");
+            return;
             }
 
             let title = document.getElementById("titleInput").value;
             let iconFile = document.getElementById("iconInput").files[0];
             let message = document.getElementById("messageInput").value;
-            let iconUrl = iconFile ? URL.createObjectURL(iconFile) : null;
+
+            if (!iconFile) {
+            alert("Please select an icon.");
+            return;
+            }
+
+            let formData = new FormData();
+            formData.append("tokens", JSON.stringify(selectedTokens));
+            formData.append("title", title);
+            formData.append("message", message);
+            formData.append("icon", iconFile);
 
             fetch("/send-notification", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ tokens: selectedTokens, title, message, iconUrl })
+            method: "POST",
+            body: formData
             })
             .then(response => response.json())
             .then(data => Swal.fire('Success!', "Successfully sent message", 'success'))
