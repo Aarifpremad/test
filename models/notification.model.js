@@ -6,5 +6,5 @@ const notificationSchema = new mongoose.Schema({
     iconUrl: String,
     createdAt: { type: Date, default: Date.now }
 });
-
+ 
 module.exports = mongoose.model('Notification', notificationSchema);
