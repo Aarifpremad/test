@@ -112,9 +112,7 @@
         .btn-back:hover {
             background-color: #0056b3;
         }
-    </style>
-<style>
-    .modal {
+        .modal {
         display: none;
         position: fixed;
         z-index: 1000;
@@ -174,7 +172,18 @@
     .btn-send:hover {
         background: #0056b3;
     }
-</style>
+
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        background: white;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    </style>
 </head>
 <body>
     <!-- Include Header -->
@@ -199,7 +208,7 @@
                 <div class="tournament-actions">
                     <button class="btn-edit" onclick="openStatusModal('<%= tournament.tournamentid %>')">Update Status</button>
                     <button class="btn-delete" onclick="deleteTournament('<%= tournament.tournamentid %>')">Delete</button>
-                    <button class="btn-back" onclick="upcomming()">Upcoming Rooms</button>
+                    <button class="btn-back" onclick="upcomming()">Tournament Rooms</button>
                     <button class="btn-back" onclick="sendNotification()">Send Notification</button>
                 </div>
             </div>
@@ -210,10 +219,10 @@
         <div class="modal-content" style="width: 30%;">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Send Notification</h2>
-            <input type="text" id="notifTitle" placeholder="Enter notification title">
-            <input type="file" id="iconInput" accept="image/*">
-            <textarea id="notifMessage" placeholder="Enter notification message"></textarea>
-            <button class="btn-send" onclick="sendNotificationToServer()">Send Notification</button>
+            <input type="text" id="notifTitle" placeholder="Enter notification title" style="margin-top: 10px">
+            <input type="file" id="iconInput" accept="image/*" style="margin-top: 10px">
+            <textarea id="notifMessage" placeholder="Enter notification message" style="margin-top: 10px;"></textarea>
+            <button class="btn-send" onclick="sendNotificationToServer()" style="margin-top: 10px">Send Notification</button>
         </div>
     </div>
     <div id="statusModal" class="modal">
@@ -229,6 +238,59 @@
             <button class="btn-send" onclick="updateStatus()" style="margin-top: 10px;">Update</button>
         </div>
     </div>
+
+    <div id="upcomingRoomsModal" class="modal">
+        <div class="modal-content" style="width: 60%;">
+            <span class="close" onclick="closeUpcomingRoomsModal()">&times;</span>
+            <h2>Upcoming Rooms</h2>
+            <table id="upcomingRoomsTable" class="display" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Room Name</th>
+                        <th>Players</th>
+                        <th>Entry Fee</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function upcomming() {
+    $('#upcomingRoomsModal').show();  // Modal ko show karna
+
+    if (!$.fn.DataTable.isDataTable('#upcomingRoomsTable')) {
+        $('#upcomingRoomsTable').DataTable({
+            ajax: {
+                url: `/api/upcoming-rooms/<%= tournament.tournamentid %>`,
+                dataSrc: 'data'
+            },
+            columns: [
+                { data: '_id' },
+                { data: 'roomName' },
+                { data: 'players' },
+                { data: 'entryFee' },
+                { data: 'status' }
+            ],
+            destroy: true
+        });
+    } else {
+        $('#upcomingRoomsTable').DataTable().ajax.reload();
+    }
+}
+
+function closeUpcomingRoomsModal() {
+    $('#upcomingRoomsModal').hide();
+}
+
+    </script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    
     <script>
         function openStatusModal() {
             document.getElementById("statusModal").style.display = "flex";
@@ -330,9 +392,6 @@
         });
     }
 
-        function upcomming() {
-           alert("Upcoming Rooms feature is under development.");
-        }
     </script>
 </body>
 </html>
