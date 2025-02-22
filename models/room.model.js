@@ -17,13 +17,16 @@ const roomSchema = new mongoose.Schema(
     players: [playerSchema], // Players ka array
     winner: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null }, // Winner ID
     totalBetAmount: { type: Number, default: 0 }, // Total bet amount of room
+    entryFee : { type: Number, default: 0 }, 
     status: {
       type: String,
       enum: ["waiting", "active", "completed", "cancelled"],
       default: "waiting",
     }, // Room status
     timeduration: { type: Number, default: 60 }, // Game duration
-    tournamentId: { type: mongoose.Schema.Types.ObjectId, ref: "Tournament", default: null } // Tournament ID reference
+    tournamentId: { type: mongoose.Schema.Types.ObjectId, ref: "Tournament", default: null }, // Tournament ID reference
+    commission : { type: Number, default: 0 },
+    winnername : { type: String, }
   },
   { timestamps: true }
 );

@@ -38,7 +38,7 @@ if (room) {
     for (let socketId of room) {
         let playerSocket = io.sockets.sockets.get(socketId);
         if (playerSocket && playerSocket.user) {
-            console.log(playerSocket)
+            console.log(playerSocket.user)
             players.push({
                 userId: playerSocket.user.id,  // Change according to your user object
                 nickname: playerSocket.user.nickname,
@@ -106,6 +106,8 @@ if (room) {
                 status: "active",
                 timeduration,
                 tournamentId ,
+                entryFee : betamount,
+                commission :0
             });
 
             await newRoom.save();
@@ -136,6 +138,7 @@ if (room) {
 
             let winner = players.find((p) => p.rank === 1);
             room.winner = winner?.userId || null;
+            room.winnername = winner?.username || null;
             room.players = players;
             room.status = "completed";
 
@@ -177,19 +180,21 @@ async function processTransactions(roomid, players) {
 
         const transaction = new Model.Transaction({
             userId: winnerUser._id,
-            roomId: roomid,
             amount: prizeAmount,
-            type: "win",
-            status: "completed",
+            type: 'game',
+            txntype: 'credit',
+            roomid: roomid,
+            status: 'success',
+            note: "game winning amount",
+            currentbalance: winnerUser.balance
         });
 
+        const lastTransaction = await Model.Transaction.findOne().sort('-transactionId');
+        transaction.transactionId = lastTransaction ? lastTransaction.transactionId + 1 : 1;
         await transaction.save();
         console.log(`Transaction saved: ${winnerUser.username} won ${prizeAmount}`);
 
-        io.to(winnerUser._id.toString()).emit("transaction", {
-            message: `You won ₹${prizeAmount}!`,
-            amount: prizeAmount,
-        });
+
 
     } catch (err) {
         console.error("Error processing transactions:", err);

@@ -72,11 +72,13 @@
                     <table id="roomsTable" class="display nowrap table-responsive" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Room ID</th>
-                                <th>Game Type</th>
-                                <th>Participants</th>
-                                <th>Winner</th>
-                                <th>Created At</th>
+                                <th>Room Id</th>
+                                <th>Tournament Id</th>
+                                <th>Total Bet</th>
+                                <th>Commission</th>
+                                <th>Entry Fee</th>
+                                <th>Players</th>
+                                <th>Room Winner</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -97,69 +99,80 @@
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
     <script>
-        $(document).ready(function() {
-            var table = $('#roomsTable').DataTable({
-                serverSide: true,
-                processing: true,
-                pageLength: 10,
-                dom: 'lBfrtip',
-                buttons: [
-                    'excelHtml5', 'pdfHtml5'
-                ],
-                ajax: function(data, callback, settings) {
-                    const searchText = data.search.value || '';
-                    const gameType = $('#gameTypeFilter').val();
-                    const startDate = $('#startDate').val();
-                    const endDate = $('#endDate').val();
-                    const limit = data.length || 10;
-                    const page = Math.floor(data.start / limit) + 1;
-                    const orderColumn = data.columns[data.order[0].column].data || 'createdAt';
-                    const orderDir = data.order[0].dir || 'desc';
+   $(document).ready(function() {
+    var table = $('#roomsTable').DataTable({
+        serverSide: true,
+        processing: true,
+        pageLength: 10,
+        dom: 'lBfrtip',
+        buttons: [
+            'excelHtml5', 'pdfHtml5'
+        ],
+        ajax: function(data, callback, settings) {
+            const searchText = data.search.value || '';
+            const gameType = $('#gameTypeFilter').val();
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+            const limit = data.length || 10;
+            const page = Math.floor(data.start / limit) + 1;
+            const orderColumn = data.columns[data.order[0].column].data || 'createdAt';
+            const orderDir = data.order[0].dir || 'desc';
 
-                    $.ajax({
-                        url: '/api/rooms',
-                        method: 'GET',
-                        data: {
-                            search: searchText,
-                            gameType,
-                            startDate,
-                            endDate,
-                            limit,
-                            page,
-                            orderColumn,
-                            orderDir,
-                        },
-                        success: function(response) {
-                            callback({
-                                draw: settings.draw,
-                                recordsTotal: response.totalRecords,
-                                recordsFiltered: response.filteredRecords,
-                                data: response.rooms.map(room => [
-                                    room.roomId,
-                                    room.gameType,
-                                    room.participants.join(', '),
-                                    room.winner || 'N/A',
-                                    new Date(room.createdAt).toLocaleString(),
-                                    room.status
-                                ])
-                            });
-                        },
-                        error: function() {
-                            callback({
-                                draw: settings.draw,
-                                recordsTotal: 0,
-                                recordsFiltered: 0,
-                                data: []
-                            });
-                        }
+            $.ajax({
+                url: '/api/rooms',
+                method: 'GET',
+                data: {
+                    search: searchText,
+                    gameType,
+                    startDate,
+                    endDate,
+                    limit,
+                    page,
+                    orderColumn,
+                    orderDir,
+                },
+                success: function(response) {
+                    callback({
+                        draw: settings.draw,
+                        recordsTotal: response.totalRecords,
+                        recordsFiltered: response.filteredRecords,
+                        data: response.rooms.map(room => [
+                            room.roomId,
+                            room.gameType,
+                            room.totalBetAmount || 'N/A',
+                            room.commission || 'N/A',
+                            room.entryFee || 'N/A',
+                            room.players.map(player => 
+                                `<div class="player-box">
+                                    <span class="player-name">${player.username}</span>
+                                    <span class="player-rank">${player.rank ? `Rank: ${player.rank}` : ''}</span>
+                                </div>`
+                            ).join(""),
+                            room.winner 
+                                ? `<div class="winner-box">${room.winner}</div>` 
+                                : `<div class="winner-box empty">N/A</div>`,
+                            `<div class="status-badge ${room.status}">
+                                ${room.status.charAt(0).toUpperCase() + room.status.slice(1)}
+                            </div>`
+                        ])
+                    });
+                },
+                error: function() {
+                    callback({
+                        draw: settings.draw,
+                        recordsTotal: 0,
+                        recordsFiltered: 0,
+                        data: []
                     });
                 }
             });
+        }
+    });
 
-            $('#gameTypeFilter, #startDate, #endDate').change(function() {
-                table.ajax.reload();
-            });
-        });
-    </script>
+    $('#gameTypeFilter, #startDate, #endDate').change(function() {
+        table.ajax.reload();
+    });
+});
+</script>
 </body>
 </html>

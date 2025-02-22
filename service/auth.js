@@ -33,6 +33,7 @@ let socketauth = (socket, next) => {
         socket.emit('unauthorized', { message: 'Invalid token' });
         return;
       }
+      console.log(decoded ,"decoded")
       socket.user = decoded;
       next();
     });

@@ -120,41 +120,92 @@ const isValidDate = (date) => {
   });
   
 
+  // router.get("/api/tournament-rooms/:tournamentId", async (req, res) => {
+  //   try {
+  //     const { tournamentId } = req.params;
+  //     const { start = 0, length = 10, search = "", order = [] } = req.query;
+  
+  //     // 🔹 Rooms ko `tournamentId` ke basis par fetch karo
+  //     let query = { tournamentId };
+  
+  //     // 🔹 Agar search parameter hai, to filter karo roomId ke basis par
+  //     if (search) {
+  //       query.roomId = { $regex: search, $options: "i" };
+  //     }
+  
+  //     // 🔹 Total count before pagination
+  //     const totalRecords = await Room.countDocuments(query);
+  
+  //     // 🔹 Sorting logic
+  //     let sortOptions = {};
+  //     if (order.length) {
+  //       const sortField = order[0].column;
+  //       const sortOrder = order[0].dir === "asc" ? 1 : -1;
+  //       sortOptions[sortField] = sortOrder;
+  //     }
+  
+  //     // 🔹 Rooms fetch with pagination
+  //     const rooms = await Room.find(query)
+  //       .sort(sortOptions)
+  //       .skip(parseInt(start))
+  //       .limit(parseInt(length));
+  
+  //     res.json({
+  //       draw: req.query.draw || 1,
+  //       recordsTotal: totalRecords,
+  //       recordsFiltered: totalRecords,
+  //       data: rooms,
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ message: "Failed to fetch tournament rooms", error });
+  //   }
+  // });
+
   router.get("/api/tournament-rooms/:tournamentId", async (req, res) => {
     try {
       const { tournamentId } = req.params;
       const { start = 0, length = 10, search = "", order = [] } = req.query;
   
-      // 🔹 Rooms ko `tournamentId` ke basis par fetch karo
-      let query = { tournamentId };
-  
-      // 🔹 Agar search parameter hai, to filter karo roomId ke basis par
+      // Fetch rooms related to the tournament
+      let rooms = await Room.find({ tournamentId }).populate("tournamentId","tournamentid");
+      console.log(rooms)
+      // Search by roomId or player name
       if (search) {
-        query.roomId = { $regex: search, $options: "i" };
+        rooms = rooms.filter(room =>
+          room.roomId.includes(search) ||
+          room.players.some(player => player.username.toLowerCase().includes(search.toLowerCase()))
+        );
       }
   
-      // 🔹 Total count before pagination
-      const totalRecords = await Room.countDocuments(query);
-  
-      // 🔹 Sorting logic
-      let sortOptions = {};
+      // Sort rooms
       if (order.length) {
         const sortField = order[0].column;
         const sortOrder = order[0].dir === "asc" ? 1 : -1;
-        sortOptions[sortField] = sortOrder;
+        rooms = rooms.sort((a, b) => (a[sortField] > b[sortField] ? sortOrder : -sortOrder));
       }
   
-      // 🔹 Rooms fetch with pagination
-      const rooms = await Room.find(query)
-        .sort(sortOptions)
-        .skip(parseInt(start))
-        .limit(parseInt(length));
+      const totalRecords = rooms.length;
+      const paginatedRooms = rooms.slice(parseInt(start), parseInt(start) + parseInt(length));
+  
+      // Format response
+      const formattedRooms = paginatedRooms.map(room => ({
+        roomId: room.roomId,
+        tournamentId: room.tournamentId.tournamentid,
+        totalBetAmount: room.totalBetAmount,
+        status: room.status,
+        players: room.players,
+        winner: room.winner ? room.winner : "N/A",
+        winnername: room.winnername ? room.winnername : "N/A",
+        entryFee: room.entryFee ? room.entryFee : "N/A" ,
+        commission: room.commission ? room.commission : "N/A",
+      }));
   
       res.json({
         draw: req.query.draw || 1,
         recordsTotal: totalRecords,
         recordsFiltered: totalRecords,
-        data: rooms,
+        data: formattedRooms
       });
     } catch (error) {
       console.error(error);
