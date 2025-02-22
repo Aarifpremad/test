@@ -26,7 +26,9 @@ let Poll = require("./poll.model");
 
 let Admin = require("./admin.model")
 
-let Notification = require("./notification.model")
+let Notification = require("./notification.model");
+
+let UserNotification = require("./user.notification.model")
 
 
-module.exports = { User, OTP ,Enquiry ,Spin, Transaction  ,Management , Content  , Order , Room,Bot,Tournament , Poll ,Admin,Notification};
+module.exports = { User, OTP ,Enquiry ,Spin, Transaction  ,Management , Content  , Order , Room,Bot,Tournament , Poll ,Admin,Notification,UserNotification};

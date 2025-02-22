@@ -26,5 +26,8 @@ Router.get("/user/transaction",authenticate,  transaction.userTransactions);
 Router.post("/user/transaction/withdraw",authenticate,  transaction.withdraw);
 Router.post("/user/transaction/deposit",authenticate,  transaction.deposit);
 
+
+Router.get("/user/notificationlist", authenticate, UserController.notificationlist);
+
 module.exports = Router;
 

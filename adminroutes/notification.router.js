@@ -21,6 +21,22 @@ router.post("/send-notification",upload.single('icon'), async (req, res) => {
 
     await sendNotification(tokens, title, message, iconUrl);
     res.json({ success: true, message: "Notification sent successfully" });
+
+    const users = await Model.User.find({ fcmtoken: { $in: tokens } }, "_id fcmtoken");
+  if (!users.length) {
+    // return res.status(400).json({ error: "No users found for given tokens" });
+    return;
+  }
+
+  const notifications = users.map((user) => ({
+    userId: user._id,
+    title,
+    message,
+    iconUrl:`/uploads/${req.file.filename}`,
+  }));
+  await Model.UserNotification.insertMany(notifications);
+  
+    res.json({ success: true, message: "Notification sent successfully" });
   } catch (error) {
     console.log("Error:", error);
     res.status(500).json({ error: "Failed to send notification" });
@@ -111,4 +127,5 @@ const sendBulkNotification = async (tokens, title, body) => {
     console.error("Error sending bulk notification:", error);
   }
 };
+
 
