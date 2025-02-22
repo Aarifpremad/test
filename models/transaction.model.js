@@ -16,6 +16,11 @@ const transactionSchema = new mongoose.Schema({
         enum: ['game', 'spin', 'withdraw', 'deposit', 'referral'], 
         required: true 
     }, 
+    txntype :{
+        type: String, 
+        enum: ['debit', 'credit'], 
+        required: true 
+    },
     amount: { 
         type: Number, 
         required: true 
@@ -40,8 +45,12 @@ const transactionSchema = new mongoose.Schema({
     note:{
         type: String,
         default: ""
+    },
+    roomid:{
+        type: String,
+        default: ""
     }
-});
+}, { timestamps: true });
 
 transactionSchema.pre('save', async function (next) {
     if (this.isNew) {

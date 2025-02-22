@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Tournament = require('../models/tournament.model');
+const Room = require('../models/room.model');
 const upload = require('../service/imageupload'); // Multer middleware for file upload
 const { json } = require('body-parser');
 
@@ -119,46 +120,50 @@ const isValidDate = (date) => {
   });
   
 
-  router.get('/api/tournament-rooms/:tournamentId', async (req, res) => {
+  router.get("/api/tournament-rooms/:tournamentId", async (req, res) => {
     try {
       const { tournamentId } = req.params;
-      const { start = 0, length = 10, search = '', order = [] } = req.query;
-
-      const tournament = await Tournament.findById(tournamentId);
-
-      if (!tournament) {
-        return res.status(404).json({ message: 'Tournament not found' });
-      }
-
-      // Assuming rooms are part of the tournament document
-      let rooms = tournament.rooms || [];
-
-      // Search by room name or other criteria
+      const { start = 0, length = 10, search = "", order = [] } = req.query;
+  
+      // 🔹 Rooms ko `tournamentId` ke basis par fetch karo
+      let query = { tournamentId };
+  
+      // 🔹 Agar search parameter hai, to filter karo roomId ke basis par
       if (search) {
-        rooms = rooms.filter(room => room.name.toLowerCase().includes(search.value.toLowerCase()));
+        query.roomId = { $regex: search, $options: "i" };
       }
-
-      // Sort rooms
+  
+      // 🔹 Total count before pagination
+      const totalRecords = await Room.countDocuments(query);
+  
+      // 🔹 Sorting logic
+      let sortOptions = {};
       if (order.length) {
         const sortField = order[0].column;
-        const sortOrder = order[0].dir === 'asc' ? 1 : -1;
-        rooms = rooms.sort((a, b) => (a[sortField] > b[sortField] ? sortOrder : -sortOrder));
+        const sortOrder = order[0].dir === "asc" ? 1 : -1;
+        sortOptions[sortField] = sortOrder;
       }
-
-      const totalRecords = rooms.length;
-      const paginatedRooms = rooms.slice(parseInt(start), parseInt(start) + parseInt(length));
-
+  
+      // 🔹 Rooms fetch with pagination
+      const rooms = await Room.find(query)
+        .sort(sortOptions)
+        .skip(parseInt(start))
+        .limit(parseInt(length));
+  
       res.json({
         draw: req.query.draw || 1,
         recordsTotal: totalRecords,
         recordsFiltered: totalRecords,
-        data: paginatedRooms,
+        data: rooms,
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Failed to fetch tournament rooms', error });
+      res.status(500).json({ message: "Failed to fetch tournament rooms", error });
     }
   });
+  
+  module.exports = router;
+  
 
 
   router.post('/api/tournamentstatus/:tournamentId', async (req, res) => {

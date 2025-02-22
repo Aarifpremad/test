@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const playerSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // User ID reference
-  username: { type: String, required: true }, // Naam
+  username: { type: String }, // Naam
   avatar: { type: String, default: "" }, // Avatar image
   rank: { type: Number, default: null }, // Game end hone par rank
   score: { type: Number, default: 0 }, // Score track karne ke liye
-  betAmount: { type: Number, required: true }, // Individual bet amount
+  betamount: { type: Number, required: true }, // Individual bet amount
 });
 
 const roomSchema = new mongoose.Schema(

@@ -2,7 +2,7 @@ const Model = require("../models/model")
 const onlineUsers = new Set();
 
 let socketevents = (socket, io) => {
-    const userId = socket.handshake.auth?.userId;
+    const userId = socket.user.numericid;
     if (!userId) {
         console.log("User ID missing in socket auth.");
         return;
@@ -23,17 +23,38 @@ let socketevents = (socket, io) => {
     });
 
     socket.on("roomjoin", async ({ roomid, betamount }) => {
-        let user = socket.handshake.auth?.user;
+        let user = socket.user;
+        console.log(roomid)
         if (!user) {
             return socket.emit("error", { message: "User data missing!" });
         }
 
-        console.log(user);
         socket.join(roomid);
-        
-        let players = Array.from(io.sockets.adapter.rooms.get(roomid) || [])
-            .map(socketId => io.sockets.sockets.get(socketId)?.handshake?.auth?.user)
-            .filter(Boolean);
+        console.log(io.sockets.adapter.rooms.get(roomid) )
+        let room = io.sockets.adapter.rooms.get(roomid);
+let players = [];
+
+if (room) {
+    for (let socketId of room) {
+        let playerSocket = io.sockets.sockets.get(socketId);
+        if (playerSocket && playerSocket.user) {
+            console.log(playerSocket)
+            players.push({
+                userId: playerSocket.user.id,  // Change according to your user object
+                nickname: playerSocket.user.nickname,
+                username: playerSocket.user.username,
+                balance: playerSocket.user.balance,
+                avatar: playerSocket.user.avatar,
+                numericid: playerSocket.user.numericid,
+                mobileno: playerSocket.user.mobileno,
+                socketId: socketId,
+                betamount : betamount
+            });
+        } else {
+            console.log(`No user found for socketId: ${socketId}`);
+        }
+    }
+}
 
         socket.emit("roomjoin", { player: user, roomid });
         socket.emit("allPlayers", { players, roomid });
@@ -46,16 +67,21 @@ let socketevents = (socket, io) => {
                 foundUser.balance -= betamount;
                 await foundUser.save();
 
-                const newTransaction = new Model.Transaction({
+                const transaction = new Model.Transaction({
                     userId: user.id,
                     amount: betamount,
-                    type: 'debit',
-                    roomid,
-                    date: new Date()
+                    type: 'game',
+                    txntype: 'debit',
+                    roomid: roomid,
+                    status: 'success',
+                    note : "game amount deduct",
+                    currentbalance : foundUser.balance
                 });
+                const lastTransaction = await Model.Transaction.findOne().sort('-transactionId');
+                transaction.transactionId = lastTransaction ? lastTransaction.transactionId + 1 : 1;
+                await transaction.save();
 
-                await newTransaction.save();
-                console.log(`Transaction created for user ${user.id} with amount ${betamount}`);
+                // console.log(`Transaction created for user ${user.id} with amount ${betamount}`);
             } else {
                 socket.emit("error", { message: "Insufficient balance!" });
             }
@@ -65,7 +91,7 @@ let socketevents = (socket, io) => {
     });
 
     socket.on("gamestart", async (data) => {
-        let { roomid, noofplayer, players, betamount, timeduration } = data;
+        let { roomid, noofplayer, players, betamount, timeduration ,tournamentId } = data;
 
         try {
             let existingRoom = await Model.Room.findOne({ roomId: roomid });
@@ -79,6 +105,7 @@ let socketevents = (socket, io) => {
                 totalBetAmount: betamount * players.length,
                 status: "active",
                 timeduration,
+                tournamentId ,
             });
 
             await newRoom.save();
