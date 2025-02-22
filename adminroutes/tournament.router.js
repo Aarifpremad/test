@@ -160,4 +160,48 @@ const isValidDate = (date) => {
     }
   });
 
+
+  router.post('/api/tournamentstatus/:tournamentId', async (req, res) => {
+    try {
+      const { tournamentId } = req.params;
+      const { status } = req.body;
+
+      // Validate status
+      if (!status) {
+        return res.status(400).json({ message: 'Status is required' });
+      }
+      console.log(tournamentId)
+      const tournament = await Tournament.findById(tournamentId);
+      if (!tournament) {
+        return res.status(404).json({ message: 'Tournament not found' });
+      }
+
+      tournament.status = status;
+      await tournament.save();
+      res.json({ success :true , message: 'Tournament status updated successfully', tournament });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to update tournament status', error });
+    }
+  });
+
+
+
+  router.delete('/api/delete-tournament/:tournamentId', async (req, res) => {
+    try {
+      const { tournamentId } = req.params;
+
+      const tournament = await Tournament.findByIdAndDelete(tournamentId);
+
+      if (!tournament) {
+        return res.status(404).json({ message: 'Tournament not found' });
+      }
+
+      res.json({ success: true, message: 'Tournament deleted successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to delete tournament', error });
+    }
+  });
+
 module.exports = router;

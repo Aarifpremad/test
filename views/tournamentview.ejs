@@ -216,7 +216,7 @@
 
                 <div class="tournament-actions">
                     <button class="btn-edit" onclick="openStatusModal('<%= tournament.tournamentid %>')">Update Status</button>
-                    <button class="btn-delete" onclick="deleteTournament('<%= tournament.tournamentid %>')">Delete</button>
+                    <button class="btn-delete" onclick="deleteTournament('<%= tournament._id %>')">Delete</button>
                     <button class="btn-back" onclick="toggleRooms()">Tournament Rooms</button>
                     <button class="btn-back" onclick="sendNotification()">Send Notification</button>
                 </div>
@@ -296,10 +296,11 @@ function toggleRooms() {
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
-        function openStatusModal() {
+        function openStatusModal(tournamentId) {
             document.getElementById("statusModal").style.display = "flex";
         }
 
@@ -307,10 +308,58 @@ function toggleRooms() {
             document.getElementById("statusModal").style.display = "none";
         }
 
+
         function updateStatus() {
-            const selectedStatus = document.getElementById("statusSelect").value;
-            document.getElementById("currentStatus").innerText = selectedStatus;
-            closeStatusModal();
+    const tournamentId = "<%= tournament._id %>";  // EJS se ID fetch karein
+    const newStatus = document.getElementById("statusSelect").value;
+
+    fetch(`/api/tournamentstatus/${tournamentId}`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success == true) {
+            Swal.fire('Success!', 'Tournament status updated successfully!', 'success');
+            location.reload(); // UI update karne ke liye page reload karein
+        } else {
+            alert("Error updating status!");
+        }
+    })
+    .catch(error => {
+        console.error("Error updating status:", error);
+        alert("Failed to update status");
+    });
+}
+
+        function deleteTournament(id) {
+            
+            Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to Delete this Tournament?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/api/delete-tournament/' + id, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Success!', "successfully Delete Bot", 'success');
+                            window.location.href = "/tournament/list";
+                        } else {
+                            alert("Error deleting tournament: " + data.message);
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+            }
+        });
         }
     </script>
     <script>
@@ -352,53 +401,5 @@ function toggleRooms() {
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function statusUpdate(id) {
-            const selectedStatus = document.getElementById("statusSelect").value;
-            fetch(`/api/update-tournament-status/${id}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: selectedStatus })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Status updated successfully!");
-                    location.reload();
-                } else {
-                    alert("Error updating status: " + data.message);
-                }
-            })
-            .catch(error => console.error("Error:", error));
-        }
-
-        function deleteTournament(id) {
-            
-            Swal.fire({
-            title: 'Are you sure?',
-            text: 'Do you want to Delete this Tournament?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, change it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch('/api/delete-tournament/' + id, { method: 'DELETE' })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Success!', "successfully Delete Bot", 'success');
-                            window.location.href = "/tournament-list";
-                        } else {
-                            alert("Error deleting tournament: " + data.message);
-                        }
-                    })
-                    .catch(error => console.error("Error:", error));
-            }
-        });
-    }
-
-    </script>
 </body>
 </html>
