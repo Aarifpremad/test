@@ -42,6 +42,50 @@
             border-radius: 4px;
             margin-right: 15px;
         }
+
+
+
+        /* Order ID, User Numeric, Game Type, Room ID styling */
+.order-id,
+.user-numeric,
+.game-type,
+.room-id,
+.order-amount,
+.order-date {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Status Badge Styling */
+.order-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.order-status.pending { background-color: #FFA500; }    /* Orange */
+.order-status.completed { background-color: #4CAF50; }  /* Green */
+.order-status.cancelled { background-color: #F44336; }  /* Red */
+
+/* Result Badge Styling */
+.order-result {
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.order-result.win { background-color: #4CAF50; }   /* Green */
+.order-result.loss { background-color: #F44336; }  /* Red */
+.order-result.draw { background-color: #9E9E9E; }  /* Gray */
+.order-result.none { background-color: #607D8B; }  /* Default color for N/A */
+
+
+
+
     </style>
 </head>
 <body>
@@ -100,6 +144,8 @@
                                             <th>Order ID</th>
                                             <th>User ID</th>
                                             <th>Game Type</th>
+                                            <th>Room Id</th>
+                                            <th>Order Status</th>
                                             <th>Status</th>
                                             <th>Amount</th>
                                             <th>Created At</th>
@@ -164,13 +210,15 @@
                                 recordsTotal: response.totalRecords,
                                 recordsFiltered: response.filteredRecords,
                                 data: response.orders.map(order => [
-                                    order.orderId,
-                                    order.userId,
-                                    order.gameType,
-                                    order.status,
-                                    `${order.amount}`,
-                                    new Date(order.createdAt).toLocaleString(),
-                                ])
+                            `<span class="order-id">${order.orderId}</span>`,
+                            `<span class="user-numeric">${order.userId.numericid}</span>`,
+                            `<span class="game-type">${order.gameType}</span>`,
+                            `<span class="room-id">${order.roomId}</span>`,
+                            `<span class="order-status ${order.status}">${order.status}</span>`,
+                            `<span class="order-result ${order.result ? order.result : 'none'}">${order.result ? order.result : 'N/A'}</span>`,
+                            `<span class="order-amount">${order.amount}</span>`,
+                            `<span class="order-date">${formatDate(order.createdAt)}</span>`
+                            ])
                             });
                         },
                         error: function() {
@@ -189,6 +237,14 @@
                 table.ajax.reload();
             });
         });
+
+        function formatDate(date) {
+        const d = new Date(date);
+        const day = ("0" + d.getDate()).slice(-2);
+        const month = ("0" + (d.getMonth() + 1)).slice(-2);
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
     </script>
 </body>
 </html>

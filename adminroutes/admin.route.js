@@ -441,7 +441,7 @@ router.get('/api/rooms', async (req, res) => {
     });
 });
 
-router.get('/orders', async (req, res) => {
+router.get('/api/orders', async (req, res) => {
     try {
         const {
             search = '',
@@ -477,7 +477,7 @@ router.get('/orders', async (req, res) => {
         }
 
         const totalRecords = await Model.Order.countDocuments(filters);
-        const orders = await Order.find(filters)
+        const orders = await Model.Order.find(filters).populate("userId" , "numericid" )
             .sort({ [orderColumn]: orderDir })
             .skip((page - 1) * limit)
             .limit(parseInt(limit));
