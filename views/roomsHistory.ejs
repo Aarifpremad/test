@@ -196,7 +196,9 @@
                 },
                 columns: [
                     { data: 'roomId', title: 'Room Id' },
-                    { data: 'tournamentId', title: 'Tournament Id' },
+                    { data: `tournamentId`, title: 'Tournament Id' ,  render: function (data) {
+                        return  data.tournamentid
+                    } },
                     { data: 'totalBetAmount', title: 'Total Bet' },
                     { data: 'commission', title: 'Commission', defaultContent: 'N/A' },
                     { data: 'entryFee', title: 'Entry Fee', defaultContent: 'N/A' },

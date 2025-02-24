@@ -429,7 +429,7 @@ router.get('/api/rooms', async (req, res) => {
     const totalRecords = await Model.Room.countDocuments();
     const filteredRecords = await Model.Room.countDocuments(filter);
 
-    const rooms = await Model.Room.find(filter)
+    const rooms = await Model.Room.find(filter).populate("tournamentId" ,"tournamentid")
         .sort({ [orderColumn]: orderDir === 'asc' ? 1 : -1 })
         .skip((page - 1) * limit)
         .limit(parseInt(limit));
