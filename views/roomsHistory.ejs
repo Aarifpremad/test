@@ -41,6 +41,53 @@
             border-radius: 4px;
             margin-right: 15px;
         }
+
+
+        
+.player-name {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    color: #333;
+}
+
+.player-rank {
+    font-size: 12px;
+    color: #777;
+    display: block;
+}
+
+.winner-box {
+    background: #ffeb3b;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}
+
+.winner-box.empty {
+    background: #e0e0e0;
+    color: #777;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.player-box {
+    background: #f9f9f9;
+    padding: 6px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
     </style>
 </head>
 <body>
@@ -99,80 +146,97 @@
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
     <script>
-   $(document).ready(function() {
-    var table = $('#roomsTable').DataTable({
-        serverSide: true,
-        processing: true,
-        pageLength: 10,
-        dom: 'lBfrtip',
-        buttons: [
-            'excelHtml5', 'pdfHtml5'
-        ],
-        ajax: function(data, callback, settings) {
-            const searchText = data.search.value || '';
-            const gameType = $('#gameTypeFilter').val();
-            const startDate = $('#startDate').val();
-            const endDate = $('#endDate').val();
-            const limit = data.length || 10;
-            const page = Math.floor(data.start / limit) + 1;
-            const orderColumn = data.columns[data.order[0].column].data || 'createdAt';
-            const orderDir = data.order[0].dir || 'desc';
-
-            $.ajax({
-                url: '/api/rooms',
-                method: 'GET',
-                data: {
-                    search: searchText,
-                    gameType,
-                    startDate,
-                    endDate,
-                    limit,
-                    page,
-                    orderColumn,
-                    orderDir,
-                },
-                success: function(response) {
-                    callback({
-                        draw: settings.draw,
-                        recordsTotal: response.totalRecords,
-                        recordsFiltered: response.filteredRecords,
-                        data: response.rooms.map(room => [
-                            room.roomId,
-                            room.gameType,
-                            room.totalBetAmount || 'N/A',
-                            room.commission || 'N/A',
-                            room.entryFee || 'N/A',
-                            room.players.map(player => 
-                                `<div class="player-box">
-                                    <span class="player-name">${player.username}</span>
-                                    <span class="player-rank">${player.rank ? `Rank: ${player.rank}` : ''}</span>
-                                </div>`
-                            ).join(""),
-                            room.winner 
-                                ? `<div class="winner-box">${room.winner}</div>` 
-                                : `<div class="winner-box empty">N/A</div>`,
-                            `<div class="status-badge ${room.status}">
-                                ${room.status.charAt(0).toUpperCase() + room.status.slice(1)}
-                            </div>`
-                        ])
+        $(document).ready(function() {
+            var table = $('#roomsTable').DataTable({
+                serverSide: true,
+                processing: true,
+                pageLength: 10,
+                dom: 'lBfrtip',
+                buttons: ['excelHtml5', 'pdfHtml5'],
+                ajax: function(data, callback, settings) {
+                    const searchText = data.search.value || '';
+                    const gameType = $('#gameTypeFilter').val();
+                    const startDate = $('#startDate').val();
+                    const endDate = $('#endDate').val();
+                    const limit = data.length || 10;
+                    const page = Math.floor(data.start / limit) + 1;
+                    const orderColumn = data.columns[data.order[0].column].data || 'createdAt';
+                    const orderDir = data.order[0].dir || 'desc';
+        
+                    $.ajax({
+                        url: '/api/rooms',
+                        method: 'GET',
+                        data: {
+                            search: searchText,
+                            gameType,
+                            startDate,
+                            endDate,
+                            limit,
+                            page,
+                            orderColumn,
+                            orderDir,
+                        },
+                        success: function(response) {
+                            callback({
+                                draw: data.draw,
+                                recordsTotal: response.totalRecords,
+                                recordsFiltered: response.filteredRecords,
+                                data: response.rooms
+                            });
+                        },
+                        error: function() {
+                            callback({
+                                draw: data.draw,
+                                recordsTotal: 0,
+                                recordsFiltered: 0,
+                                data: []
+                            });
+                        }
                     });
                 },
-                error: function() {
-                    callback({
-                        draw: settings.draw,
-                        recordsTotal: 0,
-                        recordsFiltered: 0,
-                        data: []
-                    });
-                }
+                columns: [
+                    { data: 'roomId', title: 'Room Id' },
+                    { data: 'tournamentId', title: 'Tournament Id' },
+                    { data: 'totalBetAmount', title: 'Total Bet' },
+                    { data: 'commission', title: 'Commission', defaultContent: 'N/A' },
+                    { data: 'entryFee', title: 'Entry Fee', defaultContent: 'N/A' },
+                    {
+                        data: 'players',
+            title: 'Players',
+            render: function (data) {
+                return data.map(player =>
+                    `<div class="player-box">
+                        <span class="player-name">${player.username}</span>
+                        <span class="player-rank">${player.rank ? `Score: ${player.score}` : ''}</span>
+                    </div>`
+                ).join("");
+            }
+                    },
+                    {
+                        data: 'winnername',
+            title: 'Room Winner',
+            render: function (data) {
+                return data
+                    ? `<div class="winner-box">${data}</div>`
+                    : `<div class="winner-box empty">N/A</div>`;
+            }
+                    },
+                    {
+                        data: 'status',
+            title: 'Status',
+            render: function (data) {
+                let badgeColor = data === "active" ? "#4CAF50" : data === "completed" ? "#2196F3" : "#F44336";
+                return `<div class="status-badge" style="background-color:${badgeColor};">${data}</div>`;
+            }
+                    }
+                ]
             });
-        }
-    });
-
-    $('#gameTypeFilter, #startDate, #endDate').change(function() {
-        table.ajax.reload();
-    });
-});
-</script>
+        
+            $('#gameTypeFilter, #startDate, #endDate').change(function() {
+                table.ajax.reload();
+            });
+        });
+        </script>
+        
 </body>
 </html>
