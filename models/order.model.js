@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   amount: { type: Number, required: true },
   gameType: { type: String, enum: ['ludo', 'tournament'], required: true },
-  roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'Room' },
+  roomId: { type: String, default: null },
   status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'pending' },
   result: { type: String, enum: ['win', 'loss', 'draw'], default: null },
   transactionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' },

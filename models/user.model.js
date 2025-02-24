@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.generateAuthToken = function () {
     const payload = { id: this._id, mobileno: this.mobileno , numericid: this.numericid,avatar:this.avatar,balance:this.balance ,username :this.username,nickname :this.nickname};
     
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10h' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10d' });
     return token;
 };
 

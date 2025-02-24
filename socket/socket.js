@@ -81,6 +81,21 @@ if (room) {
                 transaction.transactionId = lastTransaction ? lastTransaction.transactionId + 1 : 1;
                 await transaction.save();
 
+
+
+                const order = new Model.Order({
+                    orderId: `ORD-${Date.now()}-${user.id}`, // Unique Order ID
+                    userId: user.id,
+                    amount: betamount,
+                    gameType: "ludo",
+                    roomId: roomid, // Room ID
+                    status: "pending",
+                    result: null, // Game result is not decided yet
+                    transactionId: transaction._id // Store transaction ID
+                });
+    
+                await order.save();
+
                 // console.log(`Transaction created for user ${user.id} with amount ${betamount}`);
             } else {
                 socket.emit("error", { message: "Insufficient balance!" });
@@ -143,7 +158,26 @@ if (room) {
             room.status = "completed";
 
             await room.save();
-            console.log(`Game ended in room ${roomid}`);
+            console.log(`Game ended in room ${roomid}`,winner);
+
+            if (winner) {
+                // Update orders for the winner as "win"
+                await Model.Order.updateMany(
+                    { roomId: roomid, status: "pending", userId: winner.userId },
+                    { $set: { status: "completed", result: "win", updatedAt: new Date() } }
+                );
+                // Update orders for all other players as "loss"
+                await Model.Order.updateMany(
+                    { roomId: roomid, status: "pending", userId: { $ne: winner.userId } },
+                    { $set: { status: "completed", result: "loss", updatedAt: new Date() } }
+                );
+            } else {
+                // If no winner, mark all orders as draw
+                await Model.Order.updateMany(
+                    { roomId: roomid, status: "pending" },
+                    { $set: { status: "completed", result: "draw", updatedAt: new Date() } }
+                );
+            }
 
             io.to(roomid).emit("gameend", { message: "Game has ended!", status: "end", players });
 
